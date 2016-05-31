@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+</head>
+<body>
+
+    <div class="page-header">
+        <h1><img src="assets/img/de_vroe_groep_logo.png" alt="logo" class="logo" />Woon - en aanwervings...</h1>
+        <nav>
+            <a href="#/home">Home</a>
+            <a href="#/login">Login</a>
+            <a href="#/allsurveys">Alle opmetingen</a>
+            <a href="#/newsurvey">Nieuwe opmeting</a>
+        </nav>
+    </div>
+
+    <div ng-app = "mainApp">
+        <div ng-view></div>
+    </div>
+
+    <script src="assets/libs/angular/angular.min.js"></script>
+    <script src="assets/libs/angular/angular-route.min.js"></script>
+    <script src="app/app.module.js"></script>
+    <script src="app/app.route.js"></script>
+    <script src="app/components/home/homeController.js"></script>
+    <script src="app/components/login/loginController.js"></script>
+    <script src="app/components/allSurveys/allsurveysController.js"></script>
+    <script src="app/components/newSurvey/newsurveyController.js"></script>
+</body>
+</html>
