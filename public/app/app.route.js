@@ -5,8 +5,8 @@ mainApp.config(['$routeProvider', function($routeProvider) {
             templateUrl: 'app/components/login/loginView.html', controller: 'LoginController'
         }).
 
-        when('/home', {
-            templateUrl: 'app/components/home/homeView.html', controller: 'HomeController'
+        when('/references', {
+            templateUrl: 'app/components/references/referencesView.html', controller: 'ReferencesController'
         }).
 
         when('/newsurvey', {
@@ -18,7 +18,7 @@ mainApp.config(['$routeProvider', function($routeProvider) {
         }).
 
         otherwise({
-            redirectTo: '/home'
+            redirectTo: '/newsurvey'
         });
 
 }]);

@@ -1,5 +1,6 @@
 mainApp.controller('LoginController', function($scope) {
 
-    $scope.title = "log hier in";
+    $('ul.nav li').removeClass('active');
+    $('.login').addClass("active");
 
 });

@@ -1,0 +1,184 @@
+div#main {
+    width: 840px;
+    margin: 0 auto;
+}
+
+div.login {
+    width: 400px;
+}
+
+div.login input {
+    margin-top: 20px;
+}
+
+div.login button {
+    margin: 20px 0;
+}
+
+a.logoutlink {
+    float: right;
+    margin-top: 35px;
+    margin-right: 10px;
+}
+
+.customTitle {
+    font-size: 25px;
+}
+
+ul.nav {
+    margin-top: 20px;
+    font-size: 14px;
+}
+
+ul.nav li a {
+    padding: 5px 10px;
+    margin: 0 5px;
+}
+
+ul.nav li#first a {
+    margin-left: 0px;
+}
+
+.homeLink, .cmsLink {
+    margin-right: 10px;
+}
+
+.back {
+    margin-right: 10px;
+    color: white;
+}
+
+.content label {
+    float: left;
+    line-height: 34px;
+    width: 100px;
+    text-align: right;
+    margin-right: 20px;
+}
+
+.content input {
+    width: 720px;
+}
+
+.content .mainButton {
+    margin-right: 10px;
+}
+
+#startSurvey {
+    width: 60px;
+    margin-left: 780px;
+}
+
+.showImage {
+    display: inline;
+}
+
+.listItem {
+    position: relative;
+}
+
+.listItem a {
+    position: absolute;
+    right: 10px;
+}
+
+.referenceItem {
+    position: relative;
+}
+
+.referenceItem a {
+    position: absolute;
+    right: 10px;
+}
+
+.searchBar {
+    margin-bottom: 40px;
+}
+
+.saveSurveyButton {
+    position: absolute;
+    right: 5px;
+    top: 5px;
+}
+
+.tableHeader {
+    height: 44px;
+    position: relative;
+    padding: 0;
+    padding-left: 10px;
+}
+
+.tableHeader h3 {
+    line-height: 44px;
+    height: 44px;
+}
+
+.homeImage {
+    margin-top: 10px;
+}
+
+.logo {
+    margin-right: 10px;
+    height: 70px;
+}
+
+.addNewRef {
+    float: left;
+    margin-right: 20px;
+}
+
+.saveRefBtn {
+    float: right;
+}
+
+.keywords {
+    margin-bottom: 20px;
+}
+
+.fileUpload {
+    margin-bottom: 20px;
+}
+
+.successAlert, .failureAlert {
+    position: absolute;
+    top: 0;
+    left: 0;
+    margin: 5px;
+    z-index: 999;
+    display: none;
+}
+
+.searchResultsRefs h4 {
+    margin-bottom: 20px;
+}
+
+/* Clearfix */
+.clearfix:after {
+    visibility: hidden;
+    display: block;
+    font-size: 0;
+    content: " ";
+    clear: both;
+    height: 0;
+}
+.clearfix { display: inline-block; }
+/* start commented backslash hack \*/
+* html .clearfix { height: 1%; }
+.clearfix { display: block; }
+/* close commented backslash hack */
+
+/* CSS Loader */
+.loader {
+    border: 8px solid #f3f3f3; /* Light grey */
+    border-top: 8px solid #80bd26; /* Blue */
+    border-radius: 50%;
+    width: 60px;
+    height: 60px;
+    animation: spin 1s linear infinite;
+    margin: 0 auto;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
