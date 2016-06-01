@@ -13,7 +13,6 @@ var url = 'mongodb://timonriemslagh:devroe@ds011870.mlab.com:11870/devroedb';
 
 // get lists and users when the server runs
 var lists = [];
-var referenceLists = [];
 var users = [];
 
 // create index of keywords in references
@@ -54,7 +53,7 @@ var insertRef = function(db, obj, callback) {
         console.log("Inserted a reference into the references collection.");
         callback();
     });
-}
+};
 
 var find = function(db, collection, callback) {
     db.collection(collection)
@@ -96,7 +95,7 @@ io.on('connection', function(socket){
 
     var loggedInUser = "";
 
-    socket.on('login', function(data) {
+    /*socket.on('login', function(data) {
         users.forEach(function(user) {
             if(user.name == data.name && user.password == data.pass) {
                 loggedInUser = user.name;
@@ -107,9 +106,9 @@ io.on('connection', function(socket){
         if(loggedInUser == "") {
             socket.emit('loginFailure');
         }
-    });
+    });*/
 
-    socket.emit('setAllLists', {lists: lists, referenceLists: referenceLists});
+    socket.emit('setAllLists', {lists: lists});
 
     socket.on('saveList', function(data) {
         var dt = datetime.create();

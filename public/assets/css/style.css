@@ -152,6 +152,17 @@ ul.nav li#first a {
     margin-bottom: 20px;
 }
 
+.mainNav {
+    width: 500px;
+    float: left;
+}
+
+.usersDropdown {
+    margin-top: 15px;
+    float: right;
+    width: 200px;
+}
+
 /* Clearfix */
 .clearfix:after {
     visibility: hidden;

@@ -1,15 +1,15 @@
 mainApp.config(['$routeProvider', function($routeProvider) {
     $routeProvider.
 
-        when('/login', {
-            templateUrl: 'app/components/login/loginView.html', controller: 'LoginController'
-        }).
-
         when('/references', {
             templateUrl: 'app/components/references/referencesView.html', controller: 'ReferencesController'
         }).
 
         when('/newsurvey', {
+            templateUrl: 'app/components/newSurvey/newsurveyView.html', controller: 'NewSurveyController'
+        }).
+
+        when('/newsurvey/step/:stepid', {
             templateUrl: 'app/components/newSurvey/newsurveyView.html', controller: 'NewSurveyController'
         }).
 

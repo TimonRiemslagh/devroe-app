@@ -8,21 +8,22 @@
     <link href="assets/libs/bootstrap/css/bootstrap.min.css" rel="stylesheet">
     <link href="assets/css/style.css" rel="stylesheet">
 </head>
-<body>
+<body ng-app="mainApp">
 
-    <div id="main">
-        <div class="page-header">
+    <div id="main" ng-controller="indexController">
+        <div class="page-header clearfix">
             <h1><img src="assets/img/de_vroe_groep_logo.png" alt="logo" class="logo" />Woon - en aanwervings...</h1>
 
-            <ul class="nav nav-pills">
+            <ul class="mainNav nav nav-pills">
                 <li id="first" role="presentation" class="newSurvey active"><a href="#/newsurvey">Nieuwe opmeting</a></li>
                 <li class="allSurveys" role="presentation"><a href="#/allsurveys">Voorbije opmetingen</a></li>
                 <li class="references" role="presentation"><a href="#/references">Referenties</a></li>
-                <li class="login" role="presentation"><a href="#/login">Login</a></li>
             </ul>
+
+            <user-drop-down users="users"></user-drop-down>
         </div>
 
-        <div class="content" ng-app="mainApp">
+        <div class="content">
             <div ng-view></div>
         </div>
     </div>
@@ -36,8 +37,8 @@
     <script src="app/app.route.js"></script>
     <script src="app/shared/searchBoxDirective/directive.js"></script>
     <script src="app/shared/searchResultSurveyDirective/directive.js"></script>
+    <script src="app/shared/userDropdownDirective/directive.js"></script>
     <script src="app/components/references/referencesController.js"></script>
-    <script src="app/components/login/loginController.js"></script>
     <script src="app/components/allSurveys/allsurveysController.js"></script>
     <script src="app/components/newSurvey/newsurveyController.js"></script>
 </body>
