@@ -1,16 +1,22 @@
-mainApp.controller('NewSurveyController', function($scope, $routeParams) {
-
-    if (typeof(Storage) !== "undefined") {
-        alert('localstorage available');
-    } else {
-        // Sorry! No Web Storage support..
-    }
-
-    console.log($routeParams.stepid);
+mainApp.controller('NewSurveyController', function($scope, $routeParams, $location) {
 
     $('ul.nav li').removeClass('active');
     $('.newSurvey').addClass("active");
 
-    $scope.title = "nieuwe opmeting";
+
+    $scope.startSurvey = function() {
+        sessionStorage.setItem('offerteNumber', $('#Offertenummer').val());
+        sessionStorage.setItem('client', $('#Klant').val());
+        sessionStorage.setItem('address', $('#Adres').val());
+
+        if(sessionStorage.getItem('selectedLists')) {
+            sessionStorage.setItem('selectedLists', '');
+        }
+
+        $location.path( "/newsurvey/list/0" );
+        console.log(sessionStorage);
+    };
+
+
 
 });

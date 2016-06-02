@@ -9,8 +9,8 @@ mainApp.config(['$routeProvider', function($routeProvider) {
             templateUrl: 'app/components/newSurvey/newsurveyView.html', controller: 'NewSurveyController'
         }).
 
-        when('/newsurvey/step/:stepid', {
-            templateUrl: 'app/components/newSurvey/newsurveyView.html', controller: 'NewSurveyController'
+        when('/newsurvey/list/:listId', {
+            templateUrl: 'app/components/lists/listView.html', controller: 'ListsController'
         }).
 
         when('/allsurveys', {

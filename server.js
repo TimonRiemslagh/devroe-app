@@ -93,27 +93,12 @@ var search = function(db, collection, searchTerm, callback) {
 
 io.on('connection', function(socket){
 
-    var loggedInUser = "";
-
-    /*socket.on('login', function(data) {
-        users.forEach(function(user) {
-            if(user.name == data.name && user.password == data.pass) {
-                loggedInUser = user.name;
-                console.log(loggedInUser + " logged in");
-                socket.emit('loginSuccess', loggedInUser);
-            }
-        });
-        if(loggedInUser == "") {
-            socket.emit('loginFailure');
-        }
-    });*/
-
     socket.emit('setAllLists', {lists: lists});
 
     socket.on('saveList', function(data) {
         var dt = datetime.create();
         var formatted = dt.format('m/d/Y H:M:S');
-        var newObj = {name: loggedInUser, dateTime: formatted, survey: data.arr, offerteNumber: data.offerteNumber, offerteNumberLowerCase: data.offerteNumber.toLowerCase(), client: data.client, clientLowerCase: data.client.toLowerCase(), address: data.address, addressLowerCase: data.address.toLowerCase()};
+        var newObj = {name: data.user, dateTime: formatted, survey: data.arr, offerteNumber: data.offerteNumber, offerteNumberLowerCase: data.offerteNumber.toLowerCase(), client: data.client, clientLowerCase: data.client.toLowerCase(), address: data.address, addressLowerCase: data.address.toLowerCase()};
 
         MongoClient.connect(url, function(err, db) {
             insertDocument(db, newObj, function() {
@@ -139,7 +124,7 @@ io.on('connection', function(socket){
 
     socket.on('getSurveys', function() {
         MongoClient.connect(url, function(err, db) {
-            findFirstFive(db, 'surveys', loggedInUser, function(data) {
+            findFirstFive(db, 'surveys', "timon", function(data) {
                 socket.emit('mostRecent', data);
                 db.close();
             });
@@ -172,13 +157,8 @@ io.on('connection', function(socket){
         });
     });
 
-    socket.on('logout', function() {
-        console.log(loggedInUser + ' logged out');
-        loggedInUser = "";
-    });
 
     socket.on('disconnect', function() {
-        console.log(loggedInUser + ' logged out');
-        loggedInUser = "";
+        console.log("disconnected");
     });
 });
