@@ -12,12 +12,13 @@
 
     <div id="main" ng-controller="indexController">
         <div class="page-header clearfix">
-            <h1><img src="assets/img/de_vroe_groep_logo.png" alt="logo" class="logo" />Woon - en aanwervings...</h1>
+            <h1><img src="assets/img/de_vroe_groep_logo.png" alt="logo" class="logo" />Woon- en aannemersprojecten</h1>
 
             <ul class="mainNav nav nav-pills">
                 <li id="first" role="presentation" class="newSurvey active"><a href="#/newsurvey">Nieuwe opmeting</a></li>
                 <li class="allSurveys" role="presentation"><a href="#/allsurveys">Voorbije opmetingen</a></li>
                 <li class="references" role="presentation"><a href="#/references">Referenties</a></li>
+                <li class="cms" role="presentation"><a href="#/cms">Inhoud</a></li>
             </ul>
 
             <user-drop-down users="users"></user-drop-down>
@@ -43,5 +44,9 @@
     <script src="app/components/allSurveys/allsurveysController.js"></script>
     <script src="app/components/newSurvey/newsurveyController.js"></script>
     <script src="app/components/lists/listsController.js"></script>
+    <script src="app/components/cms/cmsController.js"></script>
+    <script src="app/components/cmsLists/cmslistsController.js"></script>
+    <script src="app/components/cmsReferences/cmsreferencesController.js"></script>
+    <script src="app/components/cmsNewList/cmsnewlistController.js"></script>
 </body>
 </html>

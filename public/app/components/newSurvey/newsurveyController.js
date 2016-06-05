@@ -5,18 +5,27 @@ mainApp.controller('NewSurveyController', function($scope, $routeParams, $locati
 
 
     $scope.startSurvey = function() {
-        sessionStorage.setItem('offerteNumber', $('#Offertenummer').val());
-        sessionStorage.setItem('client', $('#Klant').val());
-        sessionStorage.setItem('address', $('#Adres').val());
 
-        if(sessionStorage.getItem('selectedLists')) {
-            sessionStorage.setItem('selectedLists', '');
+        var offerteNumber = $('#Offertenummer').val();
+        var client = $('#Klant').val();
+        var address = $('#Adres').val();
+
+        if(offerteNumber == "" || client == "" || address == "") {
+            $(".startSurveyAlert").fadeIn();
+        } else {
+
+            sessionStorage.setItem('offerteNumber', offerteNumber);
+            sessionStorage.setItem('client', client);
+            sessionStorage.setItem('address', address);
+
+            // reset
+            if(sessionStorage.getItem('selectedLists')) {
+                sessionStorage.setItem('selectedLists', '');
+            }
+
+            $location.path( "/newsurvey/list/0" );
+            console.log(sessionStorage);
+
         }
-
-        $location.path( "/newsurvey/list/0" );
-        console.log(sessionStorage);
     };
-
-
-
 });

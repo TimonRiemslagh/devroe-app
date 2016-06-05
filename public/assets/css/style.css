@@ -67,6 +67,7 @@ ul.nav li#first a {
 #startSurvey {
     width: 60px;
     margin-left: 780px;
+    margin-bottom: 20px;
 }
 
 .showImage {
@@ -172,6 +173,19 @@ ul.nav li#first a {
     margin-top: 15px;
     float: right;
     width: 200px;
+}
+
+.startSurveyAlert {
+    display: none;
+}
+
+.glyphNewList {
+    margin-right: 10px;
+}
+
+.btnNewList {
+    float: left;
+    margin-right: 10px;
 }
 
 /* Clearfix */

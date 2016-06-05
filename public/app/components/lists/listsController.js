@@ -31,6 +31,10 @@ mainApp.controller('ListsController', function($scope, $routeParams, $location) 
         sessionStorage.setItem("selectedLists", JSON.stringify(selectedListsObj));
     };
 
+    $scope.showPicture = function(image) {
+        console.log(image);
+    };
+
     $scope.saveSurvey = function() {
         alertDanger.hide();
         $('.tableHeader .alert-success').hide();

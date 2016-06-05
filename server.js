@@ -3,16 +3,23 @@ var express = require('express'),
     http = require('http').Server(app),
     io = require('socket.io')(http),
     datetime = require('node-datetime'),
-    MongoClient = require('mongodb').MongoClient;
+    MongoClient = require('mongodb').MongoClient,
+    path = require('path');;
 
 app.use('/', express.static(__dirname + '/public'));
 http.listen(process.env.PORT || 3000);
+
+app.get('/sendmethisimage', function (req, res) {
+
+    res.sendFile(path.join(__dirname, '/public', 'assets/img/homeimageCropped.jpg'));
+
+});
+
 console.log("server started");
 
 var url = 'mongodb://timonriemslagh:devroe@ds011870.mlab.com:11870/devroedb';
 
 // get lists and users when the server runs
-var lists = [];
 var users = [];
 
 // create index of keywords in references
@@ -24,13 +31,6 @@ MongoClient.connect(url, function(err, db) {
          .toArray(function(err, documents) {
          console.log(documents);
          });*/
-    });
-});
-
-MongoClient.connect(url, function(err, db) {
-    find(db, 'lists', function(data) {
-        lists = data;
-        db.close();
     });
 });
 
@@ -93,7 +93,12 @@ var search = function(db, collection, searchTerm, callback) {
 
 io.on('connection', function(socket){
 
-    socket.emit('setAllLists', {lists: lists});
+    MongoClient.connect(url, function(err, db) {
+        find(db, 'lists', function(data) {
+            socket.emit('setAllLists', {lists: data});
+            db.close();
+        });
+    });
 
     socket.on('saveList', function(data) {
         var dt = datetime.create();
