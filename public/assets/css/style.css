@@ -193,9 +193,13 @@ ul.nav li#first a {
     width: 100px;
 }
 
+.content input {
+    width: 720px;
+}
+
 .listTitleInput {
     float: left;
-    width: 600px;
+    width: 600px !important;
 }
 
 .listItemInput {
@@ -215,6 +219,11 @@ ul.nav li#first a {
 .preview {
     display: none;
     margin-top: 10px;
+}
+
+.listLinkItem {
+    width: 100% !important;
+    margin-bottom: 10px;
 }
 
 /* Clearfix */

@@ -17,7 +17,13 @@ mainApp.directive('newListItem', function() {
             if (file) {
                 reader.readAsDataURL(file);
             }
-        }
+        };
+
+        scope.delListItem = function($event) {
+
+            $($event.target).parent().parent().parent().remove();
+
+        };
     }
 
     return {

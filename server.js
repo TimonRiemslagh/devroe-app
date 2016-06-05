@@ -4,7 +4,11 @@ var express = require('express'),
     io = require('socket.io')(http),
     datetime = require('node-datetime'),
     MongoClient = require('mongodb').MongoClient,
-    path = require('path');;
+    path = require('path'),
+    dl  = require('delivery'),
+    fs = require('fs');
+
+var ObjectId = require('mongodb').ObjectId;
 
 app.use('/', express.static(__dirname + '/public'));
 http.listen(process.env.PORT || 3000);
@@ -41,8 +45,8 @@ MongoClient.connect(url, function(err, db) {
     });
 });
 
-var insertDocument = function(db, obj, callback) {
-    db.collection('surveys').insertOne(obj, function(err, result) {
+var insertDocument = function(db, obj, collection, callback) {
+    db.collection(collection).insertOne(obj, function(err, result) {
         console.log("Inserted a survey into the surveys collection.");
         callback();
     });
@@ -93,6 +97,74 @@ var search = function(db, collection, searchTerm, callback) {
 
 io.on('connection', function(socket){
 
+    socket.on('saveNewList', function(data) {
+
+        var errs = [];
+
+        //var photos = JSON.parse(JSON.stringify(data));
+
+        data.photos.forEach(function(photo) {
+
+            var newPath = __dirname + "/uploads/" + photo.fileName;
+
+            fs.writeFile(newPath, photo.data, function (err) {
+                if(err) {
+                    errs.push(err);
+                    //
+                } else {
+                    console.log("saved at " + newPath);
+                }
+            });
+
+        });
+
+        if(errs.length == 0) {
+
+            data.listItems.forEach(function(listItem) {
+                listItem.id = new ObjectId();
+            });
+
+            console.log(data.listItems);
+
+            //insert the list in lists
+
+            /*MongoClient.connect(url, function(err, db) {
+                insertDocument(db, newObj, 'lists', function() {
+                    if(!err) {
+                        socket.emit('saveSuccess');
+                    } else {
+                        socket.emit('saveFailure');
+                    }
+                    db.close();
+                });
+            });*/
+
+            //socket.emit('saveComplete');
+        } else {
+            socket.emit('fileSaveError', errs);
+        }
+
+        /*for(var photo in photos) {
+            console.log(photo);
+        }*/
+
+        /*var newPath = __dirname + "/uploads/" + data.fileName;
+        fs.writeFile(newPath, data.photo, function (err) {
+            if(err) {
+                console.log(err);
+                socket.emit('fileSaveError', err);
+            } else {
+                socket.emit('saveComplete');
+                console.log("saved at " + newPath);
+            }
+        });*/
+
+    });
+
+    socket.on('saveList', function(data) {
+
+    });
+
     MongoClient.connect(url, function(err, db) {
         find(db, 'lists', function(data) {
             socket.emit('setAllLists', {lists: data});
@@ -106,7 +178,7 @@ io.on('connection', function(socket){
         var newObj = {name: data.user, dateTime: formatted, survey: data.arr, offerteNumber: data.offerteNumber, offerteNumberLowerCase: data.offerteNumber.toLowerCase(), client: data.client, clientLowerCase: data.client.toLowerCase(), address: data.address, addressLowerCase: data.address.toLowerCase()};
 
         MongoClient.connect(url, function(err, db) {
-            insertDocument(db, newObj, function() {
+            insertDocument(db, newObj, 'surveys', function() {
                 if(!err) {
                     socket.emit('saveSuccess');
                 } else {
