@@ -23,6 +23,18 @@ console.log("server started");
 
 var url = 'mongodb://timonriemslagh:devroe@ds011870.mlab.com:11870/devroedb';
 
+MongoClient.connect(url, function(err, db) {
+
+    var res = db.collection('lists').find(
+        { items: { $elemMatch: { title: "Menuiserite" } } } )
+        .toArray(function(err, documents) {
+            console.log(err);
+            console.log(documents);
+            db.close();
+        });
+
+});
+
 // get lists and users when the server runs
 var users = [];
 
@@ -120,9 +132,42 @@ io.on('connection', function(socket){
 
         if(errs.length == 0) {
 
+            var newList = {};
+
             data.listItems.forEach(function(listItem) {
                 listItem.id = new ObjectId();
             });
+
+            newList.title = data.listTitle;
+            newList.items = data.listItems;
+            newList.id = new ObjectId();
+
+            /*MongoClient.connect(url, function(err, db) {
+
+                var results = db.lists.aggregate([
+                    // Get just the docs that contain a shapes element where color is 'red'
+                    {$match: {'items.title': 'Menuiserite'}},
+                    {$project: {
+                        items: {$filter: {
+                            input: '$items',
+                            as: 'itel',
+                            cond: {$eq: ['item.title', 'Menuiserite']}
+                        }},
+                        _id: 0
+                    }}
+                ]);
+
+                console.log(results);
+                db.close();
+
+            });*/
+
+
+
+
+            //find list where item is equal to the link, replace the listId with the newly generated id
+
+
 
             console.log(data.listItems);
 

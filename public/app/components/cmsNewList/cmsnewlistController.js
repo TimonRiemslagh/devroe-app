@@ -10,8 +10,6 @@ mainApp.controller('CmsNewListController', function($scope, $compile) {
 
     $scope.title = "dit is de cms new list pagina";
 
-    console.log(ObjectId());
-
     $scope.saveList = function() {
 
         listItems = [];
@@ -31,7 +29,7 @@ mainApp.controller('CmsNewListController', function($scope, $compile) {
             photo.fileName = photoData.name;
 
             item.title = $(this).find('.listItemInput').val();
-            item.photoUrl = '/uploads/' + photo.name;
+            item.photoUrl = '/uploads/' + photoData.name;
 
             listItems.push(item);
             photos.push(photo);
