@@ -1,1 +1,11 @@
-<input type="text" class="form-control" placeholder="Titel van lijst item">
+<div class="newList clearfix">
+
+    <button type="button" class="btnDelItem btn btn-danger">Verwijder</button>
+
+    <input type="text" class="listItemInput form-control" placeholder="Titel van lijst item">
+
+    <input type="file" class="listItemPhoto" onchange="angular.element(this).scope().previewPhoto(this)">
+
+    <img class="preview" src="" height="300" />
+
+</div>

@@ -1,9 +1,16 @@
-<div class="panel panel-default">
-    <div class="panel-heading"><input type="text" class="form-control" placeholder="Titel van de lijst"></div>
+<h3>Voeg een nieuwe lijst toe.</h3>
+
+<div class="panel panel-default ">
+    <div class="panel-heading clearfix">
+        <input type="text" class="listTitleInput form-control" placeholder="Titel van de lijst">
+        <button type="button" class="btnSaveList btn btn-success" ng-click="saveList()">Opslaan</button>
+    </div>
+
     <!-- List group -->
-    <ul class="list-group">
+    <ul class="listItems list-group">
         <li class="list-group-item"><new-list-item></new-list-item></li>
-        <li class="list-group-item"><add-button text="Nieuw item"></add-button></li>
     </ul>
+
+    <add-button ng-click="addNewItem()" text="Nieuw item"></add-button>
 
 </div>

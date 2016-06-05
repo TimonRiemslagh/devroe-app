@@ -56,12 +56,12 @@ ul.nav li#first a {
     margin-right: 20px;
 }
 
-.content input {
-    width: 720px;
-}
-
 .content .mainButton {
     margin-right: 10px;
+}
+
+.content h3 {
+    margin-bottom: 20px;
 }
 
 #startSurvey {
@@ -182,6 +182,39 @@ ul.nav li#first a {
 .btnNewList {
     float: left;
     margin-right: 10px;
+}
+
+.btnSaveList {
+    float: right;
+    margin-left: 10px;
+}
+
+.btnSaveList, .btnDelItem {
+    width: 100px;
+}
+
+.listTitleInput {
+    float: left;
+    width: 600px;
+}
+
+.listItemInput {
+    margin-bottom: 10px;
+    float: left;
+}
+
+.newList input {
+    float: left;
+    width: 600px;
+}
+
+.btnDelItem {
+    float: right;
+}
+
+.preview {
+    display: none;
+    margin-top: 10px;
 }
 
 /* Clearfix */
