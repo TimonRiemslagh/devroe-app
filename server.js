@@ -25,13 +25,29 @@ var url = 'mongodb://timonriemslagh:devroe@ds011870.mlab.com:11870/devroedb';
 
 MongoClient.connect(url, function(err, db) {
 
-    var res = db.collection('lists').find(
+    db.collection('lists').find(
         { items: { $elemMatch: { title: "Menuiserite" } } } )
         .toArray(function(err, documents) {
             console.log(err);
-            console.log(documents);
+
+
+            documents.forEach(function(list) {
+
+                list.items.forEach(function(item) {
+                    if(item.title == "Menuiserite") {
+
+                        //update the listid
+
+
+                        console.log(item.listId);
+                    }
+                });
+            });
+
             db.close();
         });
+
+
 
 });
 
