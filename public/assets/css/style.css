@@ -207,6 +207,10 @@ ul.nav li#first a {
     float: left;
 }
 
+.btnSaveListItem {
+    float: right;
+}
+
 .btnDelItem {
     float: right;
 }

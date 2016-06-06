@@ -22,6 +22,19 @@ mainApp.directive('newListItem', function() {
             $($event.target).parent().parent().parent().remove();
 
         };
+
+        scope.saveListItem = function() {
+
+            var title = $('.listItemInput').val();
+            var photo = $('.listItemPhoto')[0].files[0];
+
+            socket.emit('saveListItem', {title: title, photo: photo, fileName: photo.name});
+
+        };
+
+        socket.on('saveListItemComplete', function() {
+            console.log("completed");
+        });
     }
 
     return {

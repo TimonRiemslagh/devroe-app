@@ -95,7 +95,7 @@ var search = function(db, collection, searchTerm, callback) {
         });
 };
 
-var updateListItem = function(listItem) {
+var updateListItem = function(listItem, callback) {
 
     MongoClient.connect(url, function(err, db) {
 
@@ -105,7 +105,6 @@ var updateListItem = function(listItem) {
             },
             {
                 $set: {
-                    _id: listItem.id,
                     title: listItem.title,
                     image: listItem.photoUrl
                 }
@@ -113,18 +112,34 @@ var updateListItem = function(listItem) {
             {
                 upsert: true
             },
-            function(err) {
-                if(err) {
-                    console.log(err);
-                }
-
-                db.close();
-            }
+            callback(err)
         );
     });
 };
 
 io.on('connection', function(socket){
+
+    socket.on('saveListItem', function(data) {
+
+        var newPath = __dirname + "/uploads/" + data.fileName;
+
+        fs.writeFile(newPath, data.photo, function (err) {
+            if(err) {
+                console.log(err);
+            } else {
+                console.log("saved at " + newPath);
+            }
+        });
+
+        updateListItem({title: data.title, photoUrl: newPath}, function(err) {
+            console.log("error: ", err);
+
+            if(!err) {
+                socket.emit('saveListItemComplete');
+            }
+        });
+
+    });
 
     socket.on('saveNewList', function(data) {
 
