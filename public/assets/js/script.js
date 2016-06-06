@@ -3,11 +3,6 @@ var lists = [];
 
 socket.on('connect', function() {
     socket.on('setAllLists', function(data) {
-
-        console.log("data was sent");
-
-        console.log(data);
-
         if (typeof(Storage) !== "undefined") {
             sessionStorage.clear();
             sessionStorage.setItem("lists", JSON.stringify(data.lists));

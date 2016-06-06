@@ -1,11 +1,5 @@
-<div class="newList clearfix">
+<input type="text" class="listItemInput form-control" placeholder="Titel van lijst item">
 
-    <button type="button" class="btnDelItem btn btn-danger" ng-click="delListItem($event)">Verwijder</button>
+<input type="file" class="listItemPhoto" onchange="angular.element(this).scope().previewPhoto(this)">
 
-    <input type="text" class="listItemInput form-control" placeholder="Titel van lijst item">
-
-    <input type="file" class="listItemPhoto" onchange="angular.element(this).scope().previewPhoto(this)">
-
-    <img class="preview" src="" height="300" />
-
-</div>
+<img class="preview" src="" height="500" />

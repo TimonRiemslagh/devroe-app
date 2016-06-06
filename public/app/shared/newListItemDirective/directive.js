@@ -4,8 +4,6 @@ mainApp.directive('newListItem', function() {
 
         scope.previewPhoto = function(currElement) {
 
-            console.log($(currElement).parent().find('input[type=file]'));
-
             var file = $(currElement).parent().find('input[type=file]')[0].files[0];
 
             var reader = new FileReader();

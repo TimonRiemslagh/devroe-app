@@ -23,34 +23,6 @@ console.log("server started");
 
 var url = 'mongodb://timonriemslagh:devroe@ds011870.mlab.com:11870/devroedb';
 
-MongoClient.connect(url, function(err, db) {
-
-    db.collection('lists').find(
-        { items: { $elemMatch: { title: "Menuiserite" } } } )
-        .toArray(function(err, documents) {
-            console.log(err);
-
-
-            documents.forEach(function(list) {
-
-                list.items.forEach(function(item) {
-                    if(item.title == "Menuiserite") {
-
-                        //update the listid
-
-
-                        console.log(item.listId);
-                    }
-                });
-            });
-
-            db.close();
-        });
-
-
-
-});
-
 // get lists and users when the server runs
 var users = [];
 
@@ -123,6 +95,35 @@ var search = function(db, collection, searchTerm, callback) {
         });
 };
 
+var updateListItem = function(listItem) {
+
+    MongoClient.connect(url, function(err, db) {
+
+        db.collection('listItems').update(
+            {
+                title: listItem.title
+            },
+            {
+                $set: {
+                    _id: listItem.id,
+                    title: listItem.title,
+                    image: listItem.photoUrl
+                }
+            },
+            {
+                upsert: true
+            },
+            function(err) {
+                if(err) {
+                    console.log(err);
+                }
+
+                db.close();
+            }
+        );
+    });
+};
+
 io.on('connection', function(socket){
 
     socket.on('saveNewList', function(data) {
@@ -149,12 +150,17 @@ io.on('connection', function(socket){
         if(errs.length == 0) {
 
             var newList = {};
+            var listItems = [];
 
             data.listItems.forEach(function(listItem) {
-                listItem.id = new ObjectId();
+                var id = new ObjectId();
+                listItem.id = id;
+                listItems.push(id);
+
+                updateListItem(listItem);
             });
 
-            newList.title = data.listTitle;
+            newList.title = []; // array of all the listItems
             newList.items = data.listItems;
             newList.id = new ObjectId();
 

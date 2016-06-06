@@ -207,11 +207,6 @@ ul.nav li#first a {
     float: left;
 }
 
-.newList input {
-    float: left;
-    width: 600px;
-}
-
 .btnDelItem {
     float: right;
 }
