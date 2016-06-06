@@ -117,6 +117,21 @@ var updateListItem = function(listItem, callback) {
     });
 };
 
+var insertRef = function(ref, callback) {
+
+    MongoClient.connect(url, function(err, db) {
+
+        db.collection('references').insert(
+            {
+                keywords: ref.keywords,
+                image: ref.photoUrl
+            }
+            ,
+            callback(err)
+        );
+    });
+};
+
 io.on('connection', function(socket){
 
     socket.on('validateListItem', function(data) {
@@ -142,9 +157,32 @@ io.on('connection', function(socket){
 
     });
 
+    socket.on('saveRef', function(data) {
+
+        var newPath = __dirname + "/uploads/" + data.photoUrl;
+
+        console.log(newPath);
+
+        fs.writeFile(newPath, data.photo, function (err) {
+            if(err) {
+                console.log(err);
+            } else {
+                console.log("saved at " + newPath);
+            }
+        });
+
+        insertRef({keywords: data.keywords, photoUrl: newPath}, function(err) {
+            if(err) {
+                console.log("error: ", err);
+            }
+
+            socket.emit('saveRefFeedback', err);
+        });
+    });
+
     socket.on('saveListItem', function(data) {
 
-        var newPath = __dirname + "/uploads/" + data.photo.name;
+        var newPath = __dirname + "/uploads/" + data.photoUrl;
 
         console.log(newPath);
 
@@ -323,24 +361,6 @@ io.on('connection', function(socket){
             });
         });
     });
-
-    socket.on('saveRef', function(data) {
-        var dt = datetime.create();
-        var formatted = dt.format('m/d/Y H:M:S');
-        data.created = formatted;
-
-        MongoClient.connect(url, function(err, db) {
-            insertRef(db, data, function() {
-                if(!err) {
-                    socket.emit('saveSuccessRef');
-                } else {
-                    socket.emit('saveFailureRef');
-                }
-                db.close();
-            });
-        });
-    });
-
 
     socket.on('disconnect', function() {
         console.log("disconnected");

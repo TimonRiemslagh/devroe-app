@@ -1,8 +1,10 @@
-mainApp.controller('CmsReferencesController', function($scope) {
+mainApp.controller('CmsReferencesController', function($scope, $location) {
 
     $('ul.nav li').removeClass('active');
     $('.cms').addClass("active");
 
-    $scope.title = "dit is de cms refs pagina";
+    $scope.goToNewRef = function() {
+        $location.path('/cms/cmsReferences/cmsNewReference');
+    }
 
 });

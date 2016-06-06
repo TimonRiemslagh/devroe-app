@@ -37,8 +37,12 @@ mainApp.config(['$routeProvider', function($routeProvider) {
             templateUrl: 'app/components/cmsNewListItem/cmsnewlistitemView.html', controller: 'CmsNewListItemController'
         }).
 
-        when('/cmsReferences', {
+        when('/cms/cmsReferences', {
             templateUrl: 'app/components/cmsReferences/cmsreferencesView.html', controller: 'CmsReferencesController'
+        }).
+
+        when('/cms/cmsReferences/cmsNewReference', {
+            templateUrl: 'app/components/cmsNewReference/cmsnewreferenceView.html', controller: 'CmsNewReferenceController'
         }).
 
         otherwise({

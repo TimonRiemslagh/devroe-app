@@ -226,7 +226,7 @@ ul.nav li#first a {
     margin-bottom: 10px;
 }
 
-.newListItemAlertFail, .newListItemAlertSuccess {
+.newListItemAlertFail, .newListItemAlertSuccess, .newRefAlertSuccess, .newRefAlertFail {
     display: none;
     position: fixed;
     bottom: 0;
