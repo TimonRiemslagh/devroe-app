@@ -237,6 +237,10 @@ ul.nav li#first a {
     margin-top: 20px;
 }
 
+.listItemPhoto {
+    margin-bottom: 20px;
+}
+
 .listItems li input {
     width: 700px;
     float: left;
