@@ -15,10 +15,8 @@
 
     <button type="button" ng-click="saveListItem()" class="btnSaveListItem btn btn-success">Opslaan</button>
 
-    <input type="file" accept="image/*" class="listItemPhoto" onchange="angular.element(this).scope().previewPhoto()">
-
     <input type="text" class="listItemInput form-control" ng-model="listItem.text" placeholder="Titel van lijst item">
-
+    <input type="file" accept="image/*" class="listItemPhoto" onchange="angular.element(this).scope().previewPhoto()">
 
 
     <img class="preview" src="" height="500" />
