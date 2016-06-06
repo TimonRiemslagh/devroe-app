@@ -193,16 +193,17 @@ ul.nav li#first a {
     width: 100px;
 }
 
-.content input {
+.surveyInput {
     width: 720px;
 }
 
 .listTitleInput {
     float: left;
-    width: 600px !important;
+    width: 600px;
 }
 
 .listItemInput {
+    width: 720px;
     margin-bottom: 10px;
     float: left;
 }
@@ -221,7 +222,7 @@ ul.nav li#first a {
 }
 
 .listLinkItem {
-    width: 100% !important;
+    width: 100%;
     margin-bottom: 10px;
 }
 
@@ -234,6 +235,37 @@ ul.nav li#first a {
 .newListItemSaveWarn {
     display: none;
     margin-top: 20px;
+}
+
+.listItems li input {
+    width: 700px;
+    float: left;
+}
+
+.listItems li a {
+    float: left;
+    margin-left: 20px;
+}
+
+.listItems li a span {
+    font-size: 29px;
+}
+
+.listItems li a span.glyphicon-ok {
+    color: green;
+}
+
+.listItems li a span.glyphicon-remove {
+    color: red;
+}
+
+.addbutton {
+    margin: 10px 10px 10px 15px;
+}
+
+.listItemspinner {
+    z-index: 999;
+    float: left;
 }
 
 /* Clearfix */

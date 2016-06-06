@@ -8,6 +8,8 @@ mainApp.controller('CmsNewListController', function($scope, $compile) {
     var listTitle = "";
     var externalLink = "";
 
+    $scope.listItems = [0];
+
     $scope.title = "dit is de cms new list pagina";
 
     $scope.saveList = function() {
@@ -36,8 +38,45 @@ mainApp.controller('CmsNewListController', function($scope, $compile) {
 
         });
 
-        socket.emit("saveNewList", { listTitle: listTitle, listItems: listItems, photos: photos, link: externalLink });
+        //socket.emit("saveNewList", { listTitle: listTitle, listItems: listItems, photos: photos, link: externalLink });
 
+    };
+
+    $scope.checkListItem = function($event) {
+
+        var item = $($event.target).parent().siblings('.form-control').val();
+        var id = $($event.target).parent().parent().attr('id');
+        $('span').hide();
+
+        $('.listItemspinner').show();
+        socket.emit('validateListItem', {element: id, item: item});
+    };
+
+    socket.on('validation', function(data) {
+        var el = $('#' + data.element);
+
+        if(data.validated) {
+            el.css('background-color', '#dff0d8');
+            el.children('a').children('span.glyphicon-ok').hide();
+
+            $('span.glyphicon-remove').show();
+
+            el.on("input", function() {
+                el.css('background-color', 'white');
+                $('span').show();
+                el.off();
+            });
+
+        } else {
+            el.css('background-color', '#f2dede');
+            $('span').show();
+        }
+
+        $('.listItemspinner').hide();
+    });
+
+    $scope.removeListItem = function($event) {
+        $scope.listItems.pop();
     };
 
     socket.on('fileSaveError', function(err) {
@@ -50,7 +89,7 @@ mainApp.controller('CmsNewListController', function($scope, $compile) {
     });
 
     $scope.addNewItem = function() {
-        var el = $compile('<li class="list-group-item"><new-list-item></new-list-item></li>')($scope);
-        $('.listItems').append( el );
+        var count = $scope.listItems.length;
+        $scope.listItems.push(count);
     };
 });

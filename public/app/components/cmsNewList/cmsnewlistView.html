@@ -12,7 +12,24 @@
 
     <!-- List group -->
     <ul class="listItems list-group">
-        <li class="list-group-item"><new-list-item></new-list-item></li>
+        <li ng-repeat="i in listItems track by $index" id="{{i}}" class="clearfix list-group-item">
+            <input type="text" class="form-control" placeholder="Lijst item">
+
+            <a ng-click="checkListItem($event)" href="">
+                <span class="glyphicon glyphicon-ok" aria-hidden="true"></span>
+            </a>
+            <a ng-click="removeListItem($event)" href="">
+                <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
+            </a>
+
+            <div class="listItemspinner spinner">
+                <div class="rect1"></div>
+                <div class="rect2"></div>
+                <div class="rect3"></div>
+                <div class="rect4"></div>
+                <div class="rect5"></div>
+            </div>
+        </li>
     </ul>
 
     <add-button ng-click="addNewItem()" text="Nieuw item"></add-button>

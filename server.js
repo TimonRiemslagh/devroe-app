@@ -119,6 +119,29 @@ var updateListItem = function(listItem, callback) {
 
 io.on('connection', function(socket){
 
+    socket.on('validateListItem', function(data) {
+
+        MongoClient.connect(url, function(err, db) {
+
+            db.collection('listItems', function(err, collection) {
+                collection.ensureIndex({title: "text"});
+
+                collection.find({$text: {$search: data.item }})
+                    .toArray(function(err, arr) {
+                        if(!err) {
+                            if(arr.length > 0) {
+                                socket.emit('validation', { validated: true, element: data.element });
+                            } else {
+                                socket.emit('validation', { validated: false, element: data.element });
+                            }
+                        }
+                        db.close();
+                    });
+            });
+        });
+
+    });
+
     socket.on('saveListItem', function(data) {
 
         var newPath = __dirname + "/uploads/" + data.fileName;
