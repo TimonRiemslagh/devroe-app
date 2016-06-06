@@ -1,6 +1,6 @@
 <h3>Voeg een nieuw lijst item toe.</h3>
 
-<div class="spinner">
+<div ng-show="isBusy" class="spinner">
     <div class="rect1"></div>
     <div class="rect2"></div>
     <div class="rect3"></div>
@@ -9,13 +9,13 @@
 </div>
 
 <div class="newListItemAlertSuccess alert alert-success" role="alert"><strong>Succes!</strong> Het opslaan is gelukt.</div>
-<div class="newListItemAlertFail alert alert-danger" role="alert"><strong>Woops!</strong> Fout tijdens het opslaan. {{err}}</div>
+<div ng-show="!isSuccess" class="newListItemAlertFail alert alert-danger" role="alert"><strong>Woops!</strong> Fout tijdens het opslaan. {{err}}</div>
 
-<div class="newListItem">
+<div ng-show="!isBusy" class="newListItem">
 
     <button type="button" ng-click="saveListItem()" class="btnSaveListItem btn btn-success">Opslaan</button>
 
-    <input type="text" class="listItemInput form-control" placeholder="Titel van lijst item">
+    <input type="text" class="listItemInput form-control" ng-model="listItem.text" placeholder="Titel van lijst item">
 
     <input type="file" accept="image/*" class="listItemPhoto" onchange="angular.element(this).scope().previewPhoto()">
 

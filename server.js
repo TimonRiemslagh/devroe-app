@@ -144,7 +144,9 @@ io.on('connection', function(socket){
 
     socket.on('saveListItem', function(data) {
 
-        var newPath = __dirname + "/uploads/" + data.fileName;
+        var newPath = __dirname + "/uploads/" + data.photo.name;
+
+        console.log(newPath);
 
         fs.writeFile(newPath, data.photo, function (err) {
             if(err) {

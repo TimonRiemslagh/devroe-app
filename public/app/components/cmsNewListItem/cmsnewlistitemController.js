@@ -2,6 +2,10 @@ mainApp.controller('CmsNewListItemController', function($scope, $route) {
     $('ul.nav li').removeClass('active');
     $('.cms').addClass("active");
 
+    $scope.listItem = {};
+    $scope.isBusy = false;
+    $scope.saveSuccess = false;
+
     $scope.previewPhoto = function() {
 
         var file = $('input[type=file]')[0].files[0];
@@ -19,14 +23,14 @@ mainApp.controller('CmsNewListItemController', function($scope, $route) {
 
     $scope.saveListItem = function() {
 
-        var title = $('.listItemInput').val();
-        var photo = $('.listItemPhoto')[0].files[0];
+        //$scope.listItem.text = $('.listItemInput').val();
+        $scope.listItem.photo = $('.listItemPhoto')[0].files[0];
 
-        if(title && photo) {
-            socket.emit('saveListItem', {title: title, photo: photo, fileName: photo.name});
 
-            $('.spinner').show();
-            $('.newListItem').hide();
+        if($scope.listItem.text && $scope.listItem.photo) {
+            socket.emit('saveListItem', {title: $scope.listItem.text, photo: $scope.listItem.photo});
+
+            $scope.isBusy = true;
         } else {
             $('.newListItemSaveWarn').fadeIn().delay(3000).fadeOut();
         }
@@ -38,18 +42,22 @@ mainApp.controller('CmsNewListItemController', function($scope, $route) {
         console.log(err);
 
         if(err) {
-            $scope.err = err;
-            $('.newListItemAlertFail').show();
+            $scope.$apply(function() {
+                $scope.err = err;
+            });
         } else {
+            $scope.$apply(function() {
+                $scope.saveSuccess = true;
+            });
             $('.newListItemAlertSuccess').fadeIn().delay(3000).fadeOut();
-            $('.listItemInput').val("");
+            $scope.listItem.text = "";
             $('.listItemPhoto').val("");
             $('.preview').hide();
-            $('.newListItem').show();
         }
 
-        $('.spinner').hide();
-        console.log("completed");
+        $scope.$apply(function() {
+            $scope.isBusy = false;
+        });
     });
 
 });
