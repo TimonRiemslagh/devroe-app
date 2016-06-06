@@ -1,6 +1,7 @@
 mainApp.directive('addButton', function() {
     return {
         restrict: 'E',
+        replace: true,
         scope: {
             text: "@text"
         },

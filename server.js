@@ -126,13 +126,13 @@ io.on('connection', function(socket){
             db.collection('listItems', function(err, collection) {
                 collection.ensureIndex({title: "text"});
 
-                collection.find({$text: {$search: data.item }})
+                collection.find({$text: {$search: data.text }})
                     .toArray(function(err, arr) {
                         if(!err) {
                             if(arr.length > 0) {
-                                socket.emit('validation', { validated: true, element: data.element });
+                                socket.emit('validation', { validated: true, index: data.index });
                             } else {
-                                socket.emit('validation', { validated: false, element: data.element });
+                                socket.emit('validation', { validated: false, index: data.index });
                             }
                         }
                         db.close();

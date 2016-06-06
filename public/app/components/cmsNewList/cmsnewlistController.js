@@ -8,9 +8,7 @@ mainApp.controller('CmsNewListController', function($scope, $compile) {
     var listTitle = "";
     var externalLink = "";
 
-    $scope.listItems = [0];
-
-    $scope.title = "dit is de cms new list pagina";
+    $scope.listItems = [{id: 0, text: "", isBusy: false, isValidated: false, style: {'background-color': 'white'}}];
 
     $scope.saveList = function() {
 
@@ -42,41 +40,36 @@ mainApp.controller('CmsNewListController', function($scope, $compile) {
 
     };
 
-    $scope.checkListItem = function($event) {
-
-        var item = $($event.target).parent().siblings('.form-control').val();
-        var id = $($event.target).parent().parent().attr('id');
-        $('span').hide();
-
-        $('.listItemspinner').show();
-        socket.emit('validateListItem', {element: id, item: item});
+    $scope.checkListItem = function(index) {
+        $scope.listItems[index].isBusy = true;
+        socket.emit('validateListItem', {index: index, text: $scope.listItems[index].text});
     };
 
     socket.on('validation', function(data) {
-        var el = $('#' + data.element);
 
-        if(data.validated) {
-            el.css('background-color', '#dff0d8');
-            el.children('a').children('span.glyphicon-ok').hide();
+        console.log(data.index);
 
-            $('span.glyphicon-remove').show();
-
-            el.on("input", function() {
-                el.css('background-color', 'white');
-                $('span').show();
-                el.off();
+        if (data.validated) {
+            $scope.$apply(function () {
+                $scope.listItems[data.index].isValidated = true;
+                $scope.listItems[data.index].style = {'background-color': '#dff0d8'};
             });
-
-        } else {
-            el.css('background-color', '#f2dede');
-            $('span').show();
         }
 
-        $('.listItemspinner').hide();
+        if (!data.validated) {
+            $scope.$apply(function () {
+                $scope.listItems[data.index].style = {'background-color': '#f2dede'};
+            });
+        }
+
+        $scope.$apply(function () {
+            $scope.listItems[data.index].isBusy = false;
+        });
+
     });
 
-    $scope.removeListItem = function($event) {
-        $scope.listItems.pop();
+    $scope.removeListItem = function(index) {
+        $scope.listItems.splice(index, 1);
     };
 
     socket.on('fileSaveError', function(err) {
@@ -89,7 +82,16 @@ mainApp.controller('CmsNewListController', function($scope, $compile) {
     });
 
     $scope.addNewItem = function() {
-        var count = $scope.listItems.length;
-        $scope.listItems.push(count);
+        var heighestId = 0;
+
+        $scope.listItems.forEach(function(listItem) {
+            if(listItem.id > heighestId) {
+                heighestId = listItem.id;
+            }
+        });
+
+        var newId = heighestId+1;
+
+        $scope.listItems.push({id: newId, text: "", isBusy: false, isValidated: false, style: {'background-color': 'white'}});
     };
 });

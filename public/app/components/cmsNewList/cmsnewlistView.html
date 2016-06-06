@@ -12,17 +12,17 @@
 
     <!-- List group -->
     <ul class="listItems list-group">
-        <li ng-repeat="i in listItems track by $index" id="{{i}}" class="clearfix list-group-item">
-            <input type="text" class="form-control" placeholder="Lijst item">
+        <li ng-repeat="listItem in listItems track by $index" id="{{listItem.id}}" class="clearfix list-group-item" ng-style="listItem.style">
+            <input type="text" class="form-control" ng-model="listItem.text" placeholder="Lijst item" value="{{listItem.text}}">
 
-            <a ng-click="checkListItem($event)" href="">
+            <a ng-show="!listItem.isBusy && !listItem.isValidated" ng-click="checkListItem($index)" href="">
                 <span class="glyphicon glyphicon-ok" aria-hidden="true"></span>
             </a>
-            <a ng-click="removeListItem($event)" href="">
+            <a ng-show="!listItem.isBusy" ng-click="removeListItem($index)" href="">
                 <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
             </a>
 
-            <div class="listItemspinner spinner">
+            <div ng-show="listItem.isBusy" class="listItemspinner spinner">
                 <div class="rect1"></div>
                 <div class="rect2"></div>
                 <div class="rect3"></div>
@@ -32,6 +32,6 @@
         </li>
     </ul>
 
-    <add-button ng-click="addNewItem()" text="Nieuw item"></add-button>
+    <add-button class="addbutton" ng-click="addNewItem()" text="Nieuw item"></add-button>
 
 </div>
