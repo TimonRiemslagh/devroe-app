@@ -132,11 +132,11 @@ io.on('connection', function(socket){
         });
 
         updateListItem({title: data.title, photoUrl: newPath}, function(err) {
-            console.log("error: ", err);
-
-            if(!err) {
-                socket.emit('saveListItemComplete');
+            if(err) {
+                console.log("error: ", err);
             }
+
+            socket.emit('saveListItemFeedback', err);
         });
 
     });

@@ -225,6 +225,17 @@ ul.nav li#first a {
     margin-bottom: 10px;
 }
 
+.newListItemAlertFail, .newListItemAlertSuccess {
+    display: none;
+    position: fixed;
+    bottom: 0;
+}
+
+.newListItemSaveWarn {
+    display: none;
+    margin-top: 20px;
+}
+
 /* Clearfix */
 .clearfix:after {
     visibility: hidden;
@@ -242,13 +253,10 @@ ul.nav li#first a {
 
 /* CSS Loader */
 .spinner {
-    position: absolute;
-    top: 5px;
-    right: 100px;
     height: 34px;
     line-height: 34px;
     padding: 0 10px;
-    margin: 0;
+    margin: 0 auto;
     width: 62px;
     text-align: center;
     font-size: 10px;
