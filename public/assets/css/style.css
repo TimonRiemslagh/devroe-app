@@ -193,7 +193,7 @@ ul.nav li#first a {
     width: 100px;
 }
 
-.surveyInput {
+.newSurvey input {
     width: 720px;
 }
 
@@ -272,6 +272,10 @@ ul.nav li#first a {
 .listItemspinner, .listLinkspinner {
     z-index: 999;
     float: left;
+}
+
+.previewPhoto {
+
 }
 
 /* Clearfix */

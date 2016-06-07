@@ -1,14 +1,20 @@
-<div class="form-group">
-    <label>Offertenummer</label>
-    <input type="text" class="surveyInput form-control" id="Offertenummer">
+<div class="newSurvey">
+
+    <div class="form-group">
+        <label>Offertenummer</label>
+        <input type="text" class="form-control" ng-model="survey.offnumber">
+    </div>
+    <div class="form-group">
+        <label>Klant</label>
+        <input type="text" class="surveyInput form-control" ng-model="survey.client" id="Klant">
+    </div>
+    <div class="form-group">
+        <label>Adres</label>
+        <input type="text" class="surveyInput form-control" ng-model="survey.address" id="Adres">
+    </div>
+
+    <button type="button" id="startSurvey" ng-click="startSurvey()" class="btn btn-success">Start</button>
+
+    <div class="startSurveyAlert alert alert-danger" role="alert"><strong>Opgelet!</strong> niet alle velden zijn ingevuld.</div>
+
 </div>
-<div class="form-group">
-    <label>Klant</label>
-    <input type="text" class="surveyInput form-control" id="Klant">
-</div>
-<div class="form-group">
-    <label>Adres</label>
-    <input type="text" class="surveyInput form-control" id="Adres">
-</div>
-<button type="button" id="startSurvey" ng-click="startSurvey()" class="btn btn-success">Start</button>
-<div class="startSurveyAlert alert alert-danger" role="alert"><strong>Opgelet!</strong> niet alle velden zijn ingevuld.</div>

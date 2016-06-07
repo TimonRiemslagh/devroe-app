@@ -57,6 +57,7 @@ mainApp.controller('ListsController', function($scope, $routeParams, $location) 
             selectedListsObj.forEach(function(list) {
                 selectedListsStrings.push(list.title);
             });
+            
             console.log(selectedListsStrings);
 
             if(user == "Selecteer een gebruiker...") {
@@ -64,7 +65,7 @@ mainApp.controller('ListsController', function($scope, $routeParams, $location) 
             } else {
                 $('.spinner').show();
                 $('.saveSurveyButton').prop('disabled', true);
-                socket.emit('saveList', {arr: selectedListsStrings, offerteNumber: offerteNumber, client: client, address: address, user: user});
+                //socket.emit('saveList', {arr: selectedListsStrings, offerteNumber: offerteNumber, client: client, address: address, user: user});
             }
         } else {
             $scope.errorMessage = "Niets geselecteerd!";

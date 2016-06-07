@@ -101,6 +101,14 @@ mainApp.controller('CmsNewListController', function($scope) {
         $scope.listItems.splice(index, 1);
     };
 
+    var resetDom = function() {
+
+        $scope.listItems = [{id: 0, text: "", isBusy: false, isValid: false, style: {'background-color': 'white'}}];
+        $scope.listLink = {text: "", isBusy: false, isValid: false, style: {'background-color': 'white'}};
+        $scope.listTitle = "";
+
+    };
+
     socket.on('saveListFeedback', function(err) {
         $scope.$apply(function () {
 
@@ -118,6 +126,8 @@ mainApp.controller('CmsNewListController', function($scope) {
 
             } else {
 
+                resetDom();
+
                 $scope.feedbackSave = {
                     done: true,
                     error: "",
@@ -125,6 +135,8 @@ mainApp.controller('CmsNewListController', function($scope) {
                     textSuccess: "Het opslaan is gelukt!",
                     isSuccess: true
                 };
+
+                $('.feedback').delay(3000).fadeOut();
 
             }
         });
@@ -149,6 +161,8 @@ mainApp.controller('CmsNewListController', function($scope) {
 
             } else {
 
+                resetDom();
+
                 $scope.feedbackLink = {
                     done: true,
                     error: "",
@@ -156,6 +170,8 @@ mainApp.controller('CmsNewListController', function($scope) {
                     textSuccess: "Het linken van de lijst is gelukt!",
                     isSuccess: true
                 };
+
+                $('.feedback').delay(3000).fadeOut();
 
             }
         });

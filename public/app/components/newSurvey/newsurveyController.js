@@ -3,20 +3,19 @@ mainApp.controller('NewSurveyController', function($scope, $routeParams, $locati
     $('ul.nav li').removeClass('active');
     $('.newSurvey').addClass("active");
 
+    $scope.survey = {offnumber: "", client: "", address: ""};
 
     $scope.startSurvey = function() {
 
-        var offerteNumber = $('#Offertenummer').val();
-        var client = $('#Klant').val();
-        var address = $('#Adres').val();
+        if($scope.survey.offnumber == "" || $scope.survey.client == "" || $scope.survey.address == "") {
 
-        if(offerteNumber == "" || client == "" || address == "") {
             $(".startSurveyAlert").fadeIn();
+
         } else {
 
-            sessionStorage.setItem('offerteNumber', offerteNumber);
-            sessionStorage.setItem('client', client);
-            sessionStorage.setItem('address', address);
+            sessionStorage.setItem('offerteNumber', $scope.survey.offnumber);
+            sessionStorage.setItem('client', $scope.survey.client);
+            sessionStorage.setItem('address', $scope.survey.address);
 
             // reset
             if(sessionStorage.getItem('selectedLists')) {
