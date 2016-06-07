@@ -1,37 +1,80 @@
-<h3>Voeg een nieuwe lijst toe.</h3>
+<div class="newList">
 
+    <h3>Voeg een nieuwe lijst toe.</h3>
 
-<input type="text" class="listLinkItem form-control" placeholder="Lijst item die naar deze lijst moet verwijzen">
+    <div class="clearfix">
 
+        <input type="text"
+               ng-style="listLink.style"
+               class="listLinkItem form-control"
+               ng-model="listLink.text"
+               ng-change="resetCheckLink()"
+               placeholder="Lijst item die naar deze lijst moet verwijzen">
 
-<div class="panel panel-default ">
-    <div class="panel-heading clearfix">
-        <input type="text" class="listTitleInput form-control" placeholder="Titel van de lijst">
-        <button type="button" class="btnSaveList btn btn-success" ng-click="saveList()">Opslaan</button>
+        <a ng-show="!listLink.isBusy && !listLink.isValid" ng-click="checkListLink()" value="{{listLink.text}}" href="">
+            <span class="glyphicon glyphicon-ok" aria-hidden="true"></span>
+        </a>
+
+        <div ng-show="listLink.isBusy" class="listLinkspinner spinner">
+            <div class="rect1"></div>
+            <div class="rect2"></div>
+            <div class="rect3"></div>
+            <div class="rect4"></div>
+            <div class="rect5"></div>
+        </div>
+
     </div>
 
-    <!-- List group -->
-    <ul class="listItems list-group">
-        <li ng-repeat="listItem in listItems track by $index" id="{{listItem.id}}" class="clearfix list-group-item" ng-style="listItem.style">
-            <input type="text" class="form-control" ng-model="listItem.text" placeholder="Lijst item" value="{{listItem.text}}">
+    <div class="panel panel-default ">
+        <div class="panel-heading clearfix">
+            <input type="text" class="listTitleInput form-control" ng-model="listTitle" placeholder="Titel van de lijst">
+            <button type="button" class="btnSaveList btn btn-success" ng-click="saveList()">Opslaan</button>
+        </div>
 
-            <a ng-show="!listItem.isBusy && !listItem.isValidated" ng-click="checkListItem($index)" href="">
-                <span class="glyphicon glyphicon-ok" aria-hidden="true"></span>
-            </a>
-            <a ng-show="!listItem.isBusy" ng-click="removeListItem($index)" href="">
-                <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
-            </a>
+        <!-- List group -->
+        <ul class="listItems list-group">
+            <li ng-repeat="listItem in listItems track by $index" id="{{listItem.id}}" class="clearfix list-group-item">
+                <input type="text"
+                       class="form-control"
+                       ng-model="listItem.text"
+                       ng-style="listItem.style"
+                       ng-change="resetCheck($index)"
+                       placeholder="Lijst item"
+                       value="{{listItem.text}}">
 
-            <div ng-show="listItem.isBusy" class="listItemspinner spinner">
-                <div class="rect1"></div>
-                <div class="rect2"></div>
-                <div class="rect3"></div>
-                <div class="rect4"></div>
-                <div class="rect5"></div>
-            </div>
-        </li>
-    </ul>
+                <a ng-show="!listItem.isBusy && !listItem.isValid" ng-click="checkListItem($index)" href="">
+                    <span class="glyphicon glyphicon-ok" aria-hidden="true"></span>
+                </a>
+                <a ng-show="!listItem.isBusy" ng-click="removeListItem($index)" href="">
+                    <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
+                </a>
 
-    <add-button class="addbutton" ng-click="addNewItem()" text="Nieuw item"></add-button>
+                <div ng-show="listItem.isBusy" class="listItemspinner spinner">
+                    <div class="rect1"></div>
+                    <div class="rect2"></div>
+                    <div class="rect3"></div>
+                    <div class="rect4"></div>
+                    <div class="rect5"></div>
+                </div>
+            </li>
+        </ul>
+
+        <add-button class="addbutton" ng-click="addNewItem()" text="Nieuw item"></add-button>
+
+    </div>
+
+    <feedback
+            error="feedbackSave.error"
+            text-fail="feedbackSave.textFail"
+            text-success="feedbackSave.textSuccess"
+            is-success="feedbackSave.isSuccess"
+            done="feedbackSave.done"></feedback>
+
+    <feedback
+            error="feedbackLink.error"
+            text-fail="feedbackLink.textFail"
+            text-success="feedbackLink.textSuccess"
+            is-success="feedbackLink.isSuccess"
+            done="feedbackLink.done"></feedback>
 
 </div>

@@ -222,8 +222,10 @@ ul.nav li#first a {
 }
 
 .listLinkItem {
-    width: 100%;
+    width: 700px;
     margin-bottom: 10px;
+    float: left;
+    margin-right: 20px;
 }
 
 .newListItemAlertFail, .newListItemAlertSuccess, .newRefAlertSuccess, .newRefAlertFail {
@@ -246,20 +248,20 @@ ul.nav li#first a {
     float: left;
 }
 
-.listItems li a {
+.newList li a {
     float: left;
     margin-left: 20px;
 }
 
-.listItems li a span {
+.newList a span {
     font-size: 29px;
 }
 
-.listItems li a span.glyphicon-ok {
+.newList a span.glyphicon-ok {
     color: green;
 }
 
-.listItems li a span.glyphicon-remove {
+.newList a span.glyphicon-remove {
     color: red;
 }
 
@@ -267,7 +269,7 @@ ul.nav li#first a {
     margin: 10px 10px 10px 15px;
 }
 
-.listItemspinner {
+.listItemspinner, .listLinkspinner {
     z-index: 999;
     float: left;
 }

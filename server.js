@@ -2,10 +2,8 @@ var express = require('express'),
     app = express(),
     http = require('http').Server(app),
     io = require('socket.io')(http),
-    datetime = require('node-datetime'),
     MongoClient = require('mongodb').MongoClient,
     path = require('path'),
-    dl  = require('delivery'),
     fs = require('fs');
 
 var ObjectId = require('mongodb').ObjectId;
@@ -22,42 +20,6 @@ app.get('/sendmethisimage', function (req, res) {
 console.log("server started");
 
 var url = 'mongodb://timonriemslagh:devroe@ds011870.mlab.com:11870/devroedb';
-
-// get lists and users when the server runs
-var users = [];
-
-// create index of keywords in references
-MongoClient.connect(url, function(err, db) {
-    db.collection('references', function(err, collection) {
-        collection.ensureIndex({keywords: "text"});
-
-        /*collection.find({$text: {$search: "\"test\" \"1\""}})
-         .toArray(function(err, documents) {
-         console.log(documents);
-         });*/
-    });
-});
-
-MongoClient.connect(url, function(err, db) {
-    find(db, 'users', function(data) {
-        users = data;
-        db.close();
-    });
-});
-
-var insertDocument = function(db, obj, collection, callback) {
-    db.collection(collection).insertOne(obj, function(err, result) {
-        console.log("Inserted a survey into the surveys collection.");
-        callback();
-    });
-};
-
-var insertRef = function(db, obj, callback) {
-    db.collection('references').insertOne(obj, function(err, result) {
-        console.log("Inserted a reference into the references collection.");
-        callback();
-    });
-};
 
 var find = function(db, collection, callback) {
     db.collection(collection)
@@ -132,6 +94,43 @@ var insertRef = function(ref, callback) {
     });
 };
 
+var insertList = function(list, callback) {
+
+    MongoClient.connect(url, function(err, db) {
+
+        db.collection('lists').insert(
+            {
+                title: list.title,
+                items: list.items
+            }
+            ,
+            callback(err)
+        );
+    });
+};
+
+var updateLink = function(listItem, callback) {
+
+    MongoClient.connect(url, function(err, db) {
+
+        db.collection('listItems').update(
+            {
+                _id: new ObjectId(listItem.listItem)
+            },
+            {
+                $set: {
+                    listId: listItem.link
+                }
+            },
+            {
+                upsert: true
+            },
+            callback(err)
+        );
+    });
+};
+
+
 io.on('connection', function(socket){
 
     socket.on('validateListItem', function(data) {
@@ -144,8 +143,9 @@ io.on('connection', function(socket){
                 collection.find({$text: {$search: data.text }})
                     .toArray(function(err, arr) {
                         if(!err) {
+
                             if(arr.length > 0) {
-                                socket.emit('validation', { validated: true, index: data.index });
+                                socket.emit('validation', { validated: true, oid: arr[0]._id, index: data.index });
                             } else {
                                 socket.emit('validation', { validated: false, index: data.index });
                             }
@@ -204,109 +204,33 @@ io.on('connection', function(socket){
 
     });
 
-    socket.on('saveNewList', function(data) {
+    socket.on('saveList', function(data) {
 
-        var errs = [];
+        var newListId = new ObjectId();
 
-        //var photos = JSON.parse(JSON.stringify(data));
+        insertList({title: data.title, items: data.items, id: newListId}, function(err) {
 
-        data.photos.forEach(function(photo) {
+            console.log(err);
 
-            var newPath = __dirname + "/uploads/" + photo.fileName;
+            if(!err) {
+                console.log("list saved");
+            }
 
-            fs.writeFile(newPath, photo.data, function (err) {
-                if(err) {
-                    errs.push(err);
-                    //
-                } else {
-                    console.log("saved at " + newPath);
-                }
-            });
+            socket.emit('saveListFeedback', err);
 
         });
 
-        if(errs.length == 0) {
+        updateLink({listItem: data.link, link: newListId}, function(err) {
 
-            var newList = {};
-            var listItems = [];
+            console.log(err);
 
-            data.listItems.forEach(function(listItem) {
-                var id = new ObjectId();
-                listItem.id = id;
-                listItems.push(id);
-
-                updateListItem(listItem);
-            });
-
-            newList.title = []; // array of all the listItems
-            newList.items = data.listItems;
-            newList.id = new ObjectId();
-
-            /*MongoClient.connect(url, function(err, db) {
-
-                var results = db.lists.aggregate([
-                    // Get just the docs that contain a shapes element where color is 'red'
-                    {$match: {'items.title': 'Menuiserite'}},
-                    {$project: {
-                        items: {$filter: {
-                            input: '$items',
-                            as: 'itel',
-                            cond: {$eq: ['item.title', 'Menuiserite']}
-                        }},
-                        _id: 0
-                    }}
-                ]);
-
-                console.log(results);
-                db.close();
-
-            });*/
-
-
-
-
-            //find list where item is equal to the link, replace the listId with the newly generated id
-
-
-
-            console.log(data.listItems);
-
-            //insert the list in lists
-
-            /*MongoClient.connect(url, function(err, db) {
-                insertDocument(db, newObj, 'lists', function() {
-                    if(!err) {
-                        socket.emit('saveSuccess');
-                    } else {
-                        socket.emit('saveFailure');
-                    }
-                    db.close();
-                });
-            });*/
-
-            //socket.emit('saveComplete');
-        } else {
-            socket.emit('fileSaveError', errs);
-        }
-
-        /*for(var photo in photos) {
-            console.log(photo);
-        }*/
-
-        /*var newPath = __dirname + "/uploads/" + data.fileName;
-        fs.writeFile(newPath, data.photo, function (err) {
-            if(err) {
-                console.log(err);
-                socket.emit('fileSaveError', err);
-            } else {
-                socket.emit('saveComplete');
-                console.log("saved at " + newPath);
+            if(!err) {
+                console.log("list item linked");
             }
-        });*/
 
-    });
+            socket.emit('updateLinkFeedback', err);
 
-    socket.on('saveList', function(data) {
+        });
 
     });
 
@@ -314,23 +238,6 @@ io.on('connection', function(socket){
         find(db, 'lists', function(data) {
             socket.emit('setAllLists', {lists: data});
             db.close();
-        });
-    });
-
-    socket.on('saveList', function(data) {
-        var dt = datetime.create();
-        var formatted = dt.format('m/d/Y H:M:S');
-        var newObj = {name: data.user, dateTime: formatted, survey: data.arr, offerteNumber: data.offerteNumber, offerteNumberLowerCase: data.offerteNumber.toLowerCase(), client: data.client, clientLowerCase: data.client.toLowerCase(), address: data.address, addressLowerCase: data.address.toLowerCase()};
-
-        MongoClient.connect(url, function(err, db) {
-            insertDocument(db, newObj, 'surveys', function() {
-                if(!err) {
-                    socket.emit('saveSuccess');
-                } else {
-                    socket.emit('saveFailure');
-                }
-                db.close();
-            });
         });
     });
 

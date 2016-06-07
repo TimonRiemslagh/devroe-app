@@ -1,42 +1,44 @@
-mainApp.controller('CmsNewListController', function($scope, $compile) {
+mainApp.controller('CmsNewListController', function($scope) {
 
     $('ul.nav li').removeClass('active');
     $('.cms').addClass("active");
 
-    var listItems = [];
-    var photos = [];
-    var listTitle = "";
-    var externalLink = "";
+    $scope.listItems = [{id: 0, text: "", isBusy: false, isValid: false, style: {'background-color': 'white'}}];
 
-    $scope.listItems = [{id: 0, text: "", isBusy: false, isValidated: false, style: {'background-color': 'white'}}];
+    $scope.listLink = {text: "", isBusy: false, isValid: false, style: {'background-color': 'white'}};
+
+    $scope.resetCheck = function(index) {
+        $scope.listItems[index].isValid = false;
+        $scope.listItems[index].style = {'background-color': 'white'};
+    };
+
+    $scope.resetCheckLink = function() {
+        $scope.listLink.isValid = false;
+        $scope.listLink.style = {'background-color': 'white'};
+    };
 
     $scope.saveList = function() {
 
-        listItems = [];
-        photos = [];
+        var allValid = true;
+        var listItems = [];
 
-        listTitle = $('.listTitleInput').val();
-        externalLink = $('.listLinkItem').val();
+        $scope.listItems.forEach(function(listItem) {
+            if(!listItem.isValid) {
+                allValid = false;
+            }
 
-        $('.listItems li').each(function() {
-
-            var photoData = $(this).find('.listItemPhoto')[0].files[0];
-
-            var item = {};
-            var photo = {};
-
-            photo.data = photoData;
-            photo.fileName = photoData.name;
-
-            item.title = $(this).find('.listItemInput').val();
-            item.photoUrl = '/uploads/' + photoData.name;
-
-            listItems.push(item);
-            photos.push(photo);
-
+            listItems.push(listItem.oid);
         });
 
-        //socket.emit("saveNewList", { listTitle: listTitle, listItems: listItems, photos: photos, link: externalLink });
+        if(!$scope.listLink.isValid) {
+            allValid = false;
+        }
+
+        if(allValid) {
+
+            socket.emit("saveList", { items: listItems, link: $scope.listLink.oid, title: $scope.listTitle });
+
+        }
 
     };
 
@@ -45,25 +47,52 @@ mainApp.controller('CmsNewListController', function($scope, $compile) {
         socket.emit('validateListItem', {index: index, text: $scope.listItems[index].text});
     };
 
+    $scope.checkListLink = function() {
+
+        if($scope.listLink.text) {
+            $scope.listLink.isBusy = true;
+            socket.emit('validateListItem', {text: $scope.listLink.text});
+        }
+
+    };
+
     socket.on('validation', function(data) {
 
-        console.log(data.index);
-
-        if (data.validated) {
-            $scope.$apply(function () {
-                $scope.listItems[data.index].isValidated = true;
-                $scope.listItems[data.index].style = {'background-color': '#dff0d8'};
-            });
-        }
-
-        if (!data.validated) {
-            $scope.$apply(function () {
-                $scope.listItems[data.index].style = {'background-color': '#f2dede'};
-            });
-        }
-
         $scope.$apply(function () {
-            $scope.listItems[data.index].isBusy = false;
+
+            if(data.index == undefined) {
+
+                if (data.validated) {
+
+                    $scope.listLink.isValid = true;
+                    $scope.listLink.style = {'background-color': '#dff0d8'};
+                    $scope.listLink.oid = data.oid;
+
+                } else {
+
+                    $scope.listLink.style = {'background-color': '#f2dede'};
+
+                }
+
+                $scope.listLink.isBusy = false;
+
+            } else {
+
+                if (data.validated) {
+
+                    $scope.listItems[data.index].isValid = true;
+                    $scope.listItems[data.index].style = {'background-color': '#dff0d8'};
+                    $scope.listItems[data.index].oid = data.oid;
+
+                } else {
+
+                    $scope.listItems[data.index].style = {'background-color': '#f2dede'};
+
+                }
+
+                $scope.listItems[data.index].isBusy = false;
+
+            }
         });
 
     });
@@ -72,13 +101,65 @@ mainApp.controller('CmsNewListController', function($scope, $compile) {
         $scope.listItems.splice(index, 1);
     };
 
-    socket.on('fileSaveError', function(err) {
-        console.log(err);
+    socket.on('saveListFeedback', function(err) {
+        $scope.$apply(function () {
+
+            console.log("list saved");
+
+            if (err) {
+
+                $scope.feedbackSave = {
+                    done: true,
+                    error: err,
+                    textFail: "Fout tijdens het opslaan van de lijst.",
+                    textSuccess: "",
+                    isSuccess: false
+                };
+
+            } else {
+
+                $scope.feedbackSave = {
+                    done: true,
+                    error: "",
+                    textFail: "",
+                    textSuccess: "Het opslaan is gelukt!",
+                    isSuccess: true
+                };
+
+            }
+        });
+
     });
 
-    socket.on('saveComplete', function() {
-        console.log('saved');
-        //socket.emit('saveList', )
+    socket.on('updateLinkFeedback', function(err) {
+
+        $scope.$apply(function () {
+
+            console.log("list linked");
+
+            if (err) {
+
+                $scope.feedbackLink = {
+                    done: true,
+                    error: err,
+                    textFail: "Fout tijdens het maken van de link.",
+                    textSuccess: "",
+                    isSuccess: false
+                };
+
+            } else {
+
+                $scope.feedbackLink = {
+                    done: true,
+                    error: "",
+                    textFail: "",
+                    textSuccess: "Het linken van de lijst is gelukt!",
+                    isSuccess: true
+                };
+
+            }
+        });
+
     });
 
     $scope.addNewItem = function() {
@@ -92,6 +173,6 @@ mainApp.controller('CmsNewListController', function($scope, $compile) {
 
         var newId = heighestId+1;
 
-        $scope.listItems.push({id: newId, text: "", isBusy: false, isValidated: false, style: {'background-color': 'white'}});
+        $scope.listItems.push({id: newId, text: "", isBusy: false, isValid: false, style: {'background-color': 'white'}});
     };
 });
