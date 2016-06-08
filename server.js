@@ -17,9 +17,32 @@ app.get('/sendmethisimage', function (req, res) {
 
 });
 
+app.get('/listItems', function(req, res) {
+
+    MongoClient.connect(url, function(err, db) {
+
+        db.collection('listItems', function(err, collection){
+
+            collection.find({ }, { title: 1 })
+                .toArray(function(err, arr) {
+                    var listItems = [];
+                    arr.forEach(function(el){
+                        listItems.push(el.title)
+                    });
+                    res.send(listItems);
+                });
+
+        })
+
+    });
+
+});
+
 console.log("server started");
 
 var url = 'mongodb://timonriemslagh:devroe@ds011870.mlab.com:11870/devroedb';
+
+
 
 var find = function(db, collection, callback) {
     db.collection(collection)

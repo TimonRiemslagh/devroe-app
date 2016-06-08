@@ -34,4 +34,26 @@ $(document).ready(function() {
             }
         }
     });
+
+    var xmlhttp = new XMLHttpRequest();
+    var url = window.location.origin + "/listItems";
+
+    console.log(url);
+
+    /*xmlhttp.onreadystatechange = function() {
+        if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
+            var myArr = JSON.parse(xmlhttp.responseText);
+
+            localStorage.setItem('listItems', myArr);
+        }
+    };
+
+    var listItems = localStorage.getItem('listItems');
+
+    if(!listItems) {
+        xmlhttp.open("GET", url, true);
+        xmlhttp.send();
+    }*/
+
+
 });
