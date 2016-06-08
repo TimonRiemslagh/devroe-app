@@ -24,7 +24,6 @@ mainApp.controller('NewSurveyController', function($scope, $routeParams, $locati
 
             $location.path( "/newsurvey/list/0" );
             console.log(sessionStorage);
-
         }
     };
 });

@@ -248,7 +248,23 @@ ul.nav li#first a {
     float: left;
 }
 
-.newList li a {
+.newList input, .newList .input-group {
+    margin-bottom: 10px;
+}
+
+.newList .list {
+    margin-top: 10px;
+}
+
+.newList .glyphicon-pencil {
+    margin-right: 10px;
+}
+
+.newList .listTitle {
+    margin-top: 20px;
+}
+
+/*.newList li a {
     float: left;
     margin-left: 20px;
 }
@@ -263,7 +279,7 @@ ul.nav li#first a {
 
 .newList a span.glyphicon-remove {
     color: red;
-}
+}*/
 
 .addbutton {
     margin: 10px 10px 10px 15px;
@@ -274,8 +290,20 @@ ul.nav li#first a {
     float: left;
 }
 
-.previewPhoto {
+div.options {
+    float: right;
+}
 
+.linksList {
+    margin-top: 10px;
+}
+
+.linksList li span {
+    float: left;
+}
+
+.list-group {
+    margin-bottom: 0;
 }
 
 /* Clearfix */

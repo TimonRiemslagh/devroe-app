@@ -1,6 +1,74 @@
 <div class="newList">
+    <h4>Links</h4>
 
-    <h3>Voeg een nieuwe lijst toe.</h3>
+    <div class="input-group">
+
+        <input class="typeahead form-control" type="text" ng-model="linkItem" placeholder="Typ hier uw lijst item">
+
+        <span class="input-group-btn">
+            <button class="btn btn-default" type="button">Voeg toe</button>
+        </span>
+    </div>
+
+    <ul class="list-group">
+
+        <li class="list-group-item clearfix" ng-repeat="link in links">
+
+            <span>{{link.listItem}}</span>
+
+            <div class="options">
+                <span class="glyphicon glyphicon-trash" aria-hidden="true"></span>
+            </div>
+
+        </li>
+
+    </ul>
+
+    <h4 class="listTitle">Lijst</h4>
+
+    <div class="list panel panel-default">
+        <div class="panel-body">
+
+            <input type="text" class="form-control" ng-model="listTitle" placeholder="Titel van de lijst">
+
+            <div class="input-group">
+                <input type="text" class="form-control" ng-model="listItem" placeholder="Typ hier uw lijst item">
+                <span class="input-group-btn">
+                    <button class="btn btn-default" type="button">Voeg toe</button>
+                </span>
+            </div>
+
+            <ul class="listItemsList list-group">
+
+                <li class="list-group-item clearfix" ng-repeat="item in listItems">
+
+                    <span>{{item.listItem}}</span>
+
+                    <a href="">{{item.link}}</a>
+
+                    <div class="options">
+
+                        <a href="" class="glyphicon glyphicon-pencil" aria-hidden="true"></a>
+                        <a href="" class="glyphicon glyphicon-trash" aria-hidden="true"></a>
+
+                    </div>
+
+                </li>
+
+            </ul>
+
+        </div>
+    </div>
+
+    <button type="button" class="save btn btn-success" ng-click="saveList()">Opslaan</button>
+
+</div>
+
+
+
+<!--<div class="newList panel panel-default">
+
+    <div class="panel-body">
 
     <div class="clearfix">
 
@@ -31,7 +99,7 @@
             <button type="button" class="btnSaveList btn btn-success" ng-click="saveList()">Opslaan</button>
         </div>
 
-        <!-- List group -->
+        <!-- List group
         <ul class="listItems list-group">
             <li ng-repeat="listItem in listItems track by $index" id="{{listItem.id}}" class="clearfix list-group-item">
                 <input type="text"
@@ -77,4 +145,5 @@
             is-success="feedbackLink.isSuccess"
             done="feedbackLink.done"></feedback>
 
-</div>
+    </div>
+</div>-->

@@ -3,7 +3,56 @@ mainApp.controller('CmsNewListController', function($scope) {
     $('ul.nav li').removeClass('active');
     $('.cms').addClass("active");
 
-    $scope.listItems = [{id: 0, text: "", isBusy: false, isValid: false, style: {'background-color': 'white'}}];
+    $scope.links = [];
+
+    $scope.listItems = [];
+
+    $scope.listItem = "";
+    $scope.linkItem = "";
+
+    var substringMatcher = function(strs) {
+        return function findMatches(q, cb) {
+            var matches, substringRegex;
+
+            // an array that will be populated with substring matches
+            matches = [];
+
+            // regex used to determine if a string contains the substring `q`
+            substringRegex = new RegExp(q, 'i');
+
+            // iterate through the pool of strings and for any string that
+            // contains the substring `q`, add it to the `matches` array
+            $.each(strs, function(i, str) {
+                if (substringRegex.test(str)) {
+                    matches.push(str);
+                }
+            });
+
+            cb(matches);
+        };
+    };
+
+    socket.emit('getListItems');
+
+    socket.on('allListItems', function(data) {
+        $scope.$apply(function () {
+
+            $scope.listItems = data;
+            console.log($scope.listItems);
+
+            $('.typeahead').typeahead({
+                    hint: false,
+                    highlight: true,
+                    minLength: 2
+                },
+                {
+                    name: 'listItems',
+                    source: substringMatcher(data)
+                });
+        });
+    });
+
+    /*$scope.listItems = [{id: 0, text: "", isBusy: false, isValid: false, style: {'background-color': 'white'}}];
 
     $scope.listLink = {text: "", isBusy: false, isValid: false, style: {'background-color': 'white'}};
 
@@ -190,5 +239,8 @@ mainApp.controller('CmsNewListController', function($scope) {
         var newId = heighestId+1;
 
         $scope.listItems.push({id: newId, text: "", isBusy: false, isValid: false, style: {'background-color': 'white'}});
-    };
+    };*/
+
+    // typeahead
+
 });

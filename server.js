@@ -133,6 +133,23 @@ var updateLink = function(listItem, callback) {
 
 io.on('connection', function(socket){
 
+    socket.on('getListItems', function() {
+        var listItems = [];
+
+        MongoClient.connect(url, function(err, db) {
+
+            db.collection('listItems')
+                .find({ }, { title: 1 })
+                .toArray(function(err, arr) {
+                    arr.forEach(function(el){
+                            listItems.push(el.title)
+                        });
+                    socket.emit('allListItems', listItems);
+                });
+
+        });
+    });
+
     socket.on('validateListItem', function(data) {
 
         MongoClient.connect(url, function(err, db) {
