@@ -247,16 +247,25 @@ ul.nav li#first a {
     float: left;
 }
 
-.newList input, .newList .input-group {
+.newList .inputListTitle {
     margin-bottom: 10px;
+}
+
+.newList .list-group {
+    margin-top: 10px;
+}
+
+.newList .editMode a {
+    height: 30px;
+    line-height: 30px;
 }
 
 .newList .list {
     margin-top: 10px;
 }
 
-.newList .glyphicon-pencil {
-    margin-right: 10px;
+.newList .glyphicon {
+    margin-left: 20px;
 }
 
 .newList .listTitle {
@@ -274,6 +283,21 @@ ul.nav li#first a {
 
 .btnCheckList {
     width: 70px;
+}
+
+.btnAddItem {
+    width: 100px;
+}
+
+.listNewItem {
+    width: 390px;
+    float: left;
+}
+
+.linkTitle {
+    float: left;
+    width: 245px;
+    margin-right: 5px;
 }
 
 /*.newList li a {

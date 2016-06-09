@@ -4,16 +4,6 @@ var activeList = {};
 activeList.listsData = JSON.parse(localStorage.getItem('lists'));
 activeList.listItemsData = JSON.parse(localStorage.getItem('listItems'));
 
-socket.on('connect', function() {
-    socket.on('setAllLists', function(data) {
-        if (typeof(Storage) !== "undefined") {
-            sessionStorage.clear();
-            sessionStorage.setItem("lists", JSON.stringify(data.lists));
-
-        }
-    });
-});
-
 socket.on('saveSuccess', function() {
     $('.spinner').hide();
     $('.saveSurveyButton').prop('disabled', false);

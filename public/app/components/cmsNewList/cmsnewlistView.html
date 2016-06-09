@@ -3,25 +3,74 @@
 
     <div class="input-group">
 
-        <input class="typeaheadlists form-control"
+        <input class="typeahead linkListItem form-control"
                type="text"
-               ng-model="linkItem"
                ng-keypress="$event.keyCode == 13 && addLink()"
                placeholder="Typ hier uw lijst item">
 
         <span class="input-group-btn">
-            <button class="btn btn-default" ng-click="addLink()" type="button">Voeg toe</button>
+            <button class="btnAddItem btn btn-default" ng-click="addLink()" type="button">
+                <span ng-show="!checkingLinkItem">Voeg toe</span>
+                <div ng-show="checkingLinkItem" class="spinner checkingListSpinner">
+                    <div class="rect1"></div>
+                    <div class="rect2"></div>
+                    <div class="rect3"></div>
+                    <div class="rect4"></div>
+                    <div class="rect5"></div>
+                </div>
+
+            </button>
         </span>
     </div>
 
     <ul class="list-group">
 
-        <li class="list-group-item clearfix" ng-repeat="link in links">
+        <li class="list-group-item clearfix" ng-repeat="link in links" ng-style="link.customStyle">
 
-            <span>{{link.listItem}}</span>
+            <div ng-show="link.editMode" class="editMode">
+
+                <input type="text" ng-show="link.editMode" class="linkTitle form-control" value="{{link.title}}" placeholder="Lijst item titel">
+
+                <div class="listNewItem input-group">
+
+                    <input class="typeahead newListItem form-control"
+                           type="text"
+                           ng-keypress="$event.keyCode == 13 && checkList()"
+                           placeholder="Link naar lijst">
+
+                <span class="input-group-btn">
+                    <button class="btnAddItem btn btn-default" ng-click="checkLink()" type="button">
+                        <span ng-show="!checkingLinkItem">Check</span>
+                        <div ng-show="checkingLinkItem" class="spinner checkingListSpinner">
+                            <div class="rect1"></div>
+                            <div class="rect2"></div>
+                            <div class="rect3"></div>
+                            <div class="rect4"></div>
+                            <div class="rect5"></div>
+                        </div>
+
+                    </button>
+                </span>
+
+                </div>
+
+                <a href="" class="glyphicon glyphicon-picture" aria-hidden="true"></a>
+                <a href="" class="glyphicon glyphicon-ok" aria-hidden="true"></a>
+
+            </div>
+
+            <span ng-show="!link.editMode" class="linkTitle">{{link.title}}</span>
+
+
+
 
             <div class="options">
-                <span class="glyphicon glyphicon-trash" aria-hidden="true"></span>
+
+                <a href="" ng-show="!link.editMode" class="glyphicon glyphicon-pencil" aria-hidden="true"></a>
+                <a href="" ng-show="link.valid" class="glyphicon glyphicon-trash" aria-hidden="true"></a>
+                <a href="" ng-show="!link.editMode" class="glyphicon glyphicon-remove" aria-hidden="true"></a>
+
+
             </div>
 
         </li>
@@ -33,33 +82,78 @@
     <div class="list panel panel-default">
         <div class="panel-body">
 
-            <input type="text" class="form-control" ng-model="listTitle" placeholder="Titel van de lijst">
+            <input type="text" class="inputListTitle form-control" ng-model="listTitle" placeholder="Titel van de lijst">
 
             <div class="input-group">
 
                 <input type="text"
-                       class="typeaheadlistItems form-control"
-                       ng-model="listItem"
+                       class="typeahead form-control"
                        ng-keypress="$event.keyCode == 13 && addItem()"
                        placeholder="Typ hier uw lijst item">
 
                 <span class="input-group-btn">
-                    <button class="btn btn-default" ng-click="addItem()" type="button">Voeg toe</button>
+                    <button class="btnAddItem btn btn-default" ng-click="addItem()" type="button">
+
+                        <span ng-show="!checkingItem">Voeg toe</span>
+                        <div ng-show="checkingItem" class="spinner checkingListSpinner">
+                            <div class="rect1"></div>
+                            <div class="rect2"></div>
+                            <div class="rect3"></div>
+                            <div class="rect4"></div>
+                            <div class="rect5"></div>
+                        </div>
+
+                    </button>
                 </span>
             </div>
 
-            <ul class="listItemsList list-group">
+            <ul class="list-group">
 
-                <li class="list-group-item clearfix" ng-repeat="item in listItems">
+                <li class="list-group-item clearfix" ng-repeat="item in listItems" ng-style="item.customStyle">
 
-                    <span>{{item.listItem}}</span>
+                    <div ng-show="item.editMode" class="editMode">
 
-                    <a href="">{{item.link}}</a>
+                        <input type="text" ng-show="item.editMode" class="linkTitle form-control" value="{{item.title}}" placeholder="Lijst item titel">
+
+                        <div class="listNewItem input-group">
+
+                            <input class="typeahead newListItem form-control"
+                                   type="text"
+                                   ng-keypress="$event.keyCode == 13 && checkList()"
+                                   placeholder="Link naar lijst">
+
+                <span class="input-group-btn">
+                    <button class="btnAddItem btn btn-default" ng-click="checkLink()" type="button">
+                        <span ng-show="!checkingLinkItem">Check</span>
+                        <div ng-show="checkingLinkItem" class="spinner checkingListSpinner">
+                            <div class="rect1"></div>
+                            <div class="rect2"></div>
+                            <div class="rect3"></div>
+                            <div class="rect4"></div>
+                            <div class="rect5"></div>
+                        </div>
+
+                    </button>
+                </span>
+
+                        </div>
+
+                        <a href="" class="glyphicon glyphicon-picture" aria-hidden="true"></a>
+                        <a href="" class="glyphicon glyphicon-ok" aria-hidden="true"></a>
+
+                    </div>
+
+                    <span ng-show="!item.editMode" class="linkTitle">{{item.title}}</span>
+
+
+
 
                     <div class="options">
 
-                        <a href="" class="glyphicon glyphicon-pencil" aria-hidden="true"></a>
-                        <a href="" class="glyphicon glyphicon-trash" aria-hidden="true"></a>
+                        <a href="" ng-show="!item.editMode" class="glyphicon glyphicon-pencil" aria-hidden="true"></a>
+                        <a href="" ng-show="item.valid" class="glyphicon glyphicon-trash" aria-hidden="true"></a>
+                        <a href="" ng-show="!item.editMode" class="glyphicon glyphicon-remove" aria-hidden="true"></a>
+
 
                     </div>
 

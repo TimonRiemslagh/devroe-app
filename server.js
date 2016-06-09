@@ -103,7 +103,7 @@ var search = function(db, collection, searchTerm, callback) {
         });
 };
 
-var validateLink = function(link, callback) {
+var validateList = function(link, callback) {
 
     MongoClient.connect(url, function(err, db) {
 
@@ -113,14 +113,35 @@ var validateLink = function(link, callback) {
 
             collection.find({title: {$eq: link}})
                 .toArray(function(err, arr) {
-
-                    console.log(err, arr);
-
                     if(!err) {
                         if(arr.length > 0) {
-                            callback(true);
+                            callback({valid: true, list: arr[0]});
                         } else {
-                            callback(false);
+                            callback({valid: false});
+                        }
+                    }
+                    db.close();
+                });
+
+        });
+    });
+};
+
+var validateItem = function(item, callback) {
+
+    MongoClient.connect(url, function(err, db) {
+
+        db.collection('listItems', function(err, collection) {
+
+            collection.ensureIndex({title: "text"});
+
+            collection.find({title: {$eq: item}})
+                .toArray(function(err, arr) {
+                    if(!err) {
+                        if(arr.length > 0) {
+                            callback({valid: true, item: arr[0]});
+                        } else {
+                            callback({valid: false});
                         }
                     }
                     db.close();
@@ -223,7 +244,7 @@ io.on('connection', function(socket){
         });
     });
 
-    socket.on('validateListItem', function(data) {
+    /*socket.on('validateListItem', function(data) {
 
         MongoClient.connect(url, function(err, db) {
 
@@ -245,7 +266,7 @@ io.on('connection', function(socket){
             });
         });
 
-    });
+    });*/
 
     socket.on('saveRef', function(data) {
 
@@ -271,14 +292,20 @@ io.on('connection', function(socket){
     });
 
     socket.on('validateList', function(list) {
-        validateLink(list, function(response) {
+        validateList(list, function(response) {
             socket.emit('listValidated', response);
+        });
+    });
+
+    socket.on('validateItem', function(item) {
+        validateItem(item.listItem, function(response) {
+            socket.emit('itemValidated', {item: item.listItem, res: response, type: item.type});
         });
     });
 
     socket.on('saveListItem', function(data) {
 
-        var newPath = __dirname + "/uploads/" + data.title + "_" + data.photoUrl;
+        var newPath = __dirname + "/uploads/" + data.title.replace(/[^A-Z0-9]+/ig, "_") + "_" + data.photoUrl;
 
         fs.writeFile(newPath, data.photo, function (err) {
             if(err) {
@@ -288,7 +315,7 @@ io.on('connection', function(socket){
             }
         });
 
-        updateListItem({title: data.title, photoUrl: newPath, link: link}, function(err) {
+        updateListItem({title: data.title, photoUrl: newPath, link: data.link}, function(err) {
             if(err) {
                 console.log("error: ", err);
             }

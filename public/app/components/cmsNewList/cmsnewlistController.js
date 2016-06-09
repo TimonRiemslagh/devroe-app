@@ -3,18 +3,65 @@ mainApp.controller('CmsNewListController', function($scope) {
     $('ul.nav li').removeClass('active');
     $('.cms').addClass("active");
 
-    $scope.links = [];
+    $scope.links = [{title: "test 1", valid: true, customStyle: {'background-color': '#dff0d8'}, editMode: false},{title: "test 2", valid: false, customStyle: {'background-color': '#d9edf7'}, editMode: true}];
 
-    $scope.listItems = [];
-
-    $scope.listItem = "";
-    $scope.linkItem = "";
+    $scope.listItems = [{title: "test 1", valid: true, customStyle: {'background-color': '#dff0d8'}, editMode: false},{title: "test 2", valid: false, customStyle: {'background-color': '#d9edf7'}, editMode: true}];
 
     $scope.addLink = function() {
+
+        var listItem = $('.linkListItem').val();
+
+        $scope.checkingLinkItem = true;
+
+        console.log(listItem);
+
+        socket.emit('validateItem', {listItem: listItem, type: "link"});
+
     };
+
+    socket.on('itemValidated', function(response) {
+
+        console.log(response);
+
+        $scope.$apply(function() {
+
+            $scope.checkingLinkItem = false;
+
+                if(response.type == 'link') {
+
+                    if(response.res.valid) {
+
+                        response.res.item.valid = true;
+                        response.res.item.customStyle = {'background-color': '#dff0d8'};
+                        $scope.links.push(response.res.item);
+
+                    } else {
+
+                        $scope.links.push({title: response.item, valid: false, customStyle: {'background-color': '#d9edf7'}, editMode: true});
+
+                    }
+
+                    console.log($scope.links);
+                }
+
+                if(response.type == 'item') {
+                    response.res.item.valid = response.res.valid;
+                    $scope.listItems.push(response.res.item);
+                }
+        });
+
+    });
 
     $scope.addItem = function() {
     };
+
+    console.log($('.typeaheadnewListItem'));
+
+    $('.newListItem').blur(function(){
+
+        console.log('focusout');
+
+    });
 
     var substringMatcher = function(strs) {
         return function findMatches(q, cb) {
@@ -48,7 +95,7 @@ mainApp.controller('CmsNewListController', function($scope) {
                 var listItemsData = JSON.parse(getListItems.responseText);
                 localStorage.setItem('listItems', JSON.stringify(listItemsData));
 
-                $('.typeaheadlistItems').typeahead({
+                $('.typeahead').typeahead({
                         hint: false,
                         highlight: true,
                         minLength: 2
@@ -64,7 +111,7 @@ mainApp.controller('CmsNewListController', function($scope) {
         getListItems.send();
 
     } else {
-        $('.typeaheadlistItems').typeahead({
+        $('.typeahead').typeahead({
                 hint: false,
                 highlight: true,
                 minLength: 2
@@ -75,7 +122,7 @@ mainApp.controller('CmsNewListController', function($scope) {
             });
     }
 
-    if(!activeList.listsData) {
+    /*if(!activeList.listsData) {
         // get listData
         var getLists = new XMLHttpRequest();
         var urlLists = window.location.origin + "/getLists";
@@ -103,7 +150,7 @@ mainApp.controller('CmsNewListController', function($scope) {
         getLists.open("GET", urlLists, true);
         getLists.send();
     } else {
-        $('.typeaheadlists').typeahead(
+        $('.typeahead').typeahead(
             {
                 hint: false,
                 highlight: true,
@@ -114,7 +161,11 @@ mainApp.controller('CmsNewListController', function($scope) {
                 source: substringMatcher(activeList.listsData.titles)
             }
         );
-    }
+    }*/
+
+
+
+
 
 
 
