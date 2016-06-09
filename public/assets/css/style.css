@@ -263,6 +263,19 @@ ul.nav li#first a {
     margin-top: 20px;
 }
 
+.checkingListSpinner {
+    height: 20px !important;
+    padding: 0 !important;
+}
+
+.checkingListSpinner > div {
+    width: 4px !important;
+}
+
+.btnCheckList {
+    width: 70px;
+}
+
 /*.newList li a {
     float: left;
     margin-left: 20px;
@@ -340,7 +353,6 @@ div.options {
     line-height: 34px;
     padding: 0 10px;
     margin: 0 auto;
-    width: 62px;
     text-align: center;
     font-size: 10px;
 }

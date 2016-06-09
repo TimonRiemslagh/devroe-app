@@ -69,6 +69,14 @@ mainApp.controller('CmsNewListItemController', function($scope, $route) {
         );
     }
 
+    $scope.checkList = function() {
+
+        $scope.checking = true;
+
+        socket.emit('validateList', $('.typeahead').val());
+
+    };
+
     $scope.previewPhoto = function() {
 
         var file = $('input[type=file]')[0].files[0];
@@ -88,8 +96,6 @@ mainApp.controller('CmsNewListItemController', function($scope, $route) {
 
         $scope.isBusy = true;
 
-        socket.emit('validateList', $('.typeahead').val());
-
         /*$scope.listItem.photo = $('.listItemPhoto')[0].files[0];
 
         if($scope.listItem.text && $scope.listItem.photo) {
@@ -107,21 +113,17 @@ mainApp.controller('CmsNewListItemController', function($scope, $route) {
 
         $scope.$apply(function() {
 
-            if(response.valid) {
+            $scope.checking = false;
 
-                $scope.listItem.photo = $('.listItemPhoto')[0].files[0];
+            if(response) {
 
-                if($scope.listItem.text && $scope.listItem.photo) {
-                    socket.emit('saveListItem', {title: $scope.listItem.text, photo: $scope.listItem.photo, photoUrl: $scope.listItem.photo.name, link: response.list._id});
-                } else {
-                    $('.newListItemSaveWarn').fadeIn().delay(3000).fadeOut();
-                }
+                $('.typeahead').css('background-color', '#dff0d8');
+
+            } else {
+
+                $('.typeahead').css('background-color', '#F2DEE1');
 
             }
-
-            $scope.linkIsInvalid = response.valid;
-
-            $scope.invalidLink = response.list.title;
 
         });
 

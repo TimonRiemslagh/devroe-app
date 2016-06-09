@@ -24,7 +24,16 @@
                    ng-keypress="$event.keyCode == 13 && checkList()">
 
             <span class="input-group-btn">
-                <button class="btn btn-default" ng-click="checkList()" type="button">Check</button>
+                <button class="btnCheckList btn btn-default" ng-click="checkList()" type="button">
+                    <span ng-show="!checking">Check</span>
+                    <div ng-show="checking" class="spinner checkingListSpinner">
+                        <div class="rect1"></div>
+                        <div class="rect2"></div>
+                        <div class="rect3"></div>
+                        <div class="rect4"></div>
+                        <div class="rect5"></div>
+                    </div>
+                </button>
             </span>
         </div>
 
@@ -37,8 +46,6 @@
         <button type="button" ng-click="saveListItem()" class="btn btn-success">Opslaan</button>
 
         <div class="newListItemSaveWarn alert alert-warning" role="alert">Geef een titel en een foto.</div>
-
-        <div ng-show="linkIsInvalid" class="alert alert-danger" role="alert"><strong>{{invalidLink}}</strong> bestaat niet als lijst.</div>
 
     </div>
 

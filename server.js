@@ -111,13 +111,16 @@ var validateLink = function(link, callback) {
 
             collection.ensureIndex({title: "text"});
 
-            collection.find({$text: {$search: link }})
+            collection.find({title: {$eq: link}})
                 .toArray(function(err, arr) {
+
+                    console.log(err, arr);
+
                     if(!err) {
                         if(arr.length > 0) {
-                            callback({valid: true, list: arr[0]});
+                            callback(true);
                         } else {
-                            callback({valid: false, list: ""});
+                            callback(false);
                         }
                     }
                     db.close();
