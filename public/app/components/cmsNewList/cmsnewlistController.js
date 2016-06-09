@@ -3,9 +3,9 @@ mainApp.controller('CmsNewListController', function($scope) {
     $('ul.nav li').removeClass('active');
     $('.cms').addClass("active");
 
-    $scope.links = [{title: "test 1", valid: true, customStyle: {'background-color': '#dff0d8'}, editMode: false},{title: "test 2", valid: false, customStyle: {'background-color': '#d9edf7'}, editMode: true}];
+    $scope.links = [{title: "test 1", valid: true, image: "test.jpg", customStyle: {'background-color': '#dff0d8'}, editMode: false},{title: "test 2", image: "test.jpg", valid: false, customStyle: {'background-color': '#d9edf7'}, editMode: true}];
 
-    $scope.listItems = [{title: "test 1", valid: true, customStyle: {'background-color': '#dff0d8'}, editMode: false},{title: "test 2", valid: false, customStyle: {'background-color': '#d9edf7'}, editMode: true}];
+    $scope.listItems = [{title: "test 1", valid: true, image: "test.jpg", link: "test link", customStyle: {'background-color': '#dff0d8'}, editMode: false},{title: "test 2", image: "test.jpg", valid: false, customStyle: {'background-color': '#d9edf7'}, editMode: true}];
 
     $scope.addLink = function() {
 
@@ -19,9 +19,65 @@ mainApp.controller('CmsNewListController', function($scope) {
 
     };
 
+    $scope.addItem = function() {
+        var listItem = $('.listItemInput').val();
+
+        $scope.checkingItem = true;
+
+        console.log(listItem);
+
+        socket.emit('validateItem', {listItem: listItem, type: "item"});
+    };
+
+    $scope.updatePhoto = function(event, type) {
+
+
+
+    };
+
+    $scope.toggleEdit = function(item, type) {
+
+        if(type == 'link') {
+            $scope.links.forEach(function(i) {
+
+                if(i.title == item.title) {
+                    i.editMode = !i.editMode;
+                }
+
+            });
+        }
+
+        if(type == 'item') {
+            $scope.listItems.forEach(function(i) {
+
+                if(i.title == item.title) {
+                    i.editMode = !i.editMode;
+                }
+
+            });
+        }
+
+    };
+
+    $scope.delete = function(item) {
+
+    };
+
+    $scope.remove = function(item, type) {
+
+        if(type == 'link') {
+           $scope.links.removeValue('title', item.title);
+        }
+
+        if(type == 'item') {
+            $scope.listItems.removeValue('title', item.title);
+        }
+
+    };
+
     socket.on('itemValidated', function(response) {
 
-        console.log(response);
+
 
         $scope.$apply(function() {
 
@@ -40,26 +96,32 @@ mainApp.controller('CmsNewListController', function($scope) {
                         $scope.links.push({title: response.item, valid: false, customStyle: {'background-color': '#d9edf7'}, editMode: true});
 
                     }
-
-                    console.log($scope.links);
                 }
 
                 if(response.type == 'item') {
-                    response.res.item.valid = response.res.valid;
-                    $scope.listItems.push(response.res.item);
+
+                    if (response.res.valid) {
+
+                        response.res.item.valid = true;
+                        response.res.item.customStyle = {'background-color': '#dff0d8'};
+                        $scope.listItems.push(response.res.item);
+
+                    } else {
+
+                        $scope.listItems.push({
+                            title: response.item,
+                            valid: false,
+                            customStyle: {'background-color': '#d9edf7'},
+                            editMode: true
+                        });
+
+                    }
                 }
+
+            $scope.checkingItem = false;
+            $scope.checkingLinkItem = false;
+
         });
-
-    });
-
-    $scope.addItem = function() {
-    };
-
-    console.log($('.typeaheadnewListItem'));
-
-    $('.newListItem').blur(function(){
-
-        console.log('focusout');
 
     });
 
@@ -122,7 +184,7 @@ mainApp.controller('CmsNewListController', function($scope) {
             });
     }
 
-    /*if(!activeList.listsData) {
+    if(!activeList.listsData) {
         // get listData
         var getLists = new XMLHttpRequest();
         var urlLists = window.location.origin + "/getLists";
@@ -150,7 +212,7 @@ mainApp.controller('CmsNewListController', function($scope) {
         getLists.open("GET", urlLists, true);
         getLists.send();
     } else {
-        $('.typeahead').typeahead(
+        $('.typeaheadlists').typeahead(
             {
                 hint: false,
                 highlight: true,
@@ -161,7 +223,7 @@ mainApp.controller('CmsNewListController', function($scope) {
                 source: substringMatcher(activeList.listsData.titles)
             }
         );
-    }*/
+    }
 
 
 

@@ -265,7 +265,7 @@ ul.nav li#first a {
 }
 
 .newList .glyphicon {
-    margin-left: 20px;
+    margin-right: 20px;
 }
 
 .newList .listTitle {
@@ -290,14 +290,26 @@ ul.nav li#first a {
 }
 
 .listNewItem {
-    width: 390px;
+}
+
+.newList .titleInput {
+    margin-bottom: 10px;
+}
+
+.newList .image {
+    width: 340px;
     float: left;
 }
 
+.newList #myInput {
+
+}
+
+.newList .listItemAuto {
+    margin-bottom: 10px;
+}
+
 .linkTitle {
-    float: left;
-    width: 245px;
-    margin-right: 5px;
 }
 
 /*.newList li a {
