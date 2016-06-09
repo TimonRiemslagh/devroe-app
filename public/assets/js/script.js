@@ -1,5 +1,8 @@
 var socket = io.connect();
 var lists = [];
+var activeList = {};
+activeList.listsData = JSON.parse(localStorage.getItem('lists'));
+activeList.listItemsData = JSON.parse(localStorage.getItem('listItems'));
 
 socket.on('connect', function() {
     socket.on('setAllLists', function(data) {
@@ -35,25 +38,34 @@ $(document).ready(function() {
         }
     });
 
-    var xmlhttp = new XMLHttpRequest();
-    var url = window.location.origin + "/listItems";
+    // get listData
+    var getLists = new XMLHttpRequest();
+    var url = window.location.origin + "/getLists";
 
-    console.log(url);
-
-    /*xmlhttp.onreadystatechange = function() {
-        if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
-            var myArr = JSON.parse(xmlhttp.responseText);
-
-            localStorage.setItem('listItems', myArr);
+    getLists.onreadystatechange = function() {
+        if (getLists.readyState == 4 && getLists.status == 200) {
+            var listListsData = JSON.parse(getLists.responseText);
+            localStorage.setItem('lists', JSON.stringify(listListsData));
+            console.log("lists added to storage");
         }
     };
 
-    var listItems = localStorage.getItem('listItems');
+    getLists.open("GET", url, true);
+    getLists.send();
 
-    if(!listItems) {
-        xmlhttp.open("GET", url, true);
-        xmlhttp.send();
-    }*/
+    // get listItems
+    var getListItems = new XMLHttpRequest();
+    var url = window.location.origin + "/getListItems";
 
+    getListItems.onreadystatechange = function() {
+        if (getListItems.readyState == 4 && getListItems.status == 200) {
+            var listItemsData = JSON.parse(getListItems.responseText);
+            localStorage.setItem('listItems', JSON.stringify(listItemsData));
+            console.log('listItems added to storage');
+        }
+    };
+
+    getListItems.open("GET", url, true);
+    getListItems.send();
 
 });

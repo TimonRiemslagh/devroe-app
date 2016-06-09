@@ -3,10 +3,14 @@
 
     <div class="input-group">
 
-        <input class="typeahead form-control" type="text" ng-model="linkItem" placeholder="Typ hier uw lijst item">
+        <input class="typeahead form-control"
+               type="text"
+               ng-model="linkItem"
+               ng-keypress="$event.keyCode == 13 && addLink()"
+               placeholder="Typ hier uw lijst item">
 
         <span class="input-group-btn">
-            <button class="btn btn-default" type="button">Voeg toe</button>
+            <button class="btn btn-default" ng-click="addLink()" type="button">Voeg toe</button>
         </span>
     </div>
 
@@ -32,9 +36,15 @@
             <input type="text" class="form-control" ng-model="listTitle" placeholder="Titel van de lijst">
 
             <div class="input-group">
-                <input type="text" class="form-control" ng-model="listItem" placeholder="Typ hier uw lijst item">
+
+                <input type="text"
+                       class="typeahead form-control"
+                       ng-model="listItem"
+                       ng-keypress="$event.keyCode == 13 && addItem()"
+                       placeholder="Typ hier uw lijst item">
+
                 <span class="input-group-btn">
-                    <button class="btn btn-default" type="button">Voeg toe</button>
+                    <button class="btn btn-default" ng-click="addItem()" type="button">Voeg toe</button>
                 </span>
             </div>
 

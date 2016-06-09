@@ -17,23 +17,46 @@ app.get('/sendmethisimage', function (req, res) {
 
 });
 
-app.get('/listItems', function(req, res) {
+app.get('/getListItems', function(req, res) {
 
     MongoClient.connect(url, function(err, db) {
 
         db.collection('listItems', function(err, collection){
+            var listItemsTitles = [];
 
-            collection.find({ }, { title: 1 })
+            collection.find()
                 .toArray(function(err, arr) {
-                    var listItems = [];
-                    arr.forEach(function(el){
-                        listItems.push(el.title)
+                    arr.forEach(function(el) {
+                        listItemsTitles.push(el.title);
                     });
-                    res.send(listItems);
+                    if(!err) {
+                        res.send({items: arr, titles: listItemsTitles});
+                        db.close();
+                    }
                 });
+        });
 
-        })
+    });
+});
 
+app.get('/getLists', function(req, res){
+
+    MongoClient.connect(url, function(err, db) {
+
+        db.collection('lists', function (err, collection) {
+            var listTitles = [];
+            collection.find()
+                .toArray(function (err, arr) {
+                    arr.forEach(function (el) {
+                        listTitles.push(el.title);
+                    });
+                    if (!err) {
+                        res.send({items: arr, titles: listTitles});
+                        db.close();
+                    }
+
+                });
+        });
     });
 
 });
@@ -80,8 +103,31 @@ var search = function(db, collection, searchTerm, callback) {
         });
 };
 
-var updateListItem = function(listItem, callback) {
+var validateLink = function(link, callback) {
 
+    MongoClient.connect(url, function(err, db) {
+
+        db.collection('lists', function(err, collection) {
+
+            collection.ensureIndex({title: "text"});
+
+            collection.find({$text: {$search: link }})
+                .toArray(function(err, arr) {
+                    if(!err) {
+                        if(arr.length > 0) {
+                            callback({valid: true, list: arr[0]});
+                        } else {
+                            callback({valid: false, list: ""});
+                        }
+                    }
+                    db.close();
+                });
+
+        });
+    });
+};
+
+var updateListItem = function(listItem, callback) {
     MongoClient.connect(url, function(err, db) {
 
         db.collection('listItems').update(
@@ -91,7 +137,8 @@ var updateListItem = function(listItem, callback) {
             {
                 $set: {
                     title: listItem.title,
-                    image: listItem.photoUrl
+                    image: listItem.photoUrl,
+                    link: listItem.link
                 }
             },
             {
@@ -220,11 +267,15 @@ io.on('connection', function(socket){
         });
     });
 
+    socket.on('validateList', function(list) {
+        validateLink(list, function(response) {
+            socket.emit('listValidated', response);
+        });
+    });
+
     socket.on('saveListItem', function(data) {
 
-        var newPath = __dirname + "/uploads/" + data.photoUrl;
-
-        console.log(newPath);
+        var newPath = __dirname + "/uploads/" + data.title + "_" + data.photoUrl;
 
         fs.writeFile(newPath, data.photo, function (err) {
             if(err) {
@@ -234,7 +285,7 @@ io.on('connection', function(socket){
             }
         });
 
-        updateListItem({title: data.title, photoUrl: newPath}, function(err) {
+        updateListItem({title: data.title, photoUrl: newPath, link: link}, function(err) {
             if(err) {
                 console.log("error: ", err);
             }

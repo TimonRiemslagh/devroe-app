@@ -3,12 +3,20 @@ mainApp.controller('CmsNewListController', function($scope) {
     $('ul.nav li').removeClass('active');
     $('.cms').addClass("active");
 
+    console.log(activeList.listItemsData.titles);
+
     $scope.links = [];
 
     $scope.listItems = [];
 
     $scope.listItem = "";
     $scope.linkItem = "";
+
+    $scope.addLink = function() {
+    };
+
+    $scope.addItem = function() {
+    };
 
     var substringMatcher = function(strs) {
         return function findMatches(q, cb) {
@@ -32,25 +40,21 @@ mainApp.controller('CmsNewListController', function($scope) {
         };
     };
 
-    socket.emit('getListItems');
+    if(activeList) {
 
-    socket.on('allListItems', function(data) {
-        $scope.$apply(function () {
+        $('.typeahead').typeahead({
+                hint: false,
+                highlight: true,
+                minLength: 2
+            },
+            {
+                name: 'listItems',
+                source: substringMatcher(activeList.listItemsData.titles)
+            });
 
-            $scope.listItems = data;
-            console.log($scope.listItems);
+    }
 
-            $('.typeahead').typeahead({
-                    hint: false,
-                    highlight: true,
-                    minLength: 2
-                },
-                {
-                    name: 'listItems',
-                    source: substringMatcher(data)
-                });
-        });
-    });
+
 
     /*$scope.listItems = [{id: 0, text: "", isBusy: false, isValid: false, style: {'background-color': 'white'}}];
 

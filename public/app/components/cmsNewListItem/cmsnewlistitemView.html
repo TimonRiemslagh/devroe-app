@@ -13,15 +13,36 @@
 
 <div ng-show="!isBusy" class="newListItem">
 
-    <button type="button" ng-click="saveListItem()" class="btnSaveListItem btn btn-success">Opslaan</button>
+    <div>
+
+        <input type="text" class="form-control" ng-model="listItem.text" placeholder="Titel van lijst item">
+
+        <div class="input-group">
+            <input type="text"
+                   class="typeahead form-control"
+                   placeholder="Link naar lijst"
+                   ng-keypress="$event.keyCode == 13 && checkList()">
+
+            <span class="input-group-btn">
+                <button class="btn btn-default" ng-click="checkList()" type="button">Check</button>
+            </span>
+        </div>
+
+    </div>
 
     <input type="file" accept="image/*" class="listItemPhoto" onchange="angular.element(this).scope().previewPhoto()">
 
-    <input type="text" class="listItemInput form-control" ng-model="listItem.text" placeholder="Titel van lijst item">
+    <div class="saveButton clearfix">
 
-    <img class="preview" src="" height="500" />
+        <button type="button" ng-click="saveListItem()" class="btn btn-success">Opslaan</button>
 
-    <div class="newListItemSaveWarn alert alert-warning" role="alert">Geef een titel en een foto.</div>
+        <div class="newListItemSaveWarn alert alert-warning" role="alert">Geef een titel en een foto.</div>
+
+        <div ng-show="linkIsInvalid" class="alert alert-danger" role="alert"><strong>{{invalidLink}}</strong> bestaat niet als lijst.</div>
+
+    </div>
+
+    <img class="preview" src="" height="300" />
 
 </div>
 

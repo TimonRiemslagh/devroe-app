@@ -5,6 +5,42 @@ mainApp.controller('CmsNewListItemController', function($scope, $route) {
     $scope.listItem = {};
     $scope.isBusy = false;
     $scope.saveSuccess = false;
+    $scope.linkIsInvalid = false;
+
+    var substringMatcher = function(strs) {
+        return function findMatches(q, cb) {
+            var matches, substringRegex;
+
+            // an array that will be populated with substring matches
+            matches = [];
+
+            // regex used to determine if a string contains the substring `q`
+            substringRegex = new RegExp(q, 'i');
+
+            // iterate through the pool of strings and for any string that
+            // contains the substring `q`, add it to the `matches` array
+            $.each(strs, function(i, str) {
+                if (substringRegex.test(str)) {
+                    matches.push(str);
+                }
+            });
+
+            cb(matches);
+        };
+    };
+
+    if(activeList) {
+
+        $('.typeahead').typeahead({
+                hint: false,
+                highlight: true,
+                minLength: 2
+            },
+            {
+                name: 'listItems',
+                source: substringMatcher(activeList.listsData.titles)
+            });
+    }
 
     $scope.previewPhoto = function() {
 
@@ -23,23 +59,48 @@ mainApp.controller('CmsNewListItemController', function($scope, $route) {
 
     $scope.saveListItem = function() {
 
-        //$scope.listItem.text = $('.listItemInput').val();
-        $scope.listItem.photo = $('.listItemPhoto')[0].files[0];
+        $scope.isBusy = true;
 
+        socket.emit('validateList', $('.typeahead').val());
+
+        /*$scope.listItem.photo = $('.listItemPhoto')[0].files[0];
 
         if($scope.listItem.text && $scope.listItem.photo) {
-            socket.emit('saveListItem', {title: $scope.listItem.text, photo: $scope.listItem.photo, photoUrl: $scope.listItem.photo.name});
-
+            socket.emit('saveListItem', {title: $scope.listItem.text, photo: $scope.listItem.photo, photoUrl: $scope.listItem.photo.name, link: $('.typeahead').val()});
             $scope.isBusy = true;
         } else {
             $('.newListItemSaveWarn').fadeIn().delay(3000).fadeOut();
-        }
+        }*/
 
     };
 
-    socket.on('saveListItemFeedback', function(err) {
 
-        console.log(err);
+
+    socket.on('listValidated', function(response) {
+
+        $scope.$apply(function() {
+
+            if(response.valid) {
+
+                $scope.listItem.photo = $('.listItemPhoto')[0].files[0];
+
+                if($scope.listItem.text && $scope.listItem.photo) {
+                    socket.emit('saveListItem', {title: $scope.listItem.text, photo: $scope.listItem.photo, photoUrl: $scope.listItem.photo.name, link: response.list._id});
+                } else {
+                    $('.newListItemSaveWarn').fadeIn().delay(3000).fadeOut();
+                }
+
+            }
+
+            $scope.linkIsInvalid = response.valid;
+
+            $scope.invalidLink = response.list.title;
+
+        });
+
+    });
+
+    socket.on('saveListItemFeedback', function(err) {
 
         if(err) {
             $scope.$apply(function() {
@@ -50,8 +111,9 @@ mainApp.controller('CmsNewListItemController', function($scope, $route) {
                 $scope.saveSuccess = true;
             });
             $('.newListItemAlertSuccess').fadeIn().delay(3000).fadeOut();
-            $scope.listItem.text = "";
+            $scope.listItem = {};
             $('.listItemPhoto').val("");
+            $('.typeahead').val("");
             $('.preview').hide();
         }
 
