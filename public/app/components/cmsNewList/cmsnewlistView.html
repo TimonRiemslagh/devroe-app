@@ -3,7 +3,7 @@
 
     <div class="input-group">
 
-        <input class="typeaheadlists linkListItem form-control"
+        <input class="typeahead linkListItem form-control"
                type="text"
                ng-keypress="$event.keyCode == 13 && addLink()"
                placeholder="Typ hier uw lijst item">
@@ -25,11 +25,11 @@
 
     <ul class="list-group">
 
-        <li class="list-group-item clearfix" ng-repeat="link in links" ng-style="link.customStyle">
+        <li class="list-group-item clearfix" ng-repeat="link in links" ng-style="link.res.item.customStyle">
 
             <div ng-show="link.editMode" class="editMode">
 
-                <input type="text" class="titleInput form-control" value="{{link.title}}" placeholder="Lijst item titel">
+                <input type="text" class="titleInput form-control" value="{{link.item}}" placeholder="Lijst item titel">
 
                 <input accept="image/*" onchange="angular.element(this).scope().updatePhoto()" type="file" />
 
@@ -37,11 +37,13 @@
 
             </div>
 
-            <span ng-show="!link.editMode" class="linkTitleNoLink">{{link.title}}</span>
+            <div class="noEditMode" ng-show="!link.editMode">
 
-            <span ng-show="!link.editMode" class="image">{{link.image.name}}</span>
+                <div class="">{{link.item}}</div>
+                <div class="">{{link.linkTitle}}</div>
+                <div class="">{{link.filename}}</div>
 
-
+            </div>
 
 
             <div class="options">
@@ -88,7 +90,7 @@
 
             <ul class="list-group">
 
-                <li class="list-group-item clearfix" ng-repeat="item in listItems" ng-style="item.customStyle">
+                <li class="list-group-item clearfix" ng-repeat="item in listItems" ng-style="item.res.item.customStyle">
 
                     <div ng-show="item.editMode" class="editMode">
 
@@ -188,9 +190,13 @@
 
                     </div>
 
-                    <span ng-show="!item.editMode" class="linkTitle">{{item.title}}</span>
+                    <div class="noEditMode" ng-show="!link.editMode">
 
-                    <span ng-show="!item.editMode" class="listNewItem">{{item.link}}</span>
+                        <div class="">{{item.item}}</div>
+                        <div class="">{{item.linkTitle}}</div>
+                        <div class="">{{item.filename}}</div>
+
+                    </div>
 
                     <div class="options">
 

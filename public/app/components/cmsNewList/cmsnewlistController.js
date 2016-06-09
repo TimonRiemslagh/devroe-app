@@ -3,17 +3,21 @@ mainApp.controller('CmsNewListController', function($scope) {
     $('ul.nav li').removeClass('active');
     $('.cms').addClass("active");
 
-    $scope.links = [{title: "test 1", valid: true, image: "test.jpg", customStyle: {'background-color': '#dff0d8'}, editMode: false},{title: "test 2", image: "test.jpg", valid: false, customStyle: {'background-color': '#d9edf7'}, editMode: true}];
+    console.log(activeList);
 
-    $scope.listItems = [{title: "test 1", valid: true, image: "test.jpg", link: "test link", customStyle: {'background-color': '#dff0d8'}, editMode: false},{title: "test 2", image: "test.jpg", valid: false, customStyle: {'background-color': '#d9edf7'}, editMode: true}];
+    //$scope.links = [{title: "test 1", valid: true, image: "test.jpg", customStyle: {'background-color': '#dff0d8'}, editMode: false},{title: "test 2", image: "test.jpg", valid: false, customStyle: {'background-color': '#d9edf7'}, editMode: true}];
+
+    $scope.links = [];
+
+    //$scope.listItems = [{title: "test 1", valid: true, image: "test.jpg", link: "test link", customStyle: {'background-color': '#dff0d8'}, editMode: false},{title: "test 2", image: "test.jpg", valid: false, customStyle: {'background-color': '#d9edf7'}, editMode: true}];
+
+    $scope.listItems = [];
 
     $scope.addLink = function() {
 
         var listItem = $('.linkListItem').val();
 
         $scope.checkingLinkItem = true;
-
-        console.log(listItem);
 
         socket.emit('validateItem', {listItem: listItem, type: "link"});
 
@@ -77,7 +81,7 @@ mainApp.controller('CmsNewListController', function($scope) {
 
     socket.on('itemValidated', function(response) {
 
-
+        console.log(response);
 
         $scope.$apply(function() {
 
@@ -89,11 +93,11 @@ mainApp.controller('CmsNewListController', function($scope) {
 
                         response.res.item.valid = true;
                         response.res.item.customStyle = {'background-color': '#dff0d8'};
-                        $scope.links.push(response.res.item);
+                        $scope.links.push(response);
 
                     } else {
 
-                        $scope.links.push({title: response.item, valid: false, customStyle: {'background-color': '#d9edf7'}, editMode: true});
+                        //unvalid list
 
                     }
                 }
@@ -104,7 +108,7 @@ mainApp.controller('CmsNewListController', function($scope) {
 
                         response.res.item.valid = true;
                         response.res.item.customStyle = {'background-color': '#dff0d8'};
-                        $scope.listItems.push(response.res.item);
+                        $scope.listItems.push(response);
 
                     } else {
 

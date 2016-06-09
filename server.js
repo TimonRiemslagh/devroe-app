@@ -151,6 +151,22 @@ var validateItem = function(item, callback) {
     });
 };
 
+var translateListId = function(listId, callback) {
+
+    var id = ObjectId(listId);
+
+    MongoClient.connect(url, function(err, db) {
+
+        db.collection('lists').find({_id: id})
+            .toArray(function(err, arr) {
+                if(!err) {
+                    callback(arr[0]);
+                }
+            })
+    });
+
+};
+
 var updateListItem = function(listItem, callback) {
     MongoClient.connect(url, function(err, db) {
 
@@ -298,9 +314,28 @@ io.on('connection', function(socket){
     });
 
     socket.on('validateItem', function(item) {
+
         validateItem(item.listItem, function(response) {
-            socket.emit('itemValidated', {item: item.listItem, res: response, type: item.type});
+
+            if(response.valid) {
+
+                translateListId(response.item.link, function(arr) {
+
+                    var fileName = response.item.image.split("/");
+                    var fn = fileName[fileName.length-1];
+
+                    socket.emit('itemValidated', {item: item.listItem, res: response, type: item.type, linkTitle: arr.title, filename: fn});
+
+                });
+
+            } else {
+
+                socket.emit('itemValidated', {type: item.type, item: item.listItem, res: response});
+
+            }
+
         });
+
     });
 
     socket.on('saveListItem', function(data) {

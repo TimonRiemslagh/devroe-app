@@ -272,6 +272,15 @@ ul.nav li#first a {
     margin-top: 20px;
 }
 
+.newList .noEditMode {
+    float: left;
+}
+
+.newList .noEditMode div {
+    float: left;
+    width: 200px;
+}
+
 .checkingListSpinner {
     height: 20px !important;
     padding: 0 !important;
