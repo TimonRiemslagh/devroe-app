@@ -29,9 +29,35 @@ mainApp.controller('CmsNewListItemController', function($scope, $route) {
         };
     };
 
-    if(activeList) {
+    if(!activeList.listsData) {
+        // get listData
+        var getLists = new XMLHttpRequest();
+        var url = window.location.origin + "/getLists";
 
-        $('.typeahead').typeahead({
+        getLists.onreadystatechange = function() {
+            if (getLists.readyState == 4 && getLists.status == 200) {
+                var listListsData = JSON.parse(getLists.responseText);
+                localStorage.setItem('lists', JSON.stringify(listListsData));
+
+                $('.typeahead').typeahead(
+                    {
+                        hint: false,
+                        highlight: true,
+                        minLength: 2
+                    },
+                    {
+                        name: 'listItems',
+                        source: substringMatcher(listListsData.titles)
+                    }
+                );
+            }
+        };
+
+        getLists.open("GET", url, true);
+        getLists.send();
+    } else {
+        $('.typeahead').typeahead(
+            {
                 hint: false,
                 highlight: true,
                 minLength: 2
@@ -39,7 +65,8 @@ mainApp.controller('CmsNewListItemController', function($scope, $route) {
             {
                 name: 'listItems',
                 source: substringMatcher(activeList.listsData.titles)
-            });
+            }
+        );
     }
 
     $scope.previewPhoto = function() {

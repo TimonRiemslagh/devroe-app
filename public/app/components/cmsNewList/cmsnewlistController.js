@@ -3,8 +3,6 @@ mainApp.controller('CmsNewListController', function($scope) {
     $('ul.nav li').removeClass('active');
     $('.cms').addClass("active");
 
-    console.log(activeList.listItemsData.titles);
-
     $scope.links = [];
 
     $scope.listItems = [];
@@ -40,9 +38,33 @@ mainApp.controller('CmsNewListController', function($scope) {
         };
     };
 
-    if(activeList) {
+    if(!activeList.listItemsData) {
+        // get listItems
+        var getListItems = new XMLHttpRequest();
+        var urlListItems = window.location.origin + "/getListItems";
 
-        $('.typeahead').typeahead({
+        getListItems.onreadystatechange = function() {
+            if (getListItems.readyState == 4 && getListItems.status == 200) {
+                var listItemsData = JSON.parse(getListItems.responseText);
+                localStorage.setItem('listItems', JSON.stringify(listItemsData));
+
+                $('.typeaheadlistItems').typeahead({
+                        hint: false,
+                        highlight: true,
+                        minLength: 2
+                    },
+                    {
+                        name: 'listItems',
+                        source: substringMatcher(listItemsData.titles)
+                    });
+            }
+        };
+
+        getListItems.open("GET", urlListItems, true);
+        getListItems.send();
+
+    } else {
+        $('.typeaheadlistItems').typeahead({
                 hint: false,
                 highlight: true,
                 minLength: 2
@@ -51,7 +73,47 @@ mainApp.controller('CmsNewListController', function($scope) {
                 name: 'listItems',
                 source: substringMatcher(activeList.listItemsData.titles)
             });
+    }
 
+    if(!activeList.listsData) {
+        // get listData
+        var getLists = new XMLHttpRequest();
+        var urlLists = window.location.origin + "/getLists";
+
+        getLists.onreadystatechange = function() {
+            if (getLists.readyState == 4 && getLists.status == 200) {
+                var listListsData = JSON.parse(getLists.responseText);
+                localStorage.setItem('lists', JSON.stringify(listListsData));
+
+                    $('.typeaheadlists').typeahead(
+                        {
+                            hint: false,
+                            highlight: true,
+                            minLength: 2
+                        },
+                        {
+                            name: 'listItems',
+                            source: substringMatcher(listListsData.titles)
+                        }
+                    );
+
+            }
+        };
+
+        getLists.open("GET", urlLists, true);
+        getLists.send();
+    } else {
+        $('.typeaheadlists').typeahead(
+            {
+                hint: false,
+                highlight: true,
+                minLength: 2
+            },
+            {
+                name: 'listItems',
+                source: substringMatcher(activeList.listsData.titles)
+            }
+        );
     }
 
 
