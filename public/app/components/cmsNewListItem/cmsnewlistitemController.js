@@ -54,23 +54,30 @@ mainApp.controller('CmsNewListItemController', ['$scope', 'ActiveList', function
 
     socket.on('saveListItemFeedback', function(data) {
 
-        console.log(data);
-
         $scope.$apply(function() {
             if (data.err) {
                 $scope.err = data.err;
             } else {
-                ActiveList.addListItem(data.doc.value);
+                ActiveList.addListItem(data.doc.ops[0]);
                 var localStor = JSON.parse(localStorage.getItem('listItems'));
-                localStor.titles.push(data.doc.value.title);
-                localStor.items.push(data.doc.value);
+                localStor.titles.push(data.doc.ops[0].title);
+                localStor.items.push(data.doc.ops[0]);
                 localStorage.setItem('listItems', JSON.stringify(localStor));
 
                 $scope.saveSuccess = true;
                 $('.newListItemAlertSuccess').fadeIn().delay(3000).fadeOut();
                 $scope.listItem = {};
-                $scope.imageElement = {data: "", file: ""};
+                $scope.imageElement = { data: null, file: null };
+                console.log($scope.imageElement);
                 $scope.customStyle = {'background-color': 'white'};
+                $scope.selectedLinkItem = "";
+
+                angular.forEach(
+                    angular.element("input[type='file']"),
+                    function(inputElem) {
+                        angular.element(inputElem).val(null);
+                    });
+
             }
 
             $scope.isBusy = false;

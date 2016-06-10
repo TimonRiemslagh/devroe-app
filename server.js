@@ -174,7 +174,7 @@ var insertListItem = function(listItem, callback) {
 
         db.collection('listItems').insert(listItem, function(err, object) {
 
-            console.log(object);
+            callback(err, object);
 
         });
 
