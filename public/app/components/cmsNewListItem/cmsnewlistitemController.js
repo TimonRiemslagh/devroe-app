@@ -50,9 +50,6 @@ mainApp.controller('CmsNewListItemController', ['$scope', 'ActiveList', function
         $scope.listItem.photo = $('.listItemPhoto')[0].files[0];
 
         if($scope.listItem.text && $scope.listItem.photo && $scope.listValidated) {
-
-            console.log({title: $scope.listItem.text, photo: $scope.listItem.photo, photoUrl: $scope.listItem.photo.name, link: $scope.listId });
-
             $scope.isBusy = true;
             socket.emit('saveListItem', {title: $scope.listItem.text, photo: $scope.listItem.photo, photoUrl: $scope.listItem.photo.name, link: $scope.listId });
 
@@ -87,12 +84,10 @@ mainApp.controller('CmsNewListItemController', ['$scope', 'ActiveList', function
     });
 
     socket.on('saveListItemFeedback', function(data) {
-
         $scope.$apply(function() {
             if (data.err) {
                 $scope.err = data.err;
             } else {
-
                 ActiveList.addListItem(data.doc.value);
                 var localStor = JSON.parse(localStorage.getItem('listItems'));
                 localStor.titles.push(data.doc.value.title);
