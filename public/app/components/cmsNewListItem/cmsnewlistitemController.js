@@ -1,4 +1,5 @@
-mainApp.controller('CmsNewListItemController', function($scope, $route) {
+mainApp.controller('CmsNewListItemController', ['$scope', 'ActiveList', function($scope, ActiveList) {
+
     $('ul.nav li').removeClass('active');
     $('.cms').addClass("active");
 
@@ -9,82 +10,25 @@ mainApp.controller('CmsNewListItemController', function($scope, $route) {
 
     var listInput = $('.typeahead');
 
-    var substringMatcher = function(strs) {
-        return function findMatches(q, cb) {
-            var matches, substringRegex;
-
-            // an array that will be populated with substring matches
-            matches = [];
-
-            // regex used to determine if a string contains the substring `q`
-            substringRegex = new RegExp(q, 'i');
-
-            // iterate through the pool of strings and for any string that
-            // contains the substring `q`, add it to the `matches` array
-            $.each(strs, function(i, str) {
-                if (substringRegex.test(str)) {
-                    matches.push(str);
-                }
-            });
-
-            cb(matches);
-        };
-    };
-
-    if(!activeList.listsData) {
-        // get listData
-        var getLists = new XMLHttpRequest();
-        var url = window.location.origin + "/getLists";
-
-        getLists.onreadystatechange = function() {
-            if (getLists.readyState == 4 && getLists.status == 200) {
-                var listListsData = JSON.parse(getLists.responseText);
-                localStorage.setItem('lists', JSON.stringify(listListsData));
-
-                listInput.typeahead(
-                    {
-                        hint: false,
-                        highlight: true,
-                        minLength: 2
-                    },
-                    {
-                        name: 'listItems',
-                        source: substringMatcher(listListsData.titles)
-                    }
-                );
-            }
-        };
-
-        getLists.open("GET", url, true);
-        getLists.send();
-    } else {
-        listInput.typeahead(
-            {
-                hint: false,
-                highlight: true,
-                minLength: 2
-            },
-            {
-                name: 'listItems',
-                source: substringMatcher(activeList.listsData.titles)
-            }
-        );
-    }
+    listInput.typeahead(
+        {
+            hint: false,
+            highlight: true,
+            minLength: 2
+        },
+        {
+            name: 'listItems',
+            source: substringMatcher(ActiveList.activeList.lists.titles)
+        });
 
     listInput.on("input", function() {
-
         $scope.listValidated = false;
-
         listInput.css('background-color', 'white');
-
     });
 
     $scope.checkList = function() {
-
         $scope.checking = true;
-
         socket.emit('validateList', listInput.val());
-
     };
 
     $scope.previewPhoto = function() {
@@ -109,10 +53,9 @@ mainApp.controller('CmsNewListItemController', function($scope, $route) {
 
             console.log({title: $scope.listItem.text, photo: $scope.listItem.photo, photoUrl: $scope.listItem.photo.name, link: $scope.listId });
 
-            $scope.savedListItem = {title: $scope.listItem.text, photo: $scope.listItem.photo, photoUrl: $scope.listItem.photo.name, link: $scope.listId };
-
-            socket.emit('saveListItem', {title: $scope.listItem.text, photo: $scope.listItem.photo, photoUrl: $scope.listItem.photo.name, link: $scope.listId });
             $scope.isBusy = true;
+            socket.emit('saveListItem', {title: $scope.listItem.text, photo: $scope.listItem.photo, photoUrl: $scope.listItem.photo.name, link: $scope.listId });
+
         } else {
             $('.newListItemSaveWarn').fadeIn().delay(3000).fadeOut();
         }
@@ -143,20 +86,18 @@ mainApp.controller('CmsNewListItemController', function($scope, $route) {
 
     });
 
-    socket.on('saveListItemFeedback', function(err) {
+    socket.on('saveListItemFeedback', function(data) {
 
         $scope.$apply(function() {
-
-            if (err) {
-
-                $scope.err = err;
-
+            if (data.err) {
+                $scope.err = data.err;
             } else {
 
-                // add to active list and localstorage
-                activeList.listItemsData.titles.push($scope.savedListItem.title);
-                activeList.listItemsData.items.push($scope.savedListItem);
-                localStorage.setItem('listItems', JSON.stringify(activeList.listItemsData));
+                ActiveList.addListItem(data.doc.value);
+                var localStor = JSON.parse(localStorage.getItem('listItems'));
+                localStor.titles.push(data.doc.value.title);
+                localStor.items.push(data.doc.value);
+                localStorage.setItem('listItems', JSON.stringify(localStor));
 
                 $scope.saveSuccess = true;
                 $('.newListItemAlertSuccess').fadeIn().delay(3000).fadeOut();
@@ -165,12 +106,9 @@ mainApp.controller('CmsNewListItemController', function($scope, $route) {
                 listInput.val("");
                 $('.preview').hide();
                 listInput.css('background-color', 'white');
-
-
-
             }
 
             $scope.isBusy = false;
         });
     });
-});
+}]);

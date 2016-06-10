@@ -18,6 +18,28 @@ Array.prototype.removeValue = function(name, value){
     this.push.apply(this, array); //push all elements except the one we want to delete
 };
 
+var substringMatcher = function(strs) {
+    return function findMatches(q, cb) {
+        var matches, substringRegex;
+
+        // an array that will be populated with substring matches
+        matches = [];
+
+        // regex used to determine if a string contains the substring `q`
+        substringRegex = new RegExp(q, 'i');
+
+        // iterate through the pool of strings and for any string that
+        // contains the substring `q`, add it to the `matches` array
+        $.each(strs, function(i, str) {
+            if (substringRegex.test(str)) {
+                matches.push(str);
+            }
+        });
+
+        cb(matches);
+    };
+};
+
 $(document).ready(function() {
     $('a').on('click', function(e) {
         var selectedLists = sessionStorage.getItem('selectedLists');
@@ -34,7 +56,7 @@ $(document).ready(function() {
     });
 
     // get listData
-    var getLists = new XMLHttpRequest();
+    /*var getLists = new XMLHttpRequest();
     var url = window.location.origin + "/getLists";
 
     getLists.onreadystatechange = function() {
@@ -61,6 +83,6 @@ $(document).ready(function() {
     };
 
     getListItems.open("GET", url, true);
-    getListItems.send();
+    getListItems.send();*/
 
 });

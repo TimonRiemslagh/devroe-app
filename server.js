@@ -162,6 +162,8 @@ var translateListId = function(listId, callback) {
                 if(!err) {
                     callback(arr[0]);
                 }
+
+                db.close();
             })
     });
 
@@ -170,21 +172,21 @@ var translateListId = function(listId, callback) {
 var updateListItem = function(listItem, callback) {
     MongoClient.connect(url, function(err, db) {
 
-        db.collection('listItems').update(
+        db.collection('listItems').findAndModify(
+            { title: listItem.title }, //query
+            [],
             {
-                title: listItem.title
-            },
-            {
-                $set: {
+                $set: { //replacement
                     title: listItem.title,
                     image: listItem.photoUrl,
                     link: listItem.link
                 }
             },
-            {
-                upsert: true
-            },
-            callback(err)
+            { upsert: true, new: true }, //options
+            function(err, object) {
+                callback(err, object);
+                db.close();
+            }
         );
     });
 };
@@ -342,22 +344,20 @@ io.on('connection', function(socket){
 
         var newPath = __dirname + "/uploads/" + data.title.replace(/[^A-Z0-9]+/ig, "_") + "_" + data.photoUrl;
 
-        fs.writeFile(newPath, data.photo, function (err) {
+        /*fs.writeFile(newPath, data.photo, function (err) {
             if(err) {
                 console.log(err);
             } else {
                 console.log("saved at " + newPath);
             }
-        });
+        });*/
 
-        updateListItem({title: data.title, photoUrl: newPath, link: data.link}, function(err) {
+        updateListItem({title: data.title, photoUrl: newPath, link: data.link}, function(err, document) {
             if(err) {
                 console.log("error: ", err);
             }
-
-            socket.emit('saveListItemFeedback', err);
+            socket.emit('saveListItemFeedback', {error: err, doc: document});
         });
-
     });
 
     socket.on('saveList', function(data) {
