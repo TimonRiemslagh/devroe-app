@@ -3,44 +3,35 @@ mainApp.controller('CmsNewListItemController', ['$scope', 'ActiveList', function
     //$('ul.nav li').removeClass('active');
     //$('.cms').addClass("active");
 
+    $scope.activeLists = ActiveList.activeList.lists.titles;
+
     $scope.listItem = {};
     $scope.isBusy = false;
     $scope.saveSuccess = false;
     $scope.listValidated = false;
+    $scope.showAlert = false;
+
+    $scope.imageElement = {
+        data: "",
+        file: ""
+    };
 
     $scope.checkList = function() {
         $scope.checking = true;
-        socket.emit('validateList', listInput.val());
-    };
-
-    $scope.previewPhoto = function() {
-
-        //var file = $('input[type=file]')[0].files[0];
-
-        var reader = new FileReader();
-
-        reader.addEventListener("load", function () {
-            //$('.preview').attr("src", reader.result).show();
-        }, false);
-
-        if (file) {
-            reader.readAsDataURL(file);
-        }
+        socket.emit('validateList', $scope.selectedLinkItem);
     };
 
     $scope.saveListItem = function() {
-        //$scope.listItem.photo = $('.listItemPhoto')[0].files[0];
 
-        if($scope.listItem.text && $scope.listItem.photo && $scope.listValidated) {
+        if($scope.listItem.text && $scope.imageElement.file && $scope.listValidated) {
+
             $scope.isBusy = true;
-            //socket.emit('saveListItem', {title: $scope.listItem.text, photo: $scope.listItem.photo, photoUrl: $scope.listItem.photo.name, link: $scope.listId });
+            socket.emit('saveListItem', {title: $scope.listItem.text, photo: $scope.imageElement.file, photoUrl: $scope.imageElement.name, link: $scope.listId });
 
         } else {
-            //$('.newListItemSaveWarn').fadeIn().delay(3000).fadeOut();
+            $('.newListItemSaveWarn').fadeIn().delay(3000).fadeOut();
         }
     };
-
-
 
     socket.on('listValidated', function(response) {
 
@@ -49,16 +40,12 @@ mainApp.controller('CmsNewListItemController', ['$scope', 'ActiveList', function
             $scope.checking = false;
 
             if(response.valid) {
-
                 $scope.listValidated = true;
                 $scope.listId = response.list._id;
-
-                //listInput.css('background-color', '#dff0d8');
+                $scope.customStyle = {'background-color': '#dff0d8'};
 
             } else {
-
-                //listInput.css('background-color', '#F2DEE1');
-
+                $scope.customStyle = {'background-color': '#F2DEE1'};
             }
 
         });
@@ -66,6 +53,9 @@ mainApp.controller('CmsNewListItemController', ['$scope', 'ActiveList', function
     });
 
     socket.on('saveListItemFeedback', function(data) {
+
+        console.log(data);
+
         $scope.$apply(function() {
             if (data.err) {
                 $scope.err = data.err;
@@ -77,11 +67,10 @@ mainApp.controller('CmsNewListItemController', ['$scope', 'ActiveList', function
                 localStorage.setItem('listItems', JSON.stringify(localStor));
 
                 $scope.saveSuccess = true;
-                //$('.newListItemAlertSuccess').fadeIn().delay(3000).fadeOut();
+                $('.newListItemAlertSuccess').fadeIn().delay(3000).fadeOut();
                 $scope.listItem = {};
-                //$('.listItemPhoto').val("");
-                //$('.preview').hide();
-                //listInput.css('background-color', 'white');
+                $scope.imageElement = {data: "", file: ""};
+                $scope.customStyle = {'background-color': 'white'};
             }
 
             $scope.isBusy = false;

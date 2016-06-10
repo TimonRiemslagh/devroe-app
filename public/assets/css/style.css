@@ -217,7 +217,6 @@ ul.nav li#first a {
 }
 
 .preview {
-    display: none;
     margin-top: 10px;
 }
 
@@ -458,5 +457,27 @@ div.options {
     }
 }
 
-/* angular bootstrap ui */
-.nav, .pagination, .carousel, .panel-title a { cursor: pointer; }
+@keyframes appear {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+@keyframes disappear {
+    from {
+        opacity: 1;
+    }
+    to {
+        opacity: 0;
+    }
+}
+
+.fade.ng-enter {
+    animation: 2s appear;
+}
+
+.fade.ng-leave {
+    animation: 1s disappear;
+}

@@ -18,28 +18,25 @@
         <input type="text" class="form-control" ng-model="listItem.text" placeholder="Titel van lijst item">
 
         <div class="input-group">
+
             <input type="text"
-                   class="typeahead form-control"
-                   placeholder="Link naar lijst"
-                   ng-keypress="$event.keyCode == 13 && checkList()">
+                   ng-model="selectedLinkItem"
+                   ng-keypress="$event.keyCode == 13 && checkList()"
+                   uib-typeahead="list for list in activeLists | filter: $viewValue | limitTo: 5"
+                   class="form-control"
+                   placeholder="Link naar lijst" ng-style="customStyle">
 
             <span class="input-group-btn">
                 <button class="btnCheckList btn btn-default" ng-click="checkList()" type="button">
                     <span ng-show="!checking">Check</span>
-                    <div ng-show="checking" class="spinner checkingListSpinner">
-                        <div class="rect1"></div>
-                        <div class="rect2"></div>
-                        <div class="rect3"></div>
-                        <div class="rect4"></div>
-                        <div class="rect5"></div>
-                    </div>
+                    <span loader ng-show="checking"></span>
                 </button>
             </span>
         </div>
 
     </div>
 
-    <input type="file" accept="image/*" class="listItemPhoto" onchange="angular.element(this).scope().previewPhoto()">
+    <input accept="image/*" type="file" class="listItemPhoto" file-input="imageElement" />
 
     <div class="saveButton clearfix">
 
@@ -49,7 +46,7 @@
 
     </div>
 
-    <img class="preview" src="" height="300" />
+    <img class="preview" ng-src="{{imageElement.data}}" height="300" />
 
 </div>
 
