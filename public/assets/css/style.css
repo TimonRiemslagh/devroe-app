@@ -238,6 +238,16 @@ ul.nav li#first a {
     margin-bottom: 10px;
 }
 
+.newList .link p {
+    margin:0;
+    float: left;
+    width: 200px;
+}
+
+.newList .link .options a {
+    margin: 0;
+}
+
 .listItemPhoto {
     margin: 10px 0;
 }
@@ -447,3 +457,6 @@ div.options {
         -webkit-transform: scaleY(1.0);
     }
 }
+
+/* angular bootstrap ui */
+.nav, .pagination, .carousel, .panel-title a { cursor: pointer; }

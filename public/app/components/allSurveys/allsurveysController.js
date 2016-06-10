@@ -1,7 +1,7 @@
 mainApp.controller('AllSurveysController', function($scope) {
 
-    $('ul.nav li').removeClass('active');
-    $('.allSurveys').addClass("active");
+    //$('ul.nav li').removeClass('active');
+    //$('.allSurveys').addClass("active");
 
     $scope.users = ['timon'];
 

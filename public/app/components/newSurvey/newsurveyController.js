@@ -1,7 +1,7 @@
 mainApp.controller('NewSurveyController', function($scope, $routeParams, $location) {
 
-    $('ul.nav li').removeClass('active');
-    $('.newSurvey').addClass("active");
+    //$('ul.nav li').removeClass('active');
+    //$('.newSurvey').addClass("active");
 
     $scope.survey = {offnumber: "", client: "", address: ""};
 
@@ -9,7 +9,7 @@ mainApp.controller('NewSurveyController', function($scope, $routeParams, $locati
 
         if($scope.survey.offnumber == "" || $scope.survey.client == "" || $scope.survey.address == "") {
 
-            $(".startSurveyAlert").fadeIn();
+            //$(".startSurveyAlert").fadeIn();
 
         } else {
 

@@ -1,7 +1,7 @@
 mainApp.controller('CmsNewReferenceController', function($scope, $location) {
 
-    $('ul.nav li').removeClass('active');
-    $('.cms').addClass("active");
+    //$('ul.nav li').removeClass('active');
+    //$('.cms').addClass("active");
 
     $scope.ref = {};
     $scope.isBusy = false;

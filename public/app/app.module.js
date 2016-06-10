@@ -1,4 +1,4 @@
-var mainApp = angular.module("mainApp", ['ngRoute']);
+var mainApp = angular.module('mainApp', ['ngRoute', 'ui.bootstrap', 'ngAnimate']);
 
 mainApp.service( 'ActiveList', [ '$rootScope', function( $rootScope ) {
 
@@ -92,9 +92,5 @@ mainApp.controller('indexController', ['$scope', 'ActiveList', function($scope, 
     }
 
     $scope.users = ["timon"];
-
-    $scope.$on('listItems.update', function(event) {
-        console.log('updated');
-    });
 
 }]);

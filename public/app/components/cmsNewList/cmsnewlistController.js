@@ -1,9 +1,10 @@
-mainApp.controller('CmsNewListController', ['$scope', 'ActiveList', function($scope, ActiveList) {
+mainApp.controller('CmsNewListController', ['$scope', 'ActiveList', '$filter', function($scope, ActiveList, $filter) {
 
-    $('ul.nav li').removeClass('active');
-    $('.cms').addClass("active");
+    //$('ul.nav li').removeClass('active');
+    //$('.cms').addClass("active");
 
-    console.log(ActiveList.activeList);
+    $scope.activeListItems = ActiveList.activeList.listItems.titles;
+    $scope.activeLists = ActiveList.activeList.lists.titles;
 
     //$scope.links = [{title: "test 1", valid: true, image: "test.jpg", customStyle: {'background-color': '#dff0d8'}, editMode: false},{title: "test 2", image: "test.jpg", valid: false, customStyle: {'background-color': '#d9edf7'}, editMode: true}];
 
@@ -15,31 +16,23 @@ mainApp.controller('CmsNewListController', ['$scope', 'ActiveList', function($sc
 
     $scope.addLink = function() {
 
-        var listItem = $('.linkListItem').val();
-
         $scope.checkingLinkItem = true;
-
-        socket.emit('validateItem', {listItem: listItem, type: "link"});
+        socket.emit('validateItem', {listItem: $scope.selectedLinkItem, type: "link"});
 
     };
 
     $scope.addItem = function() {
-        var listItem = $('.listItemInput').val();
-
         $scope.checkingItem = true;
-
-        console.log(listItem);
-
-        socket.emit('validateItem', {listItem: listItem, type: "item"});
+        socket.emit('validateItem', {listItem: $scope.selectedItem, type: "item"});
     };
 
     $scope.updatePhoto = function(event, type) {
 
-
-
     };
 
     $scope.toggleEdit = function(item, type) {
+
+        console.log(item.file);
 
         if(type == 'link') {
             $scope.links.forEach(function(i) {
@@ -70,18 +63,16 @@ mainApp.controller('CmsNewListController', ['$scope', 'ActiveList', function($sc
     $scope.remove = function(item, type) {
 
         if(type == 'link') {
-           $scope.links.removeValue('title', item.title);
+            $scope.links =  $filter('filter')($scope.links, {title: item.item});
         }
 
         if(type == 'item') {
-            $scope.listItems.removeValue('title', item.title);
+            $scope.items =  $filter('filter')($scope.items, {title: item.item});
         }
 
     };
 
     socket.on('itemValidated', function(response) {
-
-        console.log(response);
 
         $scope.$apply(function() {
 
@@ -91,8 +82,8 @@ mainApp.controller('CmsNewListController', ['$scope', 'ActiveList', function($sc
 
                     if(response.res.valid) {
 
-                        response.res.item.valid = true;
-                        response.res.item.customStyle = {'background-color': '#dff0d8'};
+                        response.valid = true;
+                        response.customStyle = {'background-color': '#dff0d8'};
                         $scope.links.push(response);
 
                     } else {
@@ -104,10 +95,12 @@ mainApp.controller('CmsNewListController', ['$scope', 'ActiveList', function($sc
 
                 if(response.type == 'item') {
 
+                    console.log(response);
+
                     if (response.res.valid) {
 
-                        response.res.item.valid = true;
-                        response.res.item.customStyle = {'background-color': '#dff0d8'};
+                        response.valid = true;
+                        response.customStyle = {'background-color': '#dff0d8'};
                         $scope.listItems.push(response);
 
                     } else {
@@ -115,7 +108,7 @@ mainApp.controller('CmsNewListController', ['$scope', 'ActiveList', function($sc
                         $scope.listItems.push({
                             title: response.item,
                             valid: false,
-                            customStyle: {'background-color': '#d9edf7'},
+                            customStyle: {'background-color': '#fcf8e3'},
                             editMode: true
                         });
 
@@ -129,27 +122,15 @@ mainApp.controller('CmsNewListController', ['$scope', 'ActiveList', function($sc
 
     });
 
-    $('.typeahead').typeahead({
-            hint: false,
-            highlight: true,
-            minLength: 2
-        },
-        {
-            name: 'listItems',
-            source: substringMatcher(ActiveList.activeList.listItems.titles)
-        });
+    $scope.$on('listItems.update', function(event) {
+        console.log("listItemsupdated");
+        $scope.activeListItems = ActiveList.activeList.listItems.titles;
+    });
 
-    $('.typeaheadlists').typeahead(
-        {
-            hint: false,
-            highlight: true,
-            minLength: 2
-        },
-        {
-            name: 'listItems',
-            source: substringMatcher(ActiveList.activeList.lists.titles)
-        }
-    );
+    $scope.$on('lists.update', function(event) {
+        console.log("listsupdated");
+        $scope.activeLists = ActiveList.activeList.lists.titles;
+    });
 
 
 

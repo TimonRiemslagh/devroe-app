@@ -1,57 +1,33 @@
 <div class="newList">
     <h4>Links</h4>
 
+    <div class="alert alert-info" role="alert"><strong>Let op!</strong> Door een lijst item toe te voegen die linkt naar een andere lijst dan deze wordt de link overschreven.</div>
+
     <div class="input-group">
 
-        <input class="typeahead linkListItem form-control"
-               type="text"
+        <input type="text"
+               ng-model="selectedLinkItem"
                ng-keypress="$event.keyCode == 13 && addLink()"
-               placeholder="Typ hier uw lijst item">
+               uib-typeahead="listItem for listItem in activeListItems | filter: $viewValue | limitTo: 5"
+               class="form-control"
+               placeholder="Links naar deze lijst">
 
         <span class="input-group-btn">
             <button class="btnAddItem btn btn-default" ng-click="addLink()" type="button">
                 <span ng-show="!checkingLinkItem">Voeg toe</span>
-                <div ng-show="checkingLinkItem" class="spinner checkingListSpinner">
-                    <div class="rect1"></div>
-                    <div class="rect2"></div>
-                    <div class="rect3"></div>
-                    <div class="rect4"></div>
-                    <div class="rect5"></div>
-                </div>
-
+                <span loader ng-show="checkingLinkItem"></span>
             </button>
         </span>
     </div>
 
     <ul class="list-group">
 
-        <li class="list-group-item clearfix" ng-repeat="link in links" ng-style="link.res.item.customStyle">
-
-            <div ng-show="link.editMode" class="editMode">
-
-                <input type="text" class="titleInput form-control" value="{{link.item}}" placeholder="Lijst item titel">
-
-                <input accept="image/*" onchange="angular.element(this).scope().updatePhoto()" type="file" />
-
-                <a href="" ng-click="toggleEdit(link, 'link')" class="glyphicon glyphicon-ok" aria-hidden="true"></a>
-
-            </div>
-
-            <div class="noEditMode" ng-show="!link.editMode">
-
-                <div class="">{{link.item}}</div>
-                <div class="">{{link.linkTitle}}</div>
-                <div class="">{{link.filename}}</div>
-
-            </div>
-
-
+        <li class="list-group-item link clearfix" ng-repeat="link in links">
+            <p class="">{{link.item}}</p>
+            <p class="">{{link.linkTitle}}</p>
+            <p class="">{{link.filename}}</p>
             <div class="options">
-
-                <a href="" ng-click="toggleEdit(link, 'link')" ng-show="!link.editMode" class="glyphicon glyphicon-pencil" aria-hidden="true"></a>
-                <a href="" ng-click="delete(link)" ng-show="link.valid && !link.editMode" class="glyphicon glyphicon-trash" aria-hidden="true"></a>
-                <a href="" ng-click="remove(link, 'link')" ng-show="!link.editMode" class="glyphicon glyphicon-remove" aria-hidden="true"></a>
-
+                <a href="" ng-click="remove(link, 'link')" class="glyphicon glyphicon-remove" aria-hidden="true"></a>
             </div>
 
         </li>
@@ -68,21 +44,17 @@
             <div class="input-group">
 
                 <input type="text"
-                       class="typeahead listItemInput form-control"
+                       ng-model="selectedItem"
                        ng-keypress="$event.keyCode == 13 && addItem()"
-                       placeholder="Typ hier uw lijst item">
+                       uib-typeahead="listItem for listItem in activeListItems | filter: $viewValue | limitTo: 5"
+                       class="form-control"
+                       placeholder="Lijst item">
 
                 <span class="input-group-btn">
                     <button class="btnAddItem btn btn-default" ng-click="addItem()" type="button">
 
                         <span ng-show="!checkingItem">Voeg toe</span>
-                        <div ng-show="checkingItem" class="spinner checkingListSpinner">
-                            <div class="rect1"></div>
-                            <div class="rect2"></div>
-                            <div class="rect3"></div>
-                            <div class="rect4"></div>
-                            <div class="rect5"></div>
-                        </div>
+                        <span loader ng-show="checkingItem"></span>
 
                     </button>
                 </span>
@@ -90,7 +62,7 @@
 
             <ul class="list-group">
 
-                <li class="list-group-item clearfix" ng-repeat="item in listItems" ng-style="item.res.item.customStyle">
+                <li class="list-group-item clearfix" ng-repeat="item in listItems" ng-style="item.customStyle">
 
                     <div ng-show="item.editMode" class="editMode">
 
@@ -98,99 +70,30 @@
 
                         <div class="listItemAuto input-group">
 
-                            <input class="typeaheadlists form-control"
-                                   type="text"
+                            <input type="text"
+                                   ng-model="item.link"
                                    ng-keypress="$event.keyCode == 13 && checkList()"
+                                   uib-typeahead="list for list in activeLists | filter: $viewValue | limitTo: 5"
+                                   class="form-control"
                                    placeholder="Link naar lijst">
 
-                            <script>
-                                var substringMatcher = function(strs) {
-                                    return function findMatches(q, cb) {
-                                        var matches, substringRegex;
-
-                                        // an array that will be populated with substring matches
-                                        matches = [];
-
-                                        // regex used to determine if a string contains the substring `q`
-                                        substringRegex = new RegExp(q, 'i');
-
-                                        // iterate through the pool of strings and for any string that
-                                        // contains the substring `q`, add it to the `matches` array
-                                        $.each(strs, function(i, str) {
-                                            if (substringRegex.test(str)) {
-                                                matches.push(str);
-                                            }
-                                        });
-
-                                        cb(matches);
-                                    };
-                                };
-
-                                if(!activeList.listsData) {
-                                    // get listData
-                                    var getLists = new XMLHttpRequest();
-                                    var urlLists = window.location.origin + "/getLists";
-
-                                    getLists.onreadystatechange = function() {
-                                        if (getLists.readyState == 4 && getLists.status == 200) {
-                                            var listListsData = JSON.parse(getLists.responseText);
-                                            localStorage.setItem('lists', JSON.stringify(listListsData));
-
-                                            $('.typeaheadlists').typeahead(
-                                                    {
-                                                        hint: false,
-                                                        highlight: true,
-                                                        minLength: 2
-                                                    },
-                                                    {
-                                                        name: 'listItems',
-                                                        source: substringMatcher(listListsData.titles)
-                                                    }
-                                            );
-
-                                        }
-                                    };
-
-                                    getLists.open("GET", urlLists, true);
-                                    getLists.send();
-                                } else {
-                                    $('.typeaheadlists').typeahead(
-                                            {
-                                                hint: false,
-                                                highlight: true,
-                                                minLength: 2
-                                            },
-                                            {
-                                                name: 'listItems',
-                                                source: substringMatcher(activeList.listsData.titles)
-                                            }
-                                    );
-                                }
-                            </script>
 
                                 <span class="input-group-btn">
                                     <button class="btnAddItem btn btn-default" ng-click="checkLink()" type="button">
                                         <span ng-show="!item.checking">Check</span>
-                                        <div ng-show="item.checking" class="spinner checkingListSpinner">
-                                            <div class="rect1"></div>
-                                            <div class="rect2"></div>
-                                            <div class="rect3"></div>
-                                            <div class="rect4"></div>
-                                            <div class="rect5"></div>
-                                        </div>
-
+                                        <span loader ng-show="item.checking"></span>
                                     </button>
                                 </span>
 
                         </div>
 
-                        <input accept="image/*" onchange="angular.element(this).scope().updatePhoto()" type="file" />
+                        <input accept="image/*" type="file" file-input="item.file" />
 
                         <a href="" ng-click="toggleEdit(item, 'item')" class="glyphicon glyphicon-ok" aria-hidden="true"></a>
 
                     </div>
 
-                    <div class="noEditMode" ng-show="!link.editMode">
+                    <div class="noEditMode" ng-show="!item.editMode">
 
                         <div class="">{{item.item}}</div>
                         <div class="">{{item.linkTitle}}</div>
@@ -203,7 +106,6 @@
                         <a href="" ng-click="toggleEdit(item, 'item')" ng-show="!item.editMode" class="glyphicon glyphicon-pencil" aria-hidden="true"></a>
                         <a href="" ng-click="delete(link)" ng-show="item.valid && $item.editMode" class="glyphicon glyphicon-trash" aria-hidden="true"></a>
                         <a href="" ng-click="remove(item, 'item')" ng-show="!item.editMode" class="glyphicon glyphicon-remove" aria-hidden="true"></a>
-
 
                     </div>
 
