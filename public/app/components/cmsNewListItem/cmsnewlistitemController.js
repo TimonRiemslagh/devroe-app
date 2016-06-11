@@ -26,7 +26,7 @@ mainApp.controller('CmsNewListItemController', ['$scope', 'ActiveList', function
         if($scope.listItem.text && $scope.imageElement.file && $scope.listValidated) {
 
             $scope.isBusy = true;
-            socket.emit('saveListItem', {title: $scope.listItem.text, photo: $scope.imageElement.file, photoUrl: $scope.imageElement.name, link: $scope.listId });
+            socket.emit('saveListItem', {title: $scope.listItem.text, photo: $scope.imageElement.file, photoUrl: $scope.imageElement.file.name, link: $scope.listId, listTitle: $scope.listLinkTitle });
 
         } else {
             $('.newListItemSaveWarn').fadeIn().delay(3000).fadeOut();
@@ -43,7 +43,7 @@ mainApp.controller('CmsNewListItemController', ['$scope', 'ActiveList', function
                 $scope.listValidated = true;
                 $scope.listId = response.list._id;
                 $scope.customStyle = {'background-color': '#dff0d8'};
-
+                $scope.listLinkTitle = response.list.title;
             } else {
                 $scope.customStyle = {'background-color': '#F2DEE1'};
             }
@@ -54,33 +54,63 @@ mainApp.controller('CmsNewListItemController', ['$scope', 'ActiveList', function
 
     socket.on('saveListItemFeedback', function(data) {
 
+        console.log(data);
+
         $scope.$apply(function() {
             if (data.err) {
                 $scope.err = data.err;
             } else {
-                ActiveList.addListItem(data.doc.ops[0]);
-                var localStor = JSON.parse(localStorage.getItem('listItems'));
-                localStor.titles.push(data.doc.ops[0].title);
-                localStor.items.push(data.doc.ops[0]);
-                localStorage.setItem('listItems', JSON.stringify(localStor));
 
-                $scope.saveSuccess = true;
-                $('.newListItemAlertSuccess').fadeIn().delay(3000).fadeOut();
-                $scope.listItem = {};
-                $scope.imageElement = { data: null, file: null };
-                console.log($scope.imageElement);
-                $scope.customStyle = {'background-color': 'white'};
-                $scope.selectedLinkItem = "";
+                if(data) {
 
-                angular.forEach(
-                    angular.element("input[type='file']"),
-                    function(inputElem) {
-                        angular.element(inputElem).val(null);
-                    });
+                    var localStor = JSON.parse(localStorage.getItem('listItems'));
+
+                    if(data.doc.lastErrorObject.updatedExisting) {
+
+                        console.log("test");
+
+                        ActiveList.updateListItem(data.original);
+
+                        for(var t = 0; t < localStor.items.length; t++) {
+                            if(localStor.items[t].title == data.original.title) {
+                                console.log("found", localStor.items[t]);
+                                localStor.items[t] = data.original;
+                                console.log("updated", localStor.items[t]);
+                            }
+                        }
+
+                        localStorage.setItem('listItems', JSON.stringify(localStor));
+
+                    } else {
+
+                        ActiveList.addListItem(data.doc, data.doc.value.title); //+ " (" + data.doc.value.link.title + ")"
+                        var localStor = JSON.parse(localStorage.getItem('listItems'));
+                        localStor.titles.push(data.doc.value.title); //" (" + data.doc.value.link.title + ")"
+                        localStor.items.push(data.doc.value);
+
+                        localStorage.setItem('listItems', JSON.stringify(localStor));
+
+                    }
+
+                    $scope.saveSuccess = true;
+                    $('.newListItemAlertSuccess').fadeIn().delay(3000).fadeOut();
+                    $scope.listItem = {};
+                    $scope.imageElement = { data: null, file: null };
+                    $scope.customStyle = {'background-color': 'white'};
+                    $scope.selectedLinkItem = "";
+                    document.getElementById('imageInput').value = null;
+
+                }
 
             }
 
             $scope.isBusy = false;
         });
+    });
+
+    $scope.$on('lists.update', function(event) {
+        console.log("lists updated");
+
+        $scope.activeLists = ActiveList.activeList.lists.titles;
     });
 }]);

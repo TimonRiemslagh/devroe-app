@@ -18,7 +18,7 @@ mainApp.service( 'ActiveList', [ '$rootScope', function( $rootScope ) {
         setListItems: function(listItems) {
             activeList.listItems = [];
             service.activeList.listItems = listItems;
-            $rootScope.$broadcast( 'listItems.update' );
+            $rootScope.$broadcast( 'ActiveList.update' );
         },
 
         addList: function(list) {
@@ -26,10 +26,18 @@ mainApp.service( 'ActiveList', [ '$rootScope', function( $rootScope ) {
             $rootScope.$broadcast( 'lists.update' );
         },
 
-        addListItem: function(listItem) {
+        addListItem: function(listItem, title) {
             service.activeList.listItems.items.push( listItem );
-            service.activeList.listItems.titles.push( listItem.title );
-            $rootScope.$broadcast( 'listItems.update' );
+            service.activeList.listItems.titles.push( title );
+            $rootScope.$broadcast( 'ActiveList.update' );
+        },
+
+        updateListItem: function(listItem) {
+            for(var t = 0; t < this.activeList.listItems.items.length; t++) {
+                if(this.activeList.listItems.items[t].title == listItem.title) {
+                    this.activeList.listItems.items[t] = listItem;
+                }
+            }
         },
 
         removeList: function(list) {
@@ -49,44 +57,46 @@ mainApp.controller('indexController', ['$scope', 'ActiveList', function($scope, 
     var localStorageLists = localStorage.getItem('lists');
     var localStorageListItems = localStorage.getItem('listItems');
 
-    if(localStorageLists) {
+    var getLists = new XMLHttpRequest();
+    var getListItems = new XMLHttpRequest();
 
+    getLists.onreadystatechange = function() {
+
+        if (getLists.readyState == 4 && getLists.status == 200) {
+
+            var data = JSON.parse(getLists.responseText);
+            localStorage.setItem('lists', JSON.stringify(data));
+            ActiveList.setLists(data);
+            console.log("lists added to storage");
+        }
+    };
+
+    getListItems.onreadystatechange = function() {
+        if (getListItems.readyState == 4 && getListItems.status == 200) {
+
+            var data = JSON.parse(getListItems.responseText);
+            localStorage.setItem('listItems', JSON.stringify(data));
+            ActiveList.setListItems(data);
+            console.log("listItems added to storage");
+        }
+    };
+
+    if(localStorageLists) {
         ActiveList.setLists(JSON.parse(localStorageLists));
+        getLists.open("GET", window.location.origin + "/getLists", true);
+        getLists.send();
 
     } else {
-
-        var getLists = new XMLHttpRequest();
-
-        getLists.onreadystatechange = function() {
-
-            if (getLists.readyState == 4 && getLists.status == 200) {
-
-                var data = JSON.parse(getLists.responseText);
-                localStorage.setItem('lists', JSON.stringify(data));
-                ActiveList.setLists(data);
-                console.log("lists added to storage");
-            }
-        };
         getLists.open("GET", window.location.origin + "/getLists", true);
         getLists.send();
     }
 
     if(localStorageListItems) {
-
         ActiveList.setListItems(JSON.parse(localStorageListItems));
+        getListItems.open("GET", window.location.origin + "/getListItems", true);
+        getListItems.send();
 
     } else {
-
-        var getListItems = new XMLHttpRequest();
-        getListItems.onreadystatechange = function() {
-            if (getListItems.readyState == 4 && getListItems.status == 200) {
-
-                var data = JSON.parse(getListItems.responseText);
-                localStorage.setItem('listItems', JSON.stringify(data));
-                ActiveList.setListItems(data);
-                console.log("listItems added to storage");
-            }
-        };
         getListItems.open("GET", window.location.origin + "/getListItems", true);
         getListItems.send();
     }

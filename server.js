@@ -27,7 +27,7 @@ app.get('/getListItems', function(req, res) {
             collection.find()
                 .toArray(function(err, arr) {
                     arr.forEach(function(el) {
-                        listItemsTitles.push(el.title);
+                        listItemsTitles.push(el.title + " (" + el.link.title + ")");
                     });
                     if(!err) {
                         res.send({items: arr, titles: listItemsTitles});
@@ -170,14 +170,23 @@ var translateListId = function(listId, callback) {
 };
 
 var insertListItem = function(listItem, callback) {
+
     MongoClient.connect(url, function(err, db) {
-
-        db.collection('listItems').insert(listItem, function(err, object) {
-
-            callback(err, object);
-
-        });
-
+        db.collection('listItems').findAndModify(
+            {title: listItem.title}, //, "link.title": listItem.link.title, "link.id": listItem.link.id
+            [],
+            {
+                $setOnInsert: {
+                    title: listItem.title,
+                    photoUrl: listItem.photoUrl,
+                    link: listItem.link
+                }
+            },
+            {new: true, upsert: true}, //return new doc if one is upserted, insert the document if it does not exist
+            function(err, object) {
+                callback(err, object);
+            }
+        );
     });
 };
 
@@ -335,7 +344,7 @@ io.on('connection', function(socket){
 
                 translateListId(response.item.link, function(arr) {
 
-                    var fileName = response.item.image.split("/");
+                    var fileName = response.item.photoUrl.split("/");
                     var fn = fileName[fileName.length-1];
 
                     socket.emit('itemValidated', {item: item.listItem, res: response, type: item.type, linkTitle: arr.title, filename: fn});
@@ -354,6 +363,8 @@ io.on('connection', function(socket){
 
     socket.on('saveListItem', function(data) {
 
+        console.log(data);
+
         var newPath = __dirname + "/uploads/" + data.title.replace(/[^A-Z0-9]+/ig, "_") + "_" + data.photoUrl;
 
         fs.writeFile(newPath, data.photo, function (err) {
@@ -364,11 +375,15 @@ io.on('connection', function(socket){
             }
         });
 
-        insertListItem({title: data.title, photoUrl: newPath, link: data.link}, function(err, document) {
+        insertListItem({title: data.title, photoUrl: newPath, link: data.link}, function(err, document) { //link: { title: data.listTitle, id: data.link }
+
+            console.log(document.lastErrorObject.updatedExisting);
+
             if(err) {
                 console.log("error: ", err);
             }
-            socket.emit('saveListItemFeedback', {error: err, doc: document});
+
+            socket.emit('saveListItemFeedback', {original: {title: data.title, photoUrl: newPath, link: data.link}, error: err, doc: document});
         });
 
     });
