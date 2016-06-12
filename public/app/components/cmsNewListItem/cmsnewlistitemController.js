@@ -18,7 +18,7 @@ mainApp.controller('CmsNewListItemController', ['$scope', 'ActiveList', function
 
     $scope.checkList = function() {
         $scope.checking = true;
-        socket.emit('validateList', $scope.selectedLinkItem);
+        socket.emit('validateList', { linkTitle: $scope.selectedLinkItem, item: null });
     };
 
     $scope.saveListItem = function() {
@@ -34,6 +34,8 @@ mainApp.controller('CmsNewListItemController', ['$scope', 'ActiveList', function
     };
 
     socket.on('listValidated', function(response) {
+
+        var response = response.response;
 
         $scope.$apply(function() {
 

@@ -27,7 +27,7 @@ app.get('/getListItems', function(req, res) {
             collection.find()
                 .toArray(function(err, arr) {
                     arr.forEach(function(el) {
-                        listItemsTitles.push(el.title + " (" + el.link.title + ")");
+                        listItemsTitles.push(el.title); // + " (" + el.link.title + ")"
                     });
                     if(!err) {
                         res.send({items: arr, titles: listItemsTitles});
@@ -330,9 +330,9 @@ io.on('connection', function(socket){
         });
     });
 
-    socket.on('validateList', function(list) {
-        validateList(list, function(response) {
-            socket.emit('listValidated', response);
+    socket.on('validateList', function(data) {
+        validateList(data.linkTitle, function(response) {
+            socket.emit('listValidated', { response: response, item: data.item});
         });
     });
 

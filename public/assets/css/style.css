@@ -265,8 +265,15 @@ ul.nav li#first a {
 }
 
 .newList .editMode a {
-    height: 30px;
-    line-height: 30px;
+    height: 40px;
+    line-height: 40px;
+    float: left;
+}
+
+.newList .editMode div.alert-danger {
+    float: left;
+    padding: 5px;
+    margin: 5px 0 0 0;
 }
 
 .newList .list {

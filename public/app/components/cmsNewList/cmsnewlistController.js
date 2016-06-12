@@ -26,34 +26,75 @@ mainApp.controller('CmsNewListController', ['$scope', 'ActiveList', '$filter', f
         socket.emit('validateItem', {listItem: $scope.selectedItem, type: "item"});
     };
 
+    $scope.checkLink = function(item) {
+
+        item.checkingList = true;
+
+        socket.emit('validateList', {linkTitle: item.linkTitle, item: item });
+    };
+
+    socket.on('listValidated', function(response) {
+
+        $scope.$apply(function() {
+
+            var currentListItem = {};
+
+            $scope.listItems.forEach(function(listItem) {
+
+                if(listItem.item == response.item.item) {
+                    currentListItem = listItem;
+                }
+
+            });
+
+            currentListItem.linkIsValid = response.response.valid;
+
+            if(response.response.valid) {
+
+                currentListItem.linkTitleCustomStyle = {'background-color': '#dff0d8'};
+
+            } else {
+
+                currentListItem.linkTitleCustomStyle = {'background-color': '#f2dee1'};
+
+            }
+
+        });
+
+
+
+        console.log(response);
+
+        /*$scope.$apply(function() {
+
+            $scope.checking = false;
+
+            if(response.valid) {
+                $scope.listValidated = true;
+                $scope.listId = response.list._id;
+                $scope.customStyle = {'background-color': '#dff0d8'};
+                $scope.listLinkTitle = response.list.title;
+            } else {
+                $scope.customStyle = {'background-color': '#F2DEE1'};
+            }
+
+        });*/
+
+    });
+
     $scope.updatePhoto = function(event, type) {
 
     };
 
-    $scope.toggleEdit = function(item, type) {
+    $scope.toggleEdit = function(item) {
 
-        console.log(item.file);
+        if(item.editMode && !item.linkIsValid) {
 
-        if(type == 'link') {
-            $scope.links.forEach(function(i) {
+            item.editNotValid = true;
 
-                if(i.title == item.title) {
-                    i.editMode = !i.editMode;
-                }
-
-            });
+        } else {
+            item.editMode = !item.editMode;
         }
-
-        if(type == 'item') {
-            $scope.listItems.forEach(function(i) {
-
-                if(i.title == item.title) {
-                    i.editMode = !i.editMode;
-                }
-
-            });
-        }
-
     };
 
     $scope.delete = function(item) {
@@ -72,11 +113,27 @@ mainApp.controller('CmsNewListController', ['$scope', 'ActiveList', '$filter', f
 
     };
 
+    $scope.changeBackground = function(item) {
+        if(item.valid) {
+            item.customStyle = {'background-color': '#fcf8e3'};
+        }
+
+        item.editNotValid = false;
+    };
+
+    $scope.resetBackground = function(item) {
+        item.linkTitleCustomStyle = {'background-color': 'white'};
+
+        if(item.valid) {
+            item.customStyle = {'background-color': '#fcf8e3'};
+        }
+
+        item.editNotValid = false;
+    };
+
     socket.on('itemValidated', function(response) {
 
         $scope.$apply(function() {
-
-            $scope.checkingLinkItem = false;
 
                 if(response.type == 'link') {
 
@@ -101,15 +158,30 @@ mainApp.controller('CmsNewListController', ['$scope', 'ActiveList', '$filter', f
 
                         response.valid = true;
                         response.customStyle = {'background-color': '#dff0d8'};
+                        response.imageElement = {
+                            data: "",
+                            file: {
+                                name: ""
+                            }
+                        };
+                        response.linkTitleCustomStyle = {'background-color': '#dff0d8'};
+                        response.editNotValid = false;
+                        response.imageElement.file.name = response.filename;
                         $scope.listItems.push(response);
+
+                        console.log(response);
 
                     } else {
 
                         $scope.listItems.push({
-                            title: response.item,
+                            item: response.item,
                             valid: false,
-                            customStyle: {'background-color': '#fcf8e3'},
-                            editMode: true
+                            customStyle: {'background-color': '#d9edf7'}, //#fcf8e3
+                            editMode: true,
+                            imageElement: {
+                                data: "",
+                                file: ""
+                            }
                         });
 
                     }
@@ -132,6 +204,13 @@ mainApp.controller('CmsNewListController', ['$scope', 'ActiveList', '$filter', f
         $scope.activeLists = ActiveList.activeList.lists.titles;
     });
 
+    $scope.saveList = function() {
+
+        console.log($scope.listTitle);
+        console.log($scope.links);
+        console.log($scope.listItems);
+
+    };
 
 
     /*$scope.listItems = [{id: 0, text: "", isBusy: false, isValid: false, style: {'background-color': 'white'}}];

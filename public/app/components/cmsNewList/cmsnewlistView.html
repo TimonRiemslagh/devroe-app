@@ -66,20 +66,22 @@
 
                     <div ng-show="item.editMode" class="editMode">
 
-                        <input type="text" ng-show="item.editMode" class="titleInput form-control" value="{{item.title}}" placeholder="Lijst item titel">
+                        <input type="text" ng-show="item.editMode" class="titleInput form-control" value="{{item.title}}" ng-model="item.item" ng-change="changeBackground(item)" placeholder="Lijst item titel">
 
                         <div class="listItemAuto input-group">
 
                             <input type="text"
-                                   ng-model="item.link"
-                                   ng-keypress="$event.keyCode == 13 && checkList()"
+                                   ng-model="item.linkTitle"
+                                   ng-change="resetBackground(item)"
+                                   ng-keypress="$event.keyCode == 13 && checkLink(item)"
                                    uib-typeahead="list for list in activeLists | filter: $viewValue | limitTo: 5"
                                    class="form-control"
-                                   placeholder="Link naar lijst">
+                                   placeholder="Link naar lijst"
+                                   ng-style="item.linkTitleCustomStyle">
 
 
                                 <span class="input-group-btn">
-                                    <button class="btnAddItem btn btn-default" ng-click="checkLink()" type="button">
+                                    <button class="btnAddItem btn btn-default" ng-click="checkLink(item)" type="button">
                                         <span ng-show="!item.checking">Check</span>
                                         <span loader ng-show="item.checking"></span>
                                     </button>
@@ -87,9 +89,11 @@
 
                         </div>
 
-                        <input accept="image/*" type="file" file-input="item.file" />
+                        <input accept="image/*" type="file" file-input="item.imageElement" />
 
-                        <a href="" ng-click="toggleEdit(item, 'item')" class="glyphicon glyphicon-ok" aria-hidden="true"></a>
+                        <a href="" ng-click="toggleEdit(item)" class="glyphicon glyphicon-ok" aria-hidden="true"></a>
+
+                        <div ng-show="item.editNotValid" class="alert alert-danger" role="alert">Valideer de link!</div>
 
                     </div>
 
@@ -97,13 +101,13 @@
 
                         <div class="">{{item.item}}</div>
                         <div class="">{{item.linkTitle}}</div>
-                        <div class="">{{item.filename}}</div>
+                        <div class="">{{item.imageElement.file.name}}</div>
 
                     </div>
 
                     <div class="options">
 
-                        <a href="" ng-click="toggleEdit(item, 'item')" ng-show="!item.editMode" class="glyphicon glyphicon-pencil" aria-hidden="true"></a>
+                        <a href="" ng-click="toggleEdit(item)" ng-show="!item.editMode" class="glyphicon glyphicon-pencil" aria-hidden="true"></a>
                         <a href="" ng-click="delete(link)" ng-show="item.valid && $item.editMode" class="glyphicon glyphicon-trash" aria-hidden="true"></a>
                         <a href="" ng-click="remove(item, 'item')" ng-show="!item.editMode" class="glyphicon glyphicon-remove" aria-hidden="true"></a>
 

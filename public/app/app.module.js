@@ -18,7 +18,7 @@ mainApp.service( 'ActiveList', [ '$rootScope', function( $rootScope ) {
         setListItems: function(listItems) {
             activeList.listItems = [];
             service.activeList.listItems = listItems;
-            $rootScope.$broadcast( 'ActiveList.update' );
+            $rootScope.$broadcast( 'listItems.update' );
         },
 
         addList: function(list) {
@@ -29,7 +29,7 @@ mainApp.service( 'ActiveList', [ '$rootScope', function( $rootScope ) {
         addListItem: function(listItem, title) {
             service.activeList.listItems.items.push( listItem );
             service.activeList.listItems.titles.push( title );
-            $rootScope.$broadcast( 'ActiveList.update' );
+            $rootScope.$broadcast( 'listItems.update' );
         },
 
         updateListItem: function(listItem) {
