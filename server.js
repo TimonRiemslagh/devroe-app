@@ -176,7 +176,7 @@ var insertListItem = function(listItem, callback) {
             {title: listItem.title}, //, "link.title": listItem.link.title, "link.id": listItem.link.id
             [],
             {
-                $setOnInsert: {
+                $set: {
                     title: listItem.title,
                     photoUrl: listItem.photoUrl,
                     link: listItem.link
@@ -185,6 +185,7 @@ var insertListItem = function(listItem, callback) {
             {new: true, upsert: true}, //return new doc if one is upserted, insert the document if it does not exist
             function(err, object) {
                 callback(err, object);
+                db.close();
             }
         );
     });
@@ -363,7 +364,6 @@ io.on('connection', function(socket){
 
     socket.on('saveListItem', function(data) {
 
-        console.log(data);
 
         var newPath = __dirname + "/uploads/" + data.title.replace(/[^A-Z0-9]+/ig, "_") + "_" + data.photoUrl;
 
@@ -390,7 +390,39 @@ io.on('connection', function(socket){
 
     socket.on('saveList', function(data) {
 
-        var newListId = new ObjectId();
+        console.log(data);
+
+        data.listItems.forEach(function(listItem) {
+
+            console.log(listItem.imageElement.filename);
+
+            if(listItem.imageElement.changed) {
+
+                var newPath = __dirname + "/uploads/" + listItem.item.replace(/[^A-Z0-9]+/ig, "_") + "_" + listItem.imageElement.filename;
+
+                fs.writeFile(newPath, listItem.imageElement.file, function (err) {
+                    if(err) {
+                        console.log(err);
+                    } else {
+                        console.log("saved at " + newPath);
+                    }
+                });
+
+                insertListItem({title: listItem.item, photoUrl: newPath, link: listItem.link}, function(err, document) { //link: { title: data.listTitle, id: data.link }
+                    console.log(document);
+
+                    if(err) {
+                        console.log("error: ", err);
+                    }
+                });
+
+            }
+
+            //updateListItem()
+
+        });
+
+        /*var newListId = new ObjectId();
 
         insertList({title: data.title, items: data.items, id: newListId}, function(err) {
 
@@ -414,7 +446,7 @@ io.on('connection', function(socket){
 
             socket.emit('updateLinkFeedback', err);
 
-        });
+        });*/
 
     });
 

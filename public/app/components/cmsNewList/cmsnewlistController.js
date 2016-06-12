@@ -1,4 +1,4 @@
-mainApp.controller('CmsNewListController', ['$scope', 'ActiveList', '$filter', function($scope, ActiveList, $filter) {
+mainApp.controller('CmsNewListController', ['$scope', 'ActiveList', '$filter', '$timeout', function($scope, ActiveList, $filter, $timeout) {
 
     //$('ul.nav li').removeClass('active');
     //$('.cms').addClass("active");
@@ -37,33 +37,29 @@ mainApp.controller('CmsNewListController', ['$scope', 'ActiveList', '$filter', f
 
         $scope.$apply(function() {
 
-            var currentListItem = {};
-
             $scope.listItems.forEach(function(listItem) {
 
                 if(listItem.item == response.item.item) {
-                    currentListItem = listItem;
+
+                    listItem.linkIsValid = response.response.valid;
+
+                    if(response.response.valid) {
+
+                        listItem.linkTitleCustomStyle = {'background-color': '#dff0d8'};
+
+                        listItem.link = response.response.list._id;
+
+                    } else {
+
+                        listItem.linkTitleCustomStyle = {'background-color': '#f2dee1'};
+
+                    }
+
                 }
 
             });
 
-            currentListItem.linkIsValid = response.response.valid;
-
-            if(response.response.valid) {
-
-                currentListItem.linkTitleCustomStyle = {'background-color': '#dff0d8'};
-
-            } else {
-
-                currentListItem.linkTitleCustomStyle = {'background-color': '#f2dee1'};
-
-            }
-
         });
-
-
-
-        console.log(response);
 
         /*$scope.$apply(function() {
 
@@ -93,6 +89,7 @@ mainApp.controller('CmsNewListController', ['$scope', 'ActiveList', '$filter', f
             item.editNotValid = true;
 
         } else {
+            item.editNotValid = false;
             item.editMode = !item.editMode;
         }
     };
@@ -162,27 +159,36 @@ mainApp.controller('CmsNewListController', ['$scope', 'ActiveList', '$filter', f
                             data: "",
                             file: {
                                 name: ""
-                            }
+                            },
+                            changed: false,
+                            filename: ""
                         };
                         response.linkTitleCustomStyle = {'background-color': '#dff0d8'};
-                        response.editNotValid = false;
+                        response.editNotValid = true;
                         response.imageElement.file.name = response.filename;
+                        response.linkIsValid = true;
                         $scope.listItems.push(response);
 
                         console.log(response);
 
                     } else {
 
-                        $scope.listItems.push({
-                            item: response.item,
-                            valid: false,
-                            customStyle: {'background-color': '#d9edf7'}, //#fcf8e3
-                            editMode: true,
-                            imageElement: {
-                                data: "",
-                                file: ""
-                            }
-                        });
+                        var newElement = {};
+
+                        newElement.item = response.item;
+                        newElement.valid = false;
+                        newElement.customStyle = {'background-color': '#d9edf7'}; //#fcf8e3
+                        newElement.editMode = true;
+                        newElement.imageElement = {
+                            data: "",
+                            file: {
+                                name: ""
+                            },
+                            changed: false,
+                            filename: ""
+                        };
+
+                        $scope.listItems.push(newElement);
 
                     }
                 }
@@ -205,6 +211,8 @@ mainApp.controller('CmsNewListController', ['$scope', 'ActiveList', '$filter', f
     });
 
     $scope.saveList = function() {
+        
+        socket.emit('saveList', {links: $scope.links, title: $scope.listTitle, listItems: $scope.listItems});
 
         console.log($scope.listTitle);
         console.log($scope.links);
