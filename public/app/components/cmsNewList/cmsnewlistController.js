@@ -27,7 +27,10 @@ mainApp.controller('CmsNewListController', ['$scope', 'ActiveList', '$filter', '
         }//, filename: ""
     };*/
 
-    $scope.newListItemImageElement = {};
+    $scope.newListItemImageElement = {
+        file: {},
+        data: ""
+    };
 
     $scope.addListItem = function() {
 
@@ -45,13 +48,15 @@ mainApp.controller('CmsNewListController', ['$scope', 'ActiveList', '$filter', '
             $http.get('/lists/' + $scope.newListItemLink).then(function(res) {
 
                 if(res.data.validList) {
-                    console.log($scope.newListItemImageElement);
-                    $scope.listItems.push({title: $scope.newListItemTitle, image: $scope.newListItemImageElement, filename: $scope.newListItemImageElement.name, link: $scope.newListItemLink, editMode: false });
+                    $scope.listItems.push({title: $scope.newListItemTitle, image: $scope.newListItemImageElement.file, filename: $scope.newListItemImageElement.file.name, link: $scope.newListItemLink, editMode: false });
 
                     // Reset the form model.
                     $scope.newListItemTitle = "";
                     $scope.newListItemLink = "";
-                    $scope.newListItemImageElement = {};
+                    $scope.newListItemImageElement = {
+                        file: {},
+                        data: ""
+                    };
                     $scope.addItemForm.$setPristine();
                     $scope.addItemForm.$setUntouched();
 
@@ -299,7 +304,7 @@ mainApp.controller('CmsNewListController', ['$scope', 'ActiveList', '$filter', '
 
     $scope.saveList = function() {
 
-        console.log($scope.listItems);
+        $scope.listSaveBusy = true;
 
         socket.emit('saveList', {title: $scope.listTitle, items: $scope.listItems});
 
@@ -312,6 +317,22 @@ mainApp.controller('CmsNewListController', ['$scope', 'ActiveList', '$filter', '
         console.log($scope.listItems);*/
 
     };
+    
+    socket.on('listSaved', function() {
+
+        $scope.$apply(function(){
+
+            $scope.listSaveBusy = false;
+
+        });
+
+    });
+
+    socket.on('listNotSaved', function(err) {
+
+        console.log("list save fail", err);
+
+    });
 
 
     /*$scope.listItems = [{id: 0, text: "", isBusy: false, isValid: false, style: {'background-color': 'white'}}];

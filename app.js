@@ -69,20 +69,70 @@ io.on('connection', function(socket){
 
         data.items.forEach(function(item) {
 
-            var newPath = __dirname + "/uploads/" + data.title.replace(/[^A-Z0-9]+/ig, "_") + "_" + item.title.replace(/[^A-Z0-9]+/ig, "_") + "_" + item.imageFilename;
+            var newPath = __dirname + "/uploads/" + data.title.replace(/[^A-Z0-9]+/ig, "_") + "_" + item.title.replace(/[^A-Z0-9]+/ig, "_") + "_" + item.filename;
 
-            fs.writeFile(newPath, data.photo, function (err) {
+            fs.writeFile(newPath, item.image, function (err) {
                 if(err) {
-                    console.log(err);
+                    console.log("error");
                 } else {
                     console.log("saved at " + newPath);
                 }
             });
 
+            listItems.push({title: item.title, link: item.link, url: newPath});
+
         });
 
-        console.log(data);
+        console.log(listItems);
 
+        MongoClient.connect(url, function(err, db) {
+
+            db.collection('lists').update(
+                {title: listTitle},
+                {title: listTitle, items: listItems},
+                {upsert: true},
+                function(err, object) {
+
+                    if(!err && object.result.ok) {
+                        socket.emit("listSaved");
+                    } else {
+                        socket.emit("listNotSaved", err);
+                    }
+
+                });
+        });
+
+    });
+
+    socket.on('saveRef', function(data) {
+
+        var newPath = __dirname + "/uploads/" + data.keywords.replace(/[^A-Z0-9]+/ig, "_") + "_" + data.photoUrl;
+
+
+        fs.writeFile(newPath, data.photo, function (err) {
+            if(err) {
+                console.log(err);
+            } else {
+                console.log("saved at " + newPath);
+            }
+        });
+
+        MongoClient.connect(url, function(err, db) {
+
+            db.collection('references').insert(
+                {keywords: data.keywords, url: newPath},
+                function(err, object) {
+
+                    console.log(err, object);
+
+                    if(!err && object.result.ok) {
+                        socket.emit("refSaved");
+                    } else {
+                        socket.emit("refNotSaved", err);
+                    }
+
+                });
+        });
     });
 
 });

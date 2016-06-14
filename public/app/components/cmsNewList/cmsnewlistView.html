@@ -89,7 +89,7 @@
 
                         <input accept="image/*" type="file" file-input="item.image" />
 
-                        <button type="submit" ng-disabled="checkingList" class="btn btn-primary">Update<span ng-show="item.checkingList" class="addListItemLoader" loader></span></button>
+                        <button type="submit" ng-disabled="item.checkingList" class="btn btn-primary">Update<span ng-show="item.checkingList" class="addListItemLoader" loader></span></button>
 
                         <div ng-show="item.showAlert" class="alert alert-danger" role="alert"><strong>Woops!</strong> Vul een title en een correcte link in en probeer opnieuw.</div>
                     </form>
@@ -206,7 +206,7 @@
         </div>
     </div>
 
-    <button type="button" class="save btn btn-success" ng-click="saveList()">Opslaan</button>
+    <button type="button" ng-disabled="listSaveBusy" class="save btn btn-success" ng-click="saveList()">Opslaan<span ng-show="listSaveBusy" class="addListItemLoader" loader></button>
 
 </div>
 

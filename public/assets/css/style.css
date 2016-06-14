@@ -139,6 +139,10 @@ ul.nav li#first a {
     margin-right: 20px;
 }
 
+.newRef input {
+    margin-bottom: 10px;
+}
+
 .saveRefBtn {
     float: right;
 }
@@ -333,14 +337,14 @@ ul.nav li#first a {
 .listNewItem {
 }
 
-.newList .addListItemLoader .spinner {
+.addListItemLoader .spinner {
     float: right;
     height: 20px;
     line-height: 20px;
     padding-right: 0;
 }
 
-.newList .addListItemLoader .spinner > div {
+.addListItemLoader .spinner > div {
     width: 3px;
     background-color: white;
 }

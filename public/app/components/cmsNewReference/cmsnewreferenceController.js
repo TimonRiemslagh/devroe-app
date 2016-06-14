@@ -5,24 +5,48 @@ mainApp.controller('CmsNewReferenceController', function($scope, $location) {
 
     $scope.ref = {};
     $scope.isBusy = false;
-    $scope.saveSuccess = false;
 
-    $scope.previewPhoto = function() {
-
-        var file = $('input[type=file]')[0].files[0];
-
-        var reader = new FileReader();
-
-        reader.addEventListener("load", function () {
-            $('.preview').attr("src", reader.result).show();
-        }, false);
-
-        if (file) {
-            reader.readAsDataURL(file);
-        }
+    $scope.refImage = {
+        file: {},
+        data: ""
     };
 
     $scope.saveRef = function() {
+
+        $scope.isBusy = true;
+
+        socket.emit('saveRef', {keywords: $scope.keywords, photo: $scope.refImage.file, photoUrl: $scope.refImage.file.name});
+
+    };
+
+    socket.on('refSaved', function() {
+
+        $scope.$apply(function() {
+
+            // Reset the form model.
+            $scope.keywords = "";
+            $scope.refImage = {
+                file: {},
+                data: ""
+            };
+            $scope.newRef.$setPristine();
+            $scope.newRef.$setUntouched();
+
+            $('.refImage').val(null);
+            $scope.showAlert = false;
+            $scope.isBusy = false;
+
+        });
+
+    });
+    
+    socket.on('refNotSaved', function(err) {
+
+        console.log(err);
+
+    });
+
+    /*$scope.saveRef = function() {
 
         //$scope.listItem.text = $('.listItemInput').val();
         $scope.ref.photo = $('.listItemPhoto')[0].files[0];
@@ -39,9 +63,9 @@ mainApp.controller('CmsNewReferenceController', function($scope, $location) {
             $('.newListItemSaveWarn').fadeIn().delay(3000).fadeOut();
         }
 
-    };
+    };*/
 
-    socket.on('saveRefFeedback', function(err) {
+    /*socket.on('saveRefFeedback', function(err) {
 
         console.log(err);
 
@@ -62,6 +86,6 @@ mainApp.controller('CmsNewReferenceController', function($scope, $location) {
         $scope.$apply(function() {
             $scope.isBusy = false;
         });
-    });
+    });*/
 
 });

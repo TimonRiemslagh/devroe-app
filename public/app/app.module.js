@@ -67,8 +67,6 @@ mainApp.controller('indexController', ['$scope', '$http', 'ActiveList', function
     }
 
     $http.get('/lists').then(function(res) {
-        console.log(res);
-        console.log(res.data);
         ActiveList.setLists(res.data);
     }, function(errorRes) {
         console.log(errorRes);

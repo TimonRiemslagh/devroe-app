@@ -315,9 +315,8 @@ io.on('connection', function(socket){
 
     socket.on('saveRef', function(data) {
 
-        var newPath = __dirname + "/uploads/" + data.photoUrl;
-
-        console.log(newPath);
+        var newPath = __dirname + "/uploads/" + data.keywords.replace(/[^A-Z0-9]+/ig, "_") + "_" + data.photoUrl;
+        
 
         fs.writeFile(newPath, data.photo, function (err) {
             if(err) {

@@ -8,16 +8,16 @@ mainApp.directive("fileInput", [function () {
             element.bind("change", function (changeEvent) {
 
                 //scope.fileInput.file = changeEvent.target.files[0];
-                scope.fileInput = changeEvent.target.files[0];
+                scope.fileInput.file = changeEvent.target.files[0];
 
-                /*var reader = new FileReader();
+                var reader = new FileReader();
                 reader.onload = function (loadEvent) {
                     scope.$apply(function () {
                         scope.fileInput.data = loadEvent.target.result;
                     });
                 };
 
-                reader.readAsDataURL(changeEvent.target.files[0]);*/
+                reader.readAsDataURL(changeEvent.target.files[0]);
             });
         }
     }
