@@ -4,11 +4,13 @@
   "description": "de vroe app package json file",
   "author": "timon",
   "dependencies": {
-    "socket.io": "1.4.5",
-    "node-datetime": "0.1.5",
+    "body-parser": "^1.15.1",
+    "delivery": "0.0.4",
     "express": "4.*",
     "mongodb": "2.1.14",
-    "delivery": "0.0.4"
+    "multer": "^1.1.0",
+    "node-datetime": "0.1.5",
+    "socket.io": "^1.4.5"
   },
   "engines": {
     "node": "4.4.1"

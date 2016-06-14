@@ -1,39 +1,131 @@
-mainApp.controller('CmsNewListController', ['$scope', 'ActiveList', '$filter', '$timeout', function($scope, ActiveList, $filter, $timeout) {
-
+mainApp.controller('CmsNewListController', ['$scope', 'ActiveList', '$filter', '$http', function($scope, ActiveList, $filter, $http) {
     //$('ul.nav li').removeClass('active');
     //$('.cms').addClass("active");
 
-    $scope.activeListItems = ActiveList.activeList.listItems.titles;
-    $scope.activeLists = ActiveList.activeList.lists.titles;
+    //$scope.activeListItems = ActiveList.activeList.listItems.titles;
+    $scope.activeLists = ActiveList.lists.titles;
 
     //$scope.links = [{title: "test 1", valid: true, image: "test.jpg", customStyle: {'background-color': '#dff0d8'}, editMode: false},{title: "test 2", image: "test.jpg", valid: false, customStyle: {'background-color': '#d9edf7'}, editMode: true}];
 
-    $scope.links = [];
+    //$scope.links = [];
 
     //$scope.listItems = [{title: "test 1", valid: true, image: "test.jpg", link: "test link", customStyle: {'background-color': '#dff0d8'}, editMode: false},{title: "test 2", image: "test.jpg", valid: false, customStyle: {'background-color': '#d9edf7'}, editMode: true}];
 
     $scope.listItems = [];
 
-    $scope.addLink = function() {
+    /*$scope.addLink = function() {
 
         $scope.checkingLinkItem = true;
         socket.emit('validateItem', {listItem: $scope.selectedLinkItem, type: "link"});
 
+    };*/
+
+    /*$scope.newListItemImageElement = {
+        data: "",
+        file: {
+            name: ""
+        }//, filename: ""
+    };*/
+
+    $scope.newListItemImageElement = {};
+
+    $scope.addListItem = function() {
+
+        $scope.showAlert = false;
+        $scope.checkingList = false;
+
+        /*console.log($scope.newListItemTitle);
+        console.log($scope.newListItemLink);
+        console.log($scope.newListItemImageElement.file);*/
+
+        if($scope.newListItemTitle) {
+
+            $scope.checkingList = true;
+
+            $http.get('/lists/' + $scope.newListItemLink).then(function(res) {
+
+                if(res.data.validList) {
+                    console.log($scope.newListItemImageElement);
+                    $scope.listItems.push({title: $scope.newListItemTitle, image: $scope.newListItemImageElement, filename: $scope.newListItemImageElement.name, link: $scope.newListItemLink, editMode: false });
+
+                    // Reset the form model.
+                    $scope.newListItemTitle = "";
+                    $scope.newListItemLink = "";
+                    $scope.newListItemImageElement = {};
+                    $scope.addItemForm.$setPristine();
+                    $scope.addItemForm.$setUntouched();
+
+                    $('.newImage').val(null);
+                    $scope.showAlert = false;
+                    $scope.checkingList = false;
+
+                } else {
+                    $scope.showAlert = true;
+                    $scope.checkingList = false;
+                }
+
+            }, function(errorRes) {
+                console.log(errorRes);
+            });
+
+        } else {
+            $scope.showAlert = true;
+            $scope.checkingList = false;
+        }
+
+        //$scope.listItems.push({ title: $scope.newListItem, link: ""});
+
+        /*$scope.checkingItem = true;
+        socket.emit('validateItem', {listItem: $scope.selectedItem, type: "item"});*/
     };
 
-    $scope.addItem = function() {
-        $scope.checkingItem = true;
-        socket.emit('validateItem', {listItem: $scope.selectedItem, type: "item"});
+    $scope.updateListItem = function(item) {
+
+        item.editMode = true;
+
+        if(item.title) {
+
+            item.checkingList = true;
+            item.showAlert = false;
+
+            $http.get('/lists/' + item.link).then(function(res) {
+
+                if(res.data.validList) {
+
+                    $scope.listItems.forEach(function(listItem) {
+
+                        if(listItem.title == item.oldTitle) {
+                            listItem.title = item.title;
+                            listItem.image = item.image;
+                            console.log(listItem.image, item.image.name);
+                            listItem.filename = item.image.name;
+                            listItem.link = item.link;
+                        }
+
+                    });
+
+                    item.showAlert = false;
+                    item.checkingList = false;
+                    item.editMode = false;
+
+                } else {
+                    item.showAlert = true;
+                    item.checkingList = false;
+                }
+
+            }, function(errorRes) {
+                console.log(errorRes);
+            });
+
+        } else {
+            item.showAlert = true;
+            item.checkingList = false;
+        }
     };
 
-    $scope.checkLink = function(item) {
 
-        item.checkingList = true;
 
-        socket.emit('validateList', {linkTitle: item.linkTitle, item: item });
-    };
-
-    socket.on('listValidated', function(response) {
+    /*socket.on('listValidated', function(response) {
 
         $scope.$apply(function() {
 
@@ -59,7 +151,7 @@ mainApp.controller('CmsNewListController', ['$scope', 'ActiveList', '$filter', '
 
             });
 
-        });
+        });*/
 
         /*$scope.$apply(function() {
 
@@ -74,43 +166,38 @@ mainApp.controller('CmsNewListController', ['$scope', 'ActiveList', '$filter', '
                 $scope.customStyle = {'background-color': '#F2DEE1'};
             }
 
-        });*/
+        });
 
-    });
-
-    $scope.updatePhoto = function(event, type) {
-
-    };
+    });*/
 
     $scope.toggleEdit = function(item) {
 
-        if(item.editMode && !item.linkIsValid) {
-
-            item.editNotValid = true;
-
-        } else {
-            item.editNotValid = false;
-            item.editMode = !item.editMode;
-        }
-    };
-
-    $scope.delete = function(item) {
+        item.oldTitle = item.title;
+        item.editMode = !item.editMode;
 
     };
 
-    $scope.remove = function(item, type) {
+    $scope.remove = function(item) {
 
-        if(type == 'link') {
+        console.log("removed");
+
+        /*if(type == 'link') {
             $scope.links =  $filter('filter')($scope.links, {title: item.item});
         }
 
         if(type == 'item') {
             $scope.items =  $filter('filter')($scope.items, {title: item.item});
+        }*/
+
+        for(var t = $scope.listItems.length-1; t >= 0; t--) {
+            if($scope.listItems[t].title == item.title) {
+                $scope.listItems.splice(t,1);
+            }
         }
 
     };
 
-    $scope.changeBackground = function(item) {
+    /*$scope.changeBackground = function(item) {
         if(item.valid) {
             item.customStyle = {'background-color': '#fcf8e3'};
         }
@@ -126,9 +213,9 @@ mainApp.controller('CmsNewListController', ['$scope', 'ActiveList', '$filter', '
         }
 
         item.editNotValid = false;
-    };
+    };*/
 
-    socket.on('itemValidated', function(response) {
+    /*socket.on('itemValidated', function(response) {
 
         $scope.$apply(function() {
 
@@ -198,25 +285,31 @@ mainApp.controller('CmsNewListController', ['$scope', 'ActiveList', '$filter', '
 
         });
 
-    });
+    });*/
 
-    $scope.$on('listItems.update', function(event) {
+    /*$scope.$on('listItems.update', function(event) {
         console.log("listItemsupdated");
         $scope.activeListItems = ActiveList.activeList.listItems.titles;
-    });
+    });*/
 
     $scope.$on('lists.update', function(event) {
         console.log("listsupdated");
-        $scope.activeLists = ActiveList.activeList.lists.titles;
+        $scope.activeLists = ActiveList.lists.titles;
     });
 
     $scope.saveList = function() {
-        
-        socket.emit('saveList', {links: $scope.links, title: $scope.listTitle, listItems: $scope.listItems});
 
-        console.log($scope.listTitle);
-        console.log($scope.links);
         console.log($scope.listItems);
+
+        socket.emit('saveList', {title: $scope.listTitle, items: $scope.listItems});
+
+
+        
+        //socket.emit('saveList', {links: $scope.links, title: $scope.listTitle, listItems: $scope.listItems});
+
+        /*console.log($scope.listTitle);
+        console.log($scope.links);
+        console.log($scope.listItems);*/
 
     };
 

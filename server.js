@@ -8,7 +8,12 @@ var express = require('express'),
 
 var ObjectId = require('mongodb').ObjectId;
 
-app.use('/', express.static(__dirname + '/public'));
+//app.use('/', express.static(__dirname + '/public'));
+
+// middleware static to serve my site
+app.use(express.static('public'));
+
+
 http.listen(process.env.PORT || 3000);
 
 app.get('/sendmethisimage', function (req, res) {

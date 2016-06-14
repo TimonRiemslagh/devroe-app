@@ -4,29 +4,31 @@ mainApp.service( 'ActiveList', [ '$rootScope', function( $rootScope ) {
 
     var service = {
 
-        activeList: {
+        lists: [],
+
+        /*activeList: {
             "lists": [],
             "listItems": []
-        },
+        },*/
 
         setLists: function (lists) {
-            activeList.lists = [];
-            service.activeList.lists = lists;
+            service.lists = [];
+            service.lists = lists;
             $rootScope.$broadcast( 'lists.update' );
         },
 
-        setListItems: function(listItems) {
+        /*setListItems: function(listItems) {
             activeList.listItems = [];
             service.activeList.listItems = listItems;
             $rootScope.$broadcast( 'listItems.update' );
-        },
+        },*/
 
         addList: function(list) {
-            service.activeList.lists.push( list );
+            service.lists.push( list );
             $rootScope.$broadcast( 'lists.update' );
         },
 
-        addListItem: function(listItem, title) {
+        /*addListItem: function(listItem, title) {
             service.activeList.listItems.items.push( listItem );
             service.activeList.listItems.titles.push( title );
             $rootScope.$broadcast( 'listItems.update' );
@@ -38,23 +40,41 @@ mainApp.service( 'ActiveList', [ '$rootScope', function( $rootScope ) {
                     this.activeList.listItems.items[t] = listItem;
                 }
             }
-        },
+        },*/
 
         removeList: function(list) {
 
         },
 
-        removeListItem: function(listItem) {
+        updateList: function(list) {
 
         }
+
+        /*removeListItem: function(listItem) {
+
+        }*/
     };
 
     return service;
 }]);
 
-mainApp.controller('indexController', ['$scope', 'ActiveList', function($scope, ActiveList) {
+mainApp.controller('indexController', ['$scope', '$http', 'ActiveList', function($scope, $http, ActiveList) {
 
     var localStorageLists = localStorage.getItem('lists');
+
+    if(localStorageLists) {
+        ActiveList.setLists(JSON.parse(localStorageLists));
+    }
+
+    $http.get('/lists').then(function(res) {
+        console.log(res);
+        console.log(res.data);
+        ActiveList.setLists(res.data);
+    }, function(errorRes) {
+        console.log(errorRes);
+    });
+
+    /*var localStorageLists = localStorage.getItem('lists');
     var localStorageListItems = localStorage.getItem('listItems');
 
     var getLists = new XMLHttpRequest();
@@ -101,6 +121,6 @@ mainApp.controller('indexController', ['$scope', 'ActiveList', function($scope, 
         getListItems.send();
     }
 
-    $scope.users = ["timon"];
+    $scope.users = ["timon"];*/
 
 }]);

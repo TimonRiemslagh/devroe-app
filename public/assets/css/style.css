@@ -281,7 +281,7 @@ ul.nav li#first a {
 }
 
 .newList .glyphicon {
-    margin-right: 20px;
+    margin-left: 20px;
 }
 
 .newList .listTitle {
@@ -295,6 +295,22 @@ ul.nav li#first a {
 .newList .noEditMode div {
     float: left;
     width: 200px;
+}
+
+.newList .alert-danger {
+    float: left;
+    height: 34px;
+    line-height: 34px;
+    padding: 0 10px;
+    margin: 0 0 0 10px;
+}
+
+.newList input {
+    margin-bottom: 10px;
+}
+
+.newList .btn-primary {
+    float: left;
 }
 
 .checkingListSpinner {
@@ -316,6 +332,20 @@ ul.nav li#first a {
 
 .listNewItem {
 }
+
+.newList .addListItemLoader .spinner {
+    float: right;
+    height: 20px;
+    line-height: 20px;
+    padding-right: 0;
+}
+
+.newList .addListItemLoader .spinner > div {
+    width: 3px;
+    background-color: white;
+}
+
+
 
 .newList .titleInput {
     margin-bottom: 10px;

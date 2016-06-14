@@ -7,20 +7,17 @@ mainApp.directive("fileInput", [function () {
 
             element.bind("change", function (changeEvent) {
 
-                scope.fileInput.file = changeEvent.target.files[0];
-                scope.fileInput.changed = true;
-                scope.fileInput.filename = changeEvent.target.files[0].name;
+                //scope.fileInput.file = changeEvent.target.files[0];
+                scope.fileInput = changeEvent.target.files[0];
 
-                console.log(scope.fileInput.file);
-
-                var reader = new FileReader();
+                /*var reader = new FileReader();
                 reader.onload = function (loadEvent) {
                     scope.$apply(function () {
                         scope.fileInput.data = loadEvent.target.result;
                     });
                 };
 
-                reader.readAsDataURL(changeEvent.target.files[0]);
+                reader.readAsDataURL(changeEvent.target.files[0]);*/
             });
         }
     }

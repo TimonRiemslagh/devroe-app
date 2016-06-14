@@ -1,5 +1,5 @@
 <div class="newList">
-    <h4>Links</h4>
+    <!--<h4>Links</h4>
 
     <div class="alert alert-info" role="alert"><strong>Let op!</strong> Door een lijst item toe te voegen die linkt naar een andere lijst dan deze wordt de link overschreven.</div>
 
@@ -32,18 +32,33 @@
 
         </li>
 
-    </ul>
+    </ul>-->
 
     <h4 class="listTitle">Lijst</h4>
+
+    <input type="text" class="form-control" ng-model="listTitle" placeholder="Titel van de lijst">
 
     <div class="list panel panel-default">
         <div class="panel-body">
 
-            <input type="text" class="inputListTitle form-control" ng-model="listTitle" placeholder="Titel van de lijst">
-
-            <div class="input-group">
+            <form class="clearfix" name="addItemForm" ng-submit="addListItem()">
+                <input type="text" ng-model="newListItemTitle" class="form-control" placeholder="Titel van het lijst item">
 
                 <input type="text"
+                       ng-model="newListItemLink"
+                       uib-typeahead="list for list in activeLists | filter: $viewValue | limitTo: 5"
+                       class="form-control"
+                       placeholder="Link naar lijst">
+
+                <input class="newImage" accept="image/*" type="file" file-input="newListItemImageElement" />
+
+                <button type="submit" ng-disabled="checkingList" class="btn btn-primary">Voeg toe<span ng-show="checkingList" class="addListItemLoader" loader></span></button>
+
+                <div ng-show="showAlert" class="alert alert-danger" role="alert"><strong>Woops!</strong> Vul een title en een correcte link in en probeer opnieuw.</div>
+            </form>
+
+
+                <!--<input type="text"
                        ng-model="selectedItem"
                        ng-keypress="$event.keyCode == 13 && addItem()"
                        uib-typeahead="listItem for listItem in activeListItems | filter: $viewValue | limitTo: 5"
@@ -57,12 +72,83 @@
                         <span loader ng-show="checkingItem"></span>
 
                     </button>
-                </span>
-            </div>
+                </span>-->
 
             <ul class="list-group">
 
-                <li class="list-group-item clearfix" ng-repeat="item in listItems" ng-style="item.customStyle">
+                <li class="list-group-item clearfix" ng-repeat="item in listItems">
+
+                    <form ng-show="item.editMode" name="addItemForm" ng-submit="updateListItem(item)">
+                        <input type="text" ng-model="item.title" class="form-control" placeholder="Titel van het lijst item">
+
+                        <input type="text"
+                               ng-model="item.link"
+                               uib-typeahead="list for list in activeLists | filter: $viewValue | limitTo: 5"
+                               class="form-control"
+                               placeholder="Link naar lijst">
+
+                        <input accept="image/*" type="file" file-input="item.image" />
+
+                        <button type="submit" ng-disabled="checkingList" class="btn btn-primary">Update<span ng-show="item.checkingList" class="addListItemLoader" loader></span></button>
+
+                        <div ng-show="item.showAlert" class="alert alert-danger" role="alert"><strong>Woops!</strong> Vul een title en een correcte link in en probeer opnieuw.</div>
+                    </form>
+
+                    <!--<div ng-show="item.editMode" class="editMode">
+
+                        <input type="text" class="titleInput form-control" value="{{item.title}}" ng-model="item.title" placeholder="Titel van het lijst item">
+
+                        <div class="listItemAuto input-group">
+
+                            <input type="text"
+                                   ng-model="item.linkTitle"
+                                   ng-change="resetBackground(item)"
+                                   ng-keypress="$event.keyCode == 13 && checkLink(item)"
+                                   uib-typeahead="list for list in activeLists | filter: $viewValue | limitTo: 5"
+                                   class="form-control"
+                                   placeholder="Link naar lijst"
+                                   ng-style="item.linkTitleCustomStyle">
+
+
+                                <span class="input-group-btn">
+                                    <button class="btnAddItem btn btn-success" ng-click="checkLink(item)" type="button">
+                                        <span ng-show="!item.checking">Check</span>
+                                        <span loader ng-show="item.checking"></span>
+                                    </button>
+                                </span>
+
+                        </div>
+
+                        <input accept="image/*" type="file" file-input="item.imageElement" />
+
+                        <a href="" ng-click="toggleEdit(item)" class="glyphicon glyphicon-ok" aria-hidden="true"></a>
+
+                        <div ng-show="item.editNotValid" class="alert alert-danger" role="alert">Valideer de link!</div>
+
+                    </div>-->
+
+                    <div ng-show="!item.editMode">
+
+                        <div class="noEditMode">
+                            <div class="">{{item.title}}</div>
+                            <div class="">{{item.link}}</div>
+                            <div class="">{{item.filename}}</div>
+                        </div>
+
+                        <div class="options">
+
+                            <a href="" ng-click="toggleEdit(item)" class="glyphicon glyphicon-pencil" aria-hidden="true"></a>
+                            <a href="" ng-click="remove(item)" class="glyphicon glyphicon-remove" aria-hidden="true"></a>
+
+                        </div>
+
+                    </div>
+
+
+
+                </li>
+
+                <!--<li class="list-group-item clearfix" ng-repeat="item in listItems" ng-style="item.customStyle">
 
                     <div ng-show="item.editMode" class="editMode">
 
@@ -113,7 +199,7 @@
 
                     </div>
 
-                </li>
+                </li>-->
 
             </ul>
 
