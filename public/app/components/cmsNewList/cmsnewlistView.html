@@ -34,7 +34,13 @@
 
     </ul>-->
 
-    <h4 class="listTitle">Lijst</h4>
+    <h4 class="listTitle">Nieuwe lijst</h4>
+
+    <div class="alert alert-info" role="alert"><strong>Let op!</strong> Als er al een root lijst bestaat dan wordt deze overschreven.</div>
+
+    <div class="checkbox">
+        <label><input type="checkbox" ng-model="root" value="">Root lijst</label>
+    </div>
 
     <input type="text" class="form-control" ng-model="listTitle" placeholder="Titel van de lijst">
 

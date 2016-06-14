@@ -48,7 +48,7 @@ ul.nav li#first a {
     color: white;
 }
 
-.content label {
+.newSurvey label {
     float: left;
     line-height: 34px;
     width: 100px;
@@ -315,6 +315,10 @@ ul.nav li#first a {
 
 .newList .btn-primary {
     float: left;
+}
+
+.newList .alert {
+    margin-bottom: 0;
 }
 
 .checkingListSpinner {

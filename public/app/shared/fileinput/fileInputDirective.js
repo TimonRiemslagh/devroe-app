@@ -17,7 +17,10 @@ mainApp.directive("fileInput", [function () {
                     });
                 };
 
-                reader.readAsDataURL(changeEvent.target.files[0]);
+                if(scope.fileInput.file) {
+                    reader.readAsDataURL(changeEvent.target.files[0]);
+                }
+
             });
         }
     }

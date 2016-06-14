@@ -87,19 +87,47 @@ io.on('connection', function(socket){
 
         MongoClient.connect(url, function(err, db) {
 
-            db.collection('lists').update(
-                {title: listTitle},
-                {title: listTitle, items: listItems},
-                {upsert: true},
-                function(err, object) {
+            if(data.root){
 
-                    if(!err && object.result.ok) {
-                        socket.emit("listSaved");
-                    } else {
-                        socket.emit("listNotSaved", err);
-                    }
+                db.collection('lists').update(
+                    {id: 0},
+                    {id: 0, title: listTitle, items: listItems},
+                    {upsert: true, new: true},
+                    function(err, object) {
 
-                });
+                        if(!err && object.result.ok) {
+                            socket.emit("listSaved");
+                            db.close();
+                        } else {
+                            socket.emit("listNotSaved", err);
+                            db.close();
+                        }
+
+                    });
+
+            } else {
+
+                db.collection('lists').update(
+                    {title: listTitle},
+                    {title: listTitle, items: listItems},
+                    {upsert: true, new: true},
+                    function(err, object) {
+
+                        console.log(object);
+
+                        if(!err && object.result.ok) {
+                            socket.emit("listSaved");
+                            db.close();
+                        } else {
+                            socket.emit("listNotSaved", err);
+                            db.close();
+                        }
+
+                    });
+            }
+
+
+
         });
 
     });

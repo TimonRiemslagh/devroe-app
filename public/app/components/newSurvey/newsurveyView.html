@@ -15,6 +15,6 @@
 
     <button type="button" id="startSurvey" ng-click="startSurvey()" class="btn btn-success">Start</button>
 
-    <div class="startSurveyAlert alert alert-danger" role="alert"><strong>Opgelet!</strong> niet alle velden zijn ingevuld.</div>
+    <div ng-show="showAlert" class="alert alert-danger" role="alert"><strong>Opgelet!</strong> niet alle velden zijn ingevuld.</div>
 
 </div>

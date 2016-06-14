@@ -306,9 +306,9 @@ mainApp.controller('CmsNewListController', ['$scope', 'ActiveList', '$filter', '
 
         $scope.listSaveBusy = true;
 
-        socket.emit('saveList', {title: $scope.listTitle, items: $scope.listItems});
+        $scope.newListData = {title: $scope.listTitle, items: $scope.listItems, root: $scope.root};
 
-
+        socket.emit('saveList', {title: $scope.listTitle, items: $scope.listItems, root: $scope.root});
         
         //socket.emit('saveList', {links: $scope.links, title: $scope.listTitle, listItems: $scope.listItems});
 
@@ -321,9 +321,19 @@ mainApp.controller('CmsNewListController', ['$scope', 'ActiveList', '$filter', '
     socket.on('listSaved', function() {
 
         $scope.$apply(function(){
+            
+            ActiveList.addList($scope.newListData);
 
+            var localStorageLists = JSON.parse(localStorage.getItem('lists'));
+
+            localStorageLists.items.push($scope.newListData);
+            localStorageLists.title.push($scope.newListData.title);
+
+            localStorage.setItem('lists', JSON.stringify(localStorageLists));
+            
             $scope.listSaveBusy = false;
-
+            $scope.newListItemTitle = "";
+            $scope.listItems = [];
         });
 
     });

@@ -1,13 +1,39 @@
-mainApp.controller('ListsController', function($scope, $routeParams, $location) {
-    var allLists = sessionStorage.getItem('lists');
-    var allListsObj = JSON.parse(allLists);
+mainApp.controller('ListsController', ['$scope', '$routeParams', 'ActiveList', function($scope, $routeParams, ActiveList) {
+
+    $scope.allLists = ActiveList.lists;
 
     var currentList = $routeParams.listId;
 
+    if(currentList == 0) {
+
+        $scope.allLists.items.forEach(function(item) {
+
+            if(item.id == 0) {
+                $scope.currentListItem = item;
+            }
+
+        });
+
+    } else {
+
+        $scope.allLists.items.forEach(function(item) {
+
+            console.log(item._id, currentList);
+
+            if(item._id == currentList) {
+                $scope.currentListItem = item;
+            }
+
+        });
+
+    }
+
+
+
     //var alertDanger = $('.tableHeader .alert-danger');
 
-    $scope.errorMessage = "Selecteer een user!";
-    $scope.successMessage = "De opmeting is opgeslaan!";
+    //$scope.errorMessage = "Selecteer een user!";
+    //$scope.successMessage = "De opmeting is opgeslaan!";
 
     /*allListsObj.forEach(function(list) {
 
@@ -73,4 +99,4 @@ mainApp.controller('ListsController', function($scope, $routeParams, $location) 
         }
 
     };
-});
+}]);

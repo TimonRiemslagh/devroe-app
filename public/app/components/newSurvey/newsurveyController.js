@@ -4,12 +4,14 @@ mainApp.controller('NewSurveyController', function($scope, $routeParams, $locati
     //$('.newSurvey').addClass("active");
 
     $scope.survey = {offnumber: "", client: "", address: ""};
+    $scope.showAlert = false;
 
     $scope.startSurvey = function() {
+        
 
         if($scope.survey.offnumber == "" || $scope.survey.client == "" || $scope.survey.address == "") {
 
-            //$(".startSurveyAlert").fadeIn();
+            $scope.showAlert = true;
 
         } else {
 
