@@ -1,27 +1,33 @@
 <div class="lists panel panel-default">
     <div class="panel-heading tableHeader">
-        <h3 class="panel-title">{{listTitle}}</h3>
+        <h3 class="panel-title">{{currentListItem.title}}</h3>
         <div class="saveAlert alert alert-danger" role="alert">{{errorMessage}}</div>
         <div class="saveAlert alert alert-success" role="alert">{{successMessage}}</div>
 
-        <button class="saveSurveyButton btn btn-success" ng-click="saveSurvey()">Opslaan</button>
+        <button ng-disabled="saveBusy" ng-click="saveSurvey()" class="saveSurveyButton btn btn-success">Opslaan<span ng-show="saveBusy" class="addListItemLoader" loader></span></button>
+
+        <!--<button class="saveSurveyButton btn btn-success" ng-click="saveSurvey()">Opslaan</button>-->
     </div>
 
     <ul class="list-group">
 
-        <li ng-repeat="list in lists"
-            ng-click="showPicture(list.image)"
+        <li ng-repeat="list in currentListItem.items"
+            ng-click="showPicture(list.url)"
             class="listItem list-group-item">
             {{list.title}}
             <a class="nextLink"
-               href="#/newsurvey/list/{{list.listId}}"
-               ng-click="addList(list)">
+               href="#/newsurvey/list/{{list.linkUrl}}"
+               ng-click="addList(list.title)">
                 <span class="glyphicon glyphicon-ok"
                       aria-hidden="true"></span>
             </a>
         </li>
 
     </ul>
-
-    <img class="previewPhoto" src="">
 </div>
+
+<div class="alert alert-danger" ng-show="noUser" role="alert">Selecteer een gebruiker en probeer opnieuw.</div>
+<div class="alert alert-danger" ng-show="noOptions" role="alert">Selecteer een paar opties en probeer opnieuw.</div>
+<div class="alert alert-danger" ng-show="failure" role=" alert"><strong>Fout!</strong> Er is een fout opgetreden tijdens het opslaan: {{error}}</div>
+
+<img width="500" ng-src="{{imageUrl}}">

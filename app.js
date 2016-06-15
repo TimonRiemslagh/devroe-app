@@ -48,7 +48,7 @@ app.get('/lists/:title', function(req, res) {
         db.collection('lists').findOne({title: reqTitle}, function(err, doc) {
 
             if(doc) {
-                res.json({validList: true});
+                res.json({validList: true, doc: doc});
             } else {
                 res.json({validList: false});
             }
@@ -60,6 +60,44 @@ app.get('/lists/:title', function(req, res) {
 
 });
 
+app.get('/image/:url', function(req, res) {
+
+    console.log(req.params.url);
+
+});
+
+app.post('/survey', jsonParser, function(req, res) {
+
+    if (!req.body) {
+
+        res.sendStatus(400);
+
+    } else {
+
+        MongoClient.connect(url, function(err, db) {
+            db.collection('surveys').insert(
+                {
+                    offerteNumber: req.body.offerteNumber,
+                    client: req.body.client,
+                    address: req.body.address,
+                    user: req.body.user,
+                    options: req.body.arr
+                },
+                function(err, doc) {
+
+                    if(!err && doc.result.ok) {
+                        res.json({success: true});
+                    } else {
+                        res.json({success: false, err: err});
+                    }
+
+                    db.close();
+                });
+
+        });
+    }
+});
+
 io.on('connection', function(socket){
 
     socket.on('saveList', function(data) {
@@ -69,7 +107,7 @@ io.on('connection', function(socket){
 
         data.items.forEach(function(item) {
 
-            var newPath = __dirname + "/uploads/" + data.title.replace(/[^A-Z0-9]+/ig, "_") + "_" + item.title.replace(/[^A-Z0-9]+/ig, "_") + "_" + item.filename;
+            var newPath = "./public/uploads/" + data.title.replace(/[^A-Z0-9]+/ig, "_") + "_" + item.title.replace(/[^A-Z0-9]+/ig, "_") + "_" + item.filename;
 
             fs.writeFile(newPath, item.image, function (err) {
                 if(err) {
@@ -79,7 +117,7 @@ io.on('connection', function(socket){
                 }
             });
 
-            listItems.push({title: item.title, link: item.link, url: newPath});
+            listItems.push({title: item.title, link: item.link, linkUrl: item.linkUrl, url: newPath});
 
         });
 
@@ -134,7 +172,7 @@ io.on('connection', function(socket){
 
     socket.on('saveRef', function(data) {
 
-        var newPath = __dirname + "/uploads/" + data.keywords.replace(/[^A-Z0-9]+/ig, "_") + "_" + data.photoUrl;
+        var newPath = "./public/uploads/" + data.keywords.replace(/[^A-Z0-9]+/ig, "_") + "_" + data.photoUrl;
 
 
         fs.writeFile(newPath, data.photo, function (err) {

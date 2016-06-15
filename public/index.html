@@ -21,7 +21,13 @@
                 <li class="cms" role="presentation"><a href="#/cms">Inhoud</a></li>
             </ul>
 
-            <user-drop-down users="users"></user-drop-down>
+            <!--<user-drop-down users="users"></user-drop-down>-->
+
+            <select class="form-control usersDropdown" id="users">
+                <option value="null">Selecteer een gebruiker...</option>
+                <option ng-repeat="user in users" value="{{user}}">{{ user }}</option>
+            </select>
+
         </div>
 
         <div class="content">

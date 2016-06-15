@@ -1,4 +1,4 @@
-mainApp.controller('ListsController', ['$scope', '$routeParams', 'ActiveList', function($scope, $routeParams, ActiveList) {
+mainApp.controller('ListsController', ['$scope', '$routeParams', 'ActiveList', '$http', "$location", function($scope, $routeParams, ActiveList, $http, $location) {
 
     $scope.allLists = ActiveList.lists;
 
@@ -10,41 +10,25 @@ mainApp.controller('ListsController', ['$scope', '$routeParams', 'ActiveList', f
 
             if(item.id == 0) {
                 $scope.currentListItem = item;
+                console.log($scope.currentListItem);
             }
 
         });
 
     } else {
 
-        $scope.allLists.items.forEach(function(item) {
+        $scope.allLists.items.forEach(function (item) {
 
-            console.log(item._id, currentList);
-
-            if(item._id == currentList) {
+            if (item._id == currentList) {
                 $scope.currentListItem = item;
+                console.log($scope.currentListItem);
             }
 
         });
 
     }
 
-
-
-    //var alertDanger = $('.tableHeader .alert-danger');
-
-    //$scope.errorMessage = "Selecteer een user!";
-    //$scope.successMessage = "De opmeting is opgeslaan!";
-
-    /*allListsObj.forEach(function(list) {
-
-        if(list.id == currentList) {
-            $scope.listTitle = list.title;
-            $scope.lists = list.items;
-        }
-
-    });*/
-
-    $scope.addList = function(list) {
+    $scope.addList = function(listTitle) {
         var selectedLists = sessionStorage.getItem("selectedLists");
         var selectedListsObj = [];
 
@@ -52,50 +36,62 @@ mainApp.controller('ListsController', ['$scope', '$routeParams', 'ActiveList', f
             selectedListsObj = JSON.parse(selectedLists);
         }
 
-        selectedListsObj.push(list);
+        selectedListsObj.push(listTitle);
 
         sessionStorage.setItem("selectedLists", JSON.stringify(selectedListsObj));
+        console.log(sessionStorage);
     };
 
     $scope.showPicture = function(image) {
-        console.log(image);
+        $scope.imageUrl = image;
     };
 
     $scope.saveSurvey = function() {
-        //alertDanger.hide();
-        //$('.tableHeader .alert-success').hide();
-
-        console.log("save started");
-
         var selectedLists = sessionStorage.getItem("selectedLists");
-        var selectedListsObj = [];
-        var selectedListsStrings = [];
 
         var offerteNumber = sessionStorage.getItem("offerteNumber");
         var address = sessionStorage.getItem("address");
         var client = sessionStorage.getItem("client");
 
-        //var user = $(".usersDropdown option:selected").text();
+        var user = $(".usersDropdown option:selected").val();
 
         if(selectedLists) {
-            selectedListsObj = JSON.parse(selectedLists);
+            $scope.noOptions = false;
 
-            selectedListsObj.forEach(function(list) {
-                selectedListsStrings.push(list.title);
-            });
-            
-            console.log(selectedListsStrings);
+            console.log(selectedLists);
 
-            if(user == "Selecteer een gebruiker...") {
-                //alertDanger.fadeIn().delay(3000).fadeOut();
+            if(user == "null") {
+                $scope.noUser = true;
             } else {
-                //$('.spinner').show();
-                //$('.saveSurveyButton').prop('disabled', true);
-                //socket.emit('saveList', {arr: selectedListsStrings, offerteNumber: offerteNumber, client: client, address: address, user: user});
+                $scope.noUser = false;
+                $scope.imageUrl = "";
+                $scope.saveBusy = true;
+
+                $http.post('/survey', {arr: selectedLists, offerteNumber: offerteNumber, client: client, address: address, user: user}).then(function(res) {
+
+                    $scope.saveBusy = false;
+
+                    if(res.data.success) {
+
+                        $location.path('/#/newsurvey');
+
+                        sessionStorage.setItem('selectedLists', "");
+                        sessionStorage.setItem('offerteNumber', '');
+                        sessionStorage.setItem('address', '');
+                        sessionStorage.setItem('client', '');
+
+                    } else {
+                        
+                        $scope.failure = true;
+                        $scope.error = res.data.err;
+                    }
+
+                }, function(errorRes) {
+                    console.log(errorRes);
+                });
             }
         } else {
-            $scope.errorMessage = "Niets geselecteerd!";
-            //alertDanger.fadeIn().delay(3000).fadeOut();
+            $scope.noOptions = true;
         }
 
     };

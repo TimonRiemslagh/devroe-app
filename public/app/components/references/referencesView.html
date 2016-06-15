@@ -1,1 +1,17 @@
-<h1>{{title}}</h1>
+<h3>Zoek referenties</h3>
+
+<div ng-init="friends = [{name:'John', phone:'555-1276'},
+                         {name:'Mary', phone:'800-BIG-MARY'},
+                         {name:'Mike', phone:'555-4321'},
+                         {name:'Adam', phone:'555-5678'},
+                         {name:'Julie', phone:'555-8765'},
+                         {name:'Juliette', phone:'555-5678'}]"></div>
+
+<label>Search: <input ng-model="searchText"></label>
+<table id="searchTextResults">
+    <tr><th>Name</th><th>Phone</th></tr>
+    <tr ng-repeat="friend in friends | filter:searchText">
+        <td>{{friend.name}}</td>
+        <td>{{friend.phone}}</td>
+    </tr>
+</table>

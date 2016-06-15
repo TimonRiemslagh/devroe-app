@@ -47,8 +47,33 @@ mainApp.controller('CmsNewListController', ['$scope', 'ActiveList', '$filter', '
 
             $http.get('/lists/' + $scope.newListItemLink).then(function(res) {
 
-                if(res.data.validList) {
-                    $scope.listItems.push({title: $scope.newListItemTitle, image: $scope.newListItemImageElement.file, filename: $scope.newListItemImageElement.file.name, link: $scope.newListItemLink, editMode: false });
+                console.log($scope.newListItemLink);
+
+                if($scope.newListItemLink) {
+                    if(res.data.validList) {
+                        $scope.listItems.push({title: $scope.newListItemTitle, image: $scope.newListItemImageElement.file, filename: $scope.newListItemImageElement.file.name, link: $scope.newListItemLink, linkUrl: res.data.doc._id, editMode: false });
+
+                        // Reset the form model.
+                        $scope.newListItemTitle = "";
+                        $scope.newListItemLink = "";
+                        $scope.newListItemImageElement = {
+                            file: {},
+                            data: ""
+                        };
+                        $scope.addItemForm.$setPristine();
+                        $scope.addItemForm.$setUntouched();
+
+                        $('.newImage').val(null);
+                        $scope.showAlert = false;
+                        $scope.checkingList = false;
+
+                    } else {
+                        $scope.showAlert = true;
+                        $scope.checkingList = false;
+                    }
+                } else {
+
+                    $scope.listItems.push({title: $scope.newListItemTitle, image: $scope.newListItemImageElement.file, filename: $scope.newListItemImageElement.file.name, link: "", linkUrl: "", editMode: false });
 
                     // Reset the form model.
                     $scope.newListItemTitle = "";
@@ -64,9 +89,6 @@ mainApp.controller('CmsNewListController', ['$scope', 'ActiveList', '$filter', '
                     $scope.showAlert = false;
                     $scope.checkingList = false;
 
-                } else {
-                    $scope.showAlert = true;
-                    $scope.checkingList = false;
                 }
 
             }, function(errorRes) {
@@ -102,9 +124,9 @@ mainApp.controller('CmsNewListController', ['$scope', 'ActiveList', '$filter', '
                         if(listItem.title == item.oldTitle) {
                             listItem.title = item.title;
                             listItem.image = item.image;
-                            console.log(listItem.image, item.image.name);
                             listItem.filename = item.image.name;
                             listItem.link = item.link;
+                            listItem.linkUrl = res.data.doc._id;
                         }
 
                     });
@@ -327,12 +349,13 @@ mainApp.controller('CmsNewListController', ['$scope', 'ActiveList', '$filter', '
             var localStorageLists = JSON.parse(localStorage.getItem('lists'));
 
             localStorageLists.items.push($scope.newListData);
-            localStorageLists.title.push($scope.newListData.title);
+            localStorageLists.titles.push($scope.newListData.title);
 
             localStorage.setItem('lists', JSON.stringify(localStorageLists));
             
             $scope.listSaveBusy = false;
             $scope.newListItemTitle = "";
+            $scope.listTitle = "";
             $scope.listItems = [];
         });
 

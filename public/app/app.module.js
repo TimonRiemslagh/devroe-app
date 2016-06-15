@@ -5,13 +5,19 @@ mainApp.service( 'ActiveList', [ '$rootScope', function( $rootScope ) {
     var service = {
 
         lists: {},
+        refs: {},
 
         /*activeList: {
             "lists": [],
             "listItems": []
         },*/
 
-        setLists: function (lists, type) {
+        setRefs: function (refs) {
+            service.refs = refs;
+            $rootScope.$broadcast( 'refs.update' );
+        },
+
+        setLists: function (lists) {
             service.lists = lists;
             //service.lists = lists;
             $rootScope.$broadcast( 'lists.update' );
@@ -120,8 +126,8 @@ mainApp.controller('indexController', ['$scope', '$http', 'ActiveList', function
     } else {
         getListItems.open("GET", window.location.origin + "/getListItems", true);
         getListItems.send();
-    }
+    }*/
 
-    $scope.users = ["timon"];*/
+    $scope.users = ["timon"];
 
 }]);
