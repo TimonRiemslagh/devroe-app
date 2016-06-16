@@ -143,6 +143,10 @@ ul.nav li#first a {
     margin-bottom: 10px;
 }
 
+.newRef .alert-danger {
+    margin-top: 10px;
+}
+
 .saveRefBtn {
     float: right;
 }

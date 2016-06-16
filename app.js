@@ -40,6 +40,24 @@ app.get('/lists', function(req, res) {
     });
 });
 
+app.get('/refs', function(req, res) {
+
+    MongoClient.connect(url, function(err, db) {
+        db.collection('references').find()
+            .toArray(function(err, arr) {
+
+                if(!err) {
+                    res.json(arr);
+                    db.close();
+                } else {
+                    res.sendStatus(400);
+                    db.close();
+                }
+
+            });
+    });
+});
+
 app.get('/lists/:title', function(req, res) {
 
     var reqTitle = req.params.title;
@@ -127,14 +145,15 @@ io.on('connection', function(socket){
 
             if(data.root){
 
-                db.collection('lists').update(
+                db.collection('lists').findAndModify(
                     {id: 0},
+                    [],
                     {id: 0, title: listTitle, items: listItems},
                     {upsert: true, new: true},
                     function(err, object) {
 
-                        if(!err && object.result.ok) {
-                            socket.emit("listSaved");
+                        if(!err && object.ok) {
+                            socket.emit("listSaved", object.value);
                             db.close();
                         } else {
                             socket.emit("listNotSaved", err);
@@ -145,16 +164,15 @@ io.on('connection', function(socket){
 
             } else {
 
-                db.collection('lists').update(
+                db.collection('lists').findAndModify(
                     {title: listTitle},
+                    [],
                     {title: listTitle, items: listItems},
                     {upsert: true, new: true},
                     function(err, object) {
 
-                        console.log(object);
-
-                        if(!err && object.result.ok) {
-                            socket.emit("listSaved");
+                        if(!err && object.ok) {
+                            socket.emit("listSaved", object.value);
                             db.close();
                         } else {
                             socket.emit("listNotSaved", err);
@@ -172,7 +190,9 @@ io.on('connection', function(socket){
 
     socket.on('saveRef', function(data) {
 
-        var newPath = "./public/uploads/" + data.keywords.replace(/[^A-Z0-9]+/ig, "_") + "_" + data.photoUrl;
+        var newFileName = data.keywords.replace(/[^A-Z0-9]+/ig, "_") + "_" + data.filename;
+
+        var newPath = "./public/uploads/" + newFileName;
 
 
         fs.writeFile(newPath, data.photo, function (err) {
@@ -186,13 +206,11 @@ io.on('connection', function(socket){
         MongoClient.connect(url, function(err, db) {
 
             db.collection('references').insert(
-                {keywords: data.keywords, url: newPath},
+                {keywords: data.keywords, url: '/uploads/' + newFileName},
                 function(err, object) {
 
-                    console.log(err, object);
-
                     if(!err && object.result.ok) {
-                        socket.emit("refSaved");
+                        socket.emit("refSaved", object.ops[0]);
                     } else {
                         socket.emit("refNotSaved", err);
                     }

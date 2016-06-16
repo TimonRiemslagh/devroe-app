@@ -2,6 +2,8 @@ mainApp.controller('ListsController', ['$scope', '$routeParams', 'ActiveList', '
 
     $scope.allLists = ActiveList.lists;
 
+    console.log($scope.allLists);
+
     var currentList = $routeParams.listId;
 
     if(currentList == 0) {

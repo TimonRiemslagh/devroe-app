@@ -340,16 +340,19 @@ mainApp.controller('CmsNewListController', ['$scope', 'ActiveList', '$filter', '
 
     };
     
-    socket.on('listSaved', function() {
+    socket.on('listSaved', function(savedList) {
+
+        console.log(savedList.title);
+
 
         $scope.$apply(function(){
             
-            ActiveList.addList($scope.newListData);
+            ActiveList.addList(savedList);
 
             var localStorageLists = JSON.parse(localStorage.getItem('lists'));
 
-            localStorageLists.items.push($scope.newListData);
-            localStorageLists.titles.push($scope.newListData.title);
+            localStorageLists.items.push(savedList);
+            localStorageLists.titles.push(savedList.title);
 
             localStorage.setItem('lists', JSON.stringify(localStorageLists));
             

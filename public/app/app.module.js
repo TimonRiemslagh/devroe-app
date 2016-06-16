@@ -5,7 +5,7 @@ mainApp.service( 'ActiveList', [ '$rootScope', function( $rootScope ) {
     var service = {
 
         lists: {},
-        refs: {},
+        refs: [],
 
         /*activeList: {
             "lists": [],
@@ -19,7 +19,6 @@ mainApp.service( 'ActiveList', [ '$rootScope', function( $rootScope ) {
 
         setLists: function (lists) {
             service.lists = lists;
-            //service.lists = lists;
             $rootScope.$broadcast( 'lists.update' );
         },
 
@@ -28,6 +27,11 @@ mainApp.service( 'ActiveList', [ '$rootScope', function( $rootScope ) {
             service.activeList.listItems = listItems;
             $rootScope.$broadcast( 'listItems.update' );
         },*/
+
+        addRef: function(ref) {
+            service.refs.push(ref);
+            $rootScope.$broadcast( 'refs.update' );
+        },
 
         addList: function(list) {
             console.log(list);
@@ -69,14 +73,26 @@ mainApp.service( 'ActiveList', [ '$rootScope', function( $rootScope ) {
 mainApp.controller('indexController', ['$scope', '$http', 'ActiveList', function($scope, $http, ActiveList) {
 
     var localStorageLists = localStorage.getItem('lists');
+    var localStorageRefs = localStorage.getItem('refs');
 
     if(localStorageLists) {
-        ActiveList.setLists(JSON.parse(localStorageLists), 'storage');
+        ActiveList.setLists(JSON.parse(localStorageLists));
+    }
+
+    if(localStorageRefs) {
+        ActiveList.setRefs(JSON.parse(localStorageRefs));
     }
 
     $http.get('/lists').then(function(res) {
         localStorage.setItem('lists', JSON.stringify(res.data));
-        ActiveList.setLists(res.data, 'http');
+        ActiveList.setLists(res.data);
+    }, function(errorRes) {
+        console.log(errorRes);
+    });
+
+    $http.get('/refs').then(function(res) {
+        localStorage.setItem('refs', JSON.stringify(res.data));
+        ActiveList.setRefs(res.data);
     }, function(errorRes) {
         console.log(errorRes);
     });

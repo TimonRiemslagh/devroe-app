@@ -1,4 +1,4 @@
-mainApp.controller('CmsNewReferenceController', function($scope, $location) {
+mainApp.controller('CmsNewReferenceController', ['$scope', 'ActiveList', function($scope, ActiveList) {
 
     //$('ul.nav li').removeClass('active');
     //$('.cms').addClass("active");
@@ -7,21 +7,33 @@ mainApp.controller('CmsNewReferenceController', function($scope, $location) {
     $scope.isBusy = false;
 
     $scope.refImage = {
-        file: {},
+        file: "",
         data: ""
     };
 
     $scope.saveRef = function() {
 
-        $scope.isBusy = true;
+        $scope.showAlert = false;
 
-        socket.emit('saveRef', {keywords: $scope.keywords, photo: $scope.refImage.file, photoUrl: $scope.refImage.file.name});
+        if($scope.keywords && $scope.refImage.file !== "") {
+
+            $scope.isBusy = true;
+            socket.emit('saveRef', {keywords: $scope.keywords, photo: $scope.refImage.file, filename: $scope.refImage.file.name});
+
+        } else {
+            $scope.showAlert = true;
+        }
 
     };
 
-    socket.on('refSaved', function() {
+    socket.on('refSaved', function(savedRef) {
 
         $scope.$apply(function() {
+
+            ActiveList.addRef(savedRef);
+            var localStorageRefs = JSON.parse(localStorage.getItem('refs'));
+            localStorageRefs.push(savedRef);
+            localStorage.setItem('refs', JSON.stringify(localStorageRefs));
 
             // Reset the form model.
             $scope.keywords = "";
@@ -88,4 +100,4 @@ mainApp.controller('CmsNewReferenceController', function($scope, $location) {
         });
     });*/
 
-});
+}]);
