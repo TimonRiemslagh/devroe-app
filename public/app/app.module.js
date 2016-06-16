@@ -4,13 +4,9 @@ mainApp.service( 'ActiveList', [ '$rootScope', function( $rootScope ) {
 
     var service = {
 
-        lists: {},
+        lists: {}, //items [] titles []
         refs: [],
-
-        /*activeList: {
-            "lists": [],
-            "listItems": []
-        },*/
+        surveys: [],
 
         setRefs: function (refs) {
             service.refs = refs;
@@ -20,6 +16,11 @@ mainApp.service( 'ActiveList', [ '$rootScope', function( $rootScope ) {
         setLists: function (lists) {
             service.lists = lists;
             $rootScope.$broadcast( 'lists.update' );
+        },
+
+        setSurveys: function (survey) {
+            service.surveys = survey;
+            $rootScope.$broadcast( 'surveys.update' );
         },
 
         /*setListItems: function(listItems) {
@@ -34,10 +35,15 @@ mainApp.service( 'ActiveList', [ '$rootScope', function( $rootScope ) {
         },
 
         addList: function(list) {
-            console.log(list);
             service.lists.items.push( list );
             service.lists.titles.push(list.title);
             $rootScope.$broadcast( 'lists.update' );
+        },
+
+        addSurvey: function(survey) {
+            console.log(survey);
+            service.surveys.push( survey );
+            $rootScope.$broadcast( 'survey.update' );
         },
 
         /*addListItem: function(listItem, title) {
@@ -55,6 +61,20 @@ mainApp.service( 'ActiveList', [ '$rootScope', function( $rootScope ) {
         },*/
 
         removeList: function(list) {
+
+            for(var t = service.lists.items.length-1; t >= 0; t--) {
+                if(service.lists.items[t].title == list) {
+                    service.lists.items.splice(t,1);
+                }
+            }
+
+            for(var i = service.lists.titles.length-1; i >= 0; i--) {
+                if(service.lists.titles[i] == list) {
+                    service.lists.titles.splice(i,1);
+                }
+            }
+
+            $rootScope.$broadcast( 'list.delete' );
 
         },
 
@@ -74,6 +94,7 @@ mainApp.controller('indexController', ['$scope', '$http', 'ActiveList', function
 
     var localStorageLists = localStorage.getItem('lists');
     var localStorageRefs = localStorage.getItem('refs');
+    var localStorageSurveys = localStorage.getItem('surveys');
 
     if(localStorageLists) {
         ActiveList.setLists(JSON.parse(localStorageLists));
@@ -81,6 +102,10 @@ mainApp.controller('indexController', ['$scope', '$http', 'ActiveList', function
 
     if(localStorageRefs) {
         ActiveList.setRefs(JSON.parse(localStorageRefs));
+    }
+
+    if(localStorageSurveys) {
+        ActiveList.setSurveys(JSON.parse(localStorageSurveys));
     }
 
     $http.get('/lists').then(function(res) {
@@ -93,6 +118,13 @@ mainApp.controller('indexController', ['$scope', '$http', 'ActiveList', function
     $http.get('/refs').then(function(res) {
         localStorage.setItem('refs', JSON.stringify(res.data));
         ActiveList.setRefs(res.data);
+    }, function(errorRes) {
+        console.log(errorRes);
+    });
+
+    $http.get('/surveys').then(function(res) {
+        localStorage.setItem('surveys', JSON.stringify(res.data));
+        ActiveList.setSurveys(res.data);
     }, function(errorRes) {
         console.log(errorRes);
     });

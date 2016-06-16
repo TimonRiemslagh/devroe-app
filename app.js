@@ -58,6 +58,24 @@ app.get('/refs', function(req, res) {
     });
 });
 
+app.get('/surveys', function(req, res) {
+
+    MongoClient.connect(url, function(err, db) {
+        db.collection('surveys').find()
+            .toArray(function(err, arr) {
+
+                if(!err) {
+                    res.json(arr);
+                    db.close();
+                } else {
+                    res.sendStatus(400);
+                    db.close();
+                }
+
+            });
+    });
+});
+
 app.get('/lists/:title', function(req, res) {
 
     var reqTitle = req.params.title;
@@ -103,8 +121,10 @@ app.post('/survey', jsonParser, function(req, res) {
                 },
                 function(err, doc) {
 
+                    console.log(doc.ops[0]);
+
                     if(!err && doc.result.ok) {
-                        res.json({success: true});
+                        res.json({success: true, doc: doc.ops[0]});
                     } else {
                         res.json({success: false, err: err});
                     }
@@ -127,9 +147,9 @@ io.on('connection', function(socket){
 
             var newPath = "./public/uploads/" + data.title.replace(/[^A-Z0-9]+/ig, "_") + "_" + item.title.replace(/[^A-Z0-9]+/ig, "_") + "_" + item.filename;
 
-            fs.writeFile(newPath, item.image, function (err) {
+            fs.writeFile(newPath, item.image, { flag: 'wx' }, function (err) {
                 if(err) {
-                    console.log("error");
+                    console.log(err);
                 } else {
                     console.log("saved at " + newPath);
                 }
@@ -138,8 +158,6 @@ io.on('connection', function(socket){
             listItems.push({title: item.title, link: item.link, linkUrl: item.linkUrl, url: newPath});
 
         });
-
-        console.log(listItems);
 
         MongoClient.connect(url, function(err, db) {
 
@@ -164,22 +182,47 @@ io.on('connection', function(socket){
 
             } else {
 
-                db.collection('lists').findAndModify(
-                    {title: listTitle},
-                    [],
-                    {title: listTitle, items: listItems},
-                    {upsert: true, new: true},
-                    function(err, object) {
+                if(data.id) {
 
-                        if(!err && object.ok) {
-                            socket.emit("listSaved", object.value);
-                            db.close();
-                        } else {
-                            socket.emit("listNotSaved", err);
-                            db.close();
-                        }
+                    db.collection('lists').findAndModify(
+                        {_id: new ObjectId(data.id)},
+                        [],
+                        {title: listTitle, items: listItems},
+                        {upsert: true, new: true},
+                        function(err, object) {
 
-                    });
+                            if(!err && object.ok) {
+                                socket.emit("listSaved", object.value);
+                                db.close();
+                            } else {
+                                socket.emit("listNotSaved", err);
+                                db.close();
+                            }
+
+                        });
+
+                } else {
+
+                    db.collection('lists').findAndModify(
+                        {title: listTitle},
+                        [],
+                        {title: listTitle, items: listItems},
+                        {upsert: true, new: true},
+                        function(err, object) {
+
+                            if(!err && object.ok) {
+                                socket.emit("listSaved", object.value);
+                                db.close();
+                            } else {
+                                socket.emit("listNotSaved", err);
+                                db.close();
+                            }
+
+                        });
+
+                }
+
+
             }
 
 
@@ -195,7 +238,7 @@ io.on('connection', function(socket){
         var newPath = "./public/uploads/" + newFileName;
 
 
-        fs.writeFile(newPath, data.photo, function (err) {
+        fs.writeFile(newPath, data.photo, { flag: 'wx' }, function (err) {
             if(err) {
                 console.log(err);
             } else {
@@ -205,14 +248,18 @@ io.on('connection', function(socket){
 
         MongoClient.connect(url, function(err, db) {
 
-            db.collection('references').insert(
+            db.collection('references').findAndModify(
+                {keywords: data.keywords},
+                [],
                 {keywords: data.keywords, url: '/uploads/' + newFileName},
                 function(err, object) {
 
                     if(!err && object.result.ok) {
-                        socket.emit("refSaved", object.ops[0]);
+                        socket.emit("refSaved", object.value);
+                        db.close();
                     } else {
                         socket.emit("refNotSaved", err);
+                        db.close();
                     }
 
                 });
@@ -221,12 +268,28 @@ io.on('connection', function(socket){
 
 });
 
-app.delete('/lists/:name', function(req, res) {
+app.delete('/lists/:id', function(req, res) {
 
-    console.log("delete");
-    console.log(req.params.name);
+    MongoClient.connect(url, function(err, db) {
 
-    res.sendStatus(200);
+        db.collection('lists').remove(
+            {_id: req.params.id},
+            function(err, result) {
+
+                if(!err && result.result.ok) {
+
+                    res.json({success: true});
+
+                } else {
+
+                    res.json({success: false, err: err});
+
+                }
+
+                db.close();
+
+            });
+    });
 
 });
 

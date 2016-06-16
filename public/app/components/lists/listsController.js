@@ -75,6 +75,11 @@ mainApp.controller('ListsController', ['$scope', '$routeParams', 'ActiveList', '
 
                     if(res.data.success) {
 
+                        ActiveList.addSurvey(res.data.doc);
+                        var localStorageSurveys = JSON.parse(localStorage.getItem('surveys'));
+                        localStorageSurveys.push(res.data.doc);
+                        localStorage.setItem('surveys', JSON.stringify(localStorageSurveys));
+
                         $location.path('/#/newsurvey');
 
                         sessionStorage.setItem('selectedLists', "");

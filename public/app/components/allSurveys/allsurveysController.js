@@ -1,21 +1,7 @@
-mainApp.controller('AllSurveysController', function($scope) {
+mainApp.controller('AllSurveysController', ['$scope', 'ActiveList', function($scope, ActiveList) {
 
-    //$('ul.nav li').removeClass('active');
-    //$('.allSurveys').addClass("active");
+    $scope.activeSurveys = ActiveList.surveys;
 
-    $scope.users = ['timon'];
+    console.log($scope.activeSurveys);
 
-    socket.emit('getSurveys');
-
-    socket.on('mostRecent', function(data) {
-        $scope.$apply(function(){
-            $scope.searchResults = data;
-        });
-    });
-
-    socket.emit('getAllUsers');
-
-    socket.on('allUsers', function(data) {
-
-    });
-});
+}]);

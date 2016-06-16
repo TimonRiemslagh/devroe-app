@@ -1,4 +1,4 @@
-mainApp.controller('CmsNewListController', ['$scope', 'ActiveList', '$filter', '$http', function($scope, ActiveList, $filter, $http) {
+mainApp.controller('CmsNewListController', ['$scope', 'ActiveList', '$filter', '$http', '$routeParams', function($scope, ActiveList, $filter, $http, $routeParams) {
     //$('ul.nav li').removeClass('active');
     //$('.cms').addClass("active");
 
@@ -26,6 +26,25 @@ mainApp.controller('CmsNewListController', ['$scope', 'ActiveList', '$filter', '
             name: ""
         }//, filename: ""
     };*/
+    
+    if($routeParams.listId) {
+
+        ActiveList.lists.items.forEach(function(list) {
+            if(list._id == $routeParams.listId) {
+
+                console.log(list);
+
+                if(list.id == 0) { //this is the root list
+                    $scope.root = true;
+                }
+
+                $scope.listTitle = list.title;
+                $scope.listItems = list.items;
+
+            }
+        });
+        
+    }
 
     $scope.newListItemImageElement = {
         file: {},
@@ -46,8 +65,6 @@ mainApp.controller('CmsNewListController', ['$scope', 'ActiveList', '$filter', '
             $scope.checkingList = true;
 
             $http.get('/lists/' + $scope.newListItemLink).then(function(res) {
-
-                console.log($scope.newListItemLink);
 
                 if($scope.newListItemLink) {
                     if(res.data.validList) {
@@ -319,18 +336,22 @@ mainApp.controller('CmsNewListController', ['$scope', 'ActiveList', '$filter', '
         $scope.activeListItems = ActiveList.activeList.listItems.titles;
     });*/
 
-    $scope.$on('lists.update', function(event) {
+   /* $scope.$on('lists.update', function(event) {
         console.log("listsupdated");
         $scope.activeLists = ActiveList.lists.titles;
-    });
+    });*/
 
     $scope.saveList = function() {
 
         $scope.listSaveBusy = true;
 
-        $scope.newListData = {title: $scope.listTitle, items: $scope.listItems, root: $scope.root};
+        if($routeParams.listId) {
 
-        socket.emit('saveList', {title: $scope.listTitle, items: $scope.listItems, root: $scope.root});
+            socket.emit('saveList', {title: $scope.listTitle, items: $scope.listItems, root: $scope.root, id: $routeParams.listId});
+
+        } else {
+            socket.emit('saveList', {title: $scope.listTitle, items: $scope.listItems, root: $scope.root});
+        }
         
         //socket.emit('saveList', {links: $scope.links, title: $scope.listTitle, listItems: $scope.listItems});
 

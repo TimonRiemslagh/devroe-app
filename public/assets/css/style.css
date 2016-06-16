@@ -92,8 +92,11 @@ ul.nav li#first a {
     right: 10px;
 }
 
-.searchBar {
-    margin-bottom: 40px;
+.cmsList .searchBar {
+    margin-bottom: 20px;
+    float: left;
+    margin-right: 10px;
+    width: 718px;
 }
 
 .saveSurveyButton {
@@ -185,11 +188,6 @@ ul.nav li#first a {
 
 .startSurveyAlert {
     display: none;
-}
-
-.btnNewList {
-    float: left;
-    margin-right: 10px;
 }
 
 .btnSaveList {
@@ -286,10 +284,6 @@ ul.nav li#first a {
 
 .newList .list {
     margin-top: 10px;
-}
-
-.newList .glyphicon {
-    margin-left: 20px;
 }
 
 .newList .listTitle {
@@ -407,6 +401,10 @@ ul.nav li#first a {
 
 div.options {
     float: right;
+}
+
+div.options a {
+    margin-left: 10px;
 }
 
 .linksList {

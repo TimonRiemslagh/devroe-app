@@ -1,8 +1,34 @@
-<search-box placeholder="Offertenummer"></search-box>
+<h3>Zoek opmetingen</h3>
 
-<h4>Meest recent</h4>
-
-<div ng-repeat="survey in searchResults">
-    <search-result-survey survey="survey"></search-result-survey>
+<div class="input-group searchBar">
+    <span class="input-group-addon" id="basic-addon1">
+        <span class="glyphicon glyphicon-search"></span>
+    </span>
+    <input type="text" class="form-control" placeholder="Zoek een opmeting" ng-model="searchText" aria-describedby="basic-addon1">
 </div>
+
+<table class="table">
+
+    <thead>
+    <tr>
+        <th>Offerte nummer</th>
+        <th>Klant</th>
+        <th>Adres</th>
+        <th>Opties</th>
+    </tr>
+    </thead>
+
+    <tbody>
+
+    <tr ng-repeat="survey in activeSurveys | filter:searchText">
+        <td>{{survey.offerteNumber}}</td>
+        <td>{{survey.client}}</td>
+        <td>{{survey.address}}</td>
+        <td>{{survey.options}}</td>
+    </tr>
+
+    </tbody>
+
+</table>
+
 

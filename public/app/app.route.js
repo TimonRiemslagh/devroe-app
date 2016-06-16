@@ -29,6 +29,10 @@ mainApp.config(['$routeProvider', function($routeProvider) {
             templateUrl: 'app/components/cmsNewList/cmsnewlistView.html', controller: 'CmsNewListController'
         }).
 
+        when('/cms/cmsLists/cmsNewList/:listId', {
+            templateUrl: 'app/components/cmsNewList/cmsnewlistView.html', controller: 'CmsNewListController'
+        }).
+
         when('/cms/cmsListItems', {
             templateUrl: 'app/components/cmsListItems/cmslistitemsView.html', controller: 'CmsListItemsController'
         }).
