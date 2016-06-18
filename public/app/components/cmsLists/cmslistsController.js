@@ -13,6 +13,11 @@ mainApp.controller('CmsListsController', ['$scope', '$location', 'ActiveList', '
 
         $location.path('/cms/cmsLists/cmsNewList/' + listId);
     };
+    
+    $scope.$on('lists.update', function() {
+        console.log('listsupdated');
+        $scope.activeLists = ActiveList.lists.items;
+    });
 
     $scope.delete = function(id, listTitle) {
 

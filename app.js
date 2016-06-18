@@ -7,6 +7,8 @@ var express = require('express'),
     path = require('path'),
     fs = require('fs');
 
+var ObjectId = require('mongodb').ObjectId;
+
 app.use(express.static('public'));
 
 http.listen(process.env.PORT || 3000, function() {
@@ -171,9 +173,12 @@ io.on('connection', function(socket){
                     function(err, object) {
 
                         if(!err && object.ok) {
-                            socket.emit("listSaved", object.value);
+                            console.log("root success");
+                            socket.emit("listSaved", {doc: object.value, updatedExisting: object.lastErrorObject.updatedExisting});
                             db.close();
                         } else {
+
+                            console.log("root fail");
                             socket.emit("listNotSaved", err);
                             db.close();
                         }
@@ -184,6 +189,8 @@ io.on('connection', function(socket){
 
                 if(data.id) {
 
+                    console.log(data.id);
+
                     db.collection('lists').findAndModify(
                         {_id: new ObjectId(data.id)},
                         [],
@@ -192,9 +199,11 @@ io.on('connection', function(socket){
                         function(err, object) {
 
                             if(!err && object.ok) {
-                                socket.emit("listSaved", object.value);
+                                console.log("id success");
+                                socket.emit("listSaved", {doc: object.value, updatedExisting: object.lastErrorObject.updatedExisting});
                                 db.close();
                             } else {
+                                console.log("id fail");
                                 socket.emit("listNotSaved", err);
                                 db.close();
                             }
@@ -211,9 +220,11 @@ io.on('connection', function(socket){
                         function(err, object) {
 
                             if(!err && object.ok) {
-                                socket.emit("listSaved", object.value);
+                                console.log("new list success");
+                                socket.emit("listSaved", {doc: object.value, updatedExisting: object.lastErrorObject.updatedExisting});
                                 db.close();
                             } else {
+                                console.log("new list fail");
                                 socket.emit("listNotSaved", err);
                                 db.close();
                             }

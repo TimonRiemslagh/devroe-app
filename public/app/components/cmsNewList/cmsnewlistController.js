@@ -32,6 +32,8 @@ mainApp.controller('CmsNewListController', ['$scope', 'ActiveList', '$filter', '
         ActiveList.lists.items.forEach(function(list) {
             if(list._id == $routeParams.listId) {
 
+                $scope.currentList = list;
+
                 console.log(list);
 
                 if(list.id == 0) { //this is the root list
@@ -352,7 +354,7 @@ mainApp.controller('CmsNewListController', ['$scope', 'ActiveList', '$filter', '
         } else {
             socket.emit('saveList', {title: $scope.listTitle, items: $scope.listItems, root: $scope.root});
         }
-        
+
         //socket.emit('saveList', {links: $scope.links, title: $scope.listTitle, listItems: $scope.listItems});
 
         /*console.log($scope.listTitle);
@@ -361,26 +363,65 @@ mainApp.controller('CmsNewListController', ['$scope', 'ActiveList', '$filter', '
 
     };
     
-    socket.on('listSaved', function(savedList) {
+    socket.on('listSaved', function(data) {
 
-        console.log(savedList.title);
+        console.log(data);
+
+        var localStorageLists = JSON.parse(localStorage.getItem('lists'));
 
 
         $scope.$apply(function(){
-            
-            ActiveList.addList(savedList);
 
             var localStorageLists = JSON.parse(localStorage.getItem('lists'));
 
-            localStorageLists.items.push(savedList);
-            localStorageLists.titles.push(savedList.title);
+            if(data.updatedExisting) {
 
-            localStorage.setItem('lists', JSON.stringify(localStorageLists));
-            
-            $scope.listSaveBusy = false;
-            $scope.newListItemTitle = "";
-            $scope.listTitle = "";
-            $scope.listItems = [];
+                console.log("updateExisting");
+                
+                for(var t = 0; t < ActiveList.lists.items.length; t++) {
+                    if(ActiveList.lists.items[t].title == $scope.currentList.title) {
+                        ActiveList.lists.items[t] = data.doc;
+                    }
+                }
+
+                for(var i = 0; t < ActiveList.lists.titles.length; t++) {
+                    if(ActiveList.lists.items[i] == $scope.currentList.title) {
+                        ActiveList.lists.items[i] = data.doc.title;
+                    }
+                }
+
+                for(var c = 0; t < localStorageLists.items.length; t++) {
+                    if(localStorageLists.items[c].title == $scope.currentList.title) {
+                        localStorageLists.items[c] = data.doc;
+                    }
+                }
+
+                for(var d = 0; t < localStorageLists.titles.length; t++) {
+                    if(localStorageLists.titles[d] == $scope.currentList.title) {
+                        localStorageLists.titles[d] = data.doc.title;
+                    }
+                }
+
+                localStorage.setItem('lists', JSON.stringify(localStorageLists));
+
+                $scope.listSaveBusy = false;
+
+            } else {
+
+                ActiveList.addList(data.doc);
+
+                localStorageLists.items.push(data.doc);
+                localStorageLists.titles.push(data.doc.title);
+
+                localStorage.setItem('lists', JSON.stringify(localStorageLists));
+
+                $scope.listSaveBusy = false;
+                $scope.newListItemTitle = "";
+                $scope.listTitle = "";
+                $scope.listItems = [];
+
+            }
+
         });
 
     });
