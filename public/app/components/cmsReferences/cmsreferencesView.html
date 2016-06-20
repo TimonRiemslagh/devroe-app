@@ -1,2 +1,31 @@
-<add-button class="btnNewList" text="Nieuwe referentie" ng-click="goToNewRef()"></add-button>
-<search-box placeholder="Sleutelwoorden"></search-box>
+<div class="cmsRef">
+
+    <h3>Zoek referenties</h3>
+
+    <div class="clearfix">
+        <div class="input-group searchBar">
+        <span class="input-group-addon" id="basic-addon1">
+            <span class="glyphicon glyphicon-search"></span>
+        </span>
+            <input type="text" class="form-control" placeholder="Zoek op sleutelwoorden" ng-model="searchText" aria-describedby="basic-addon1">
+        </div>
+
+        <button ng-click="goToNewRef()" type="button" class="btnNewList btn btn-success"><span class="glyphicon glyphicon-plus" aria-hidden="true"></span>Nieuwe referentie</button>
+    </div>
+
+    <ul class="list-group">
+        <li class="list-group-item" ng-repeat="ref in activeRefs | filter:searchText">
+
+            <img ng-src="{{ref.url}}" width="100">
+
+            <span>{{ref.keywords}}</span>
+
+            <div class="options">
+                <a ng-click="edit(ref._id)" href=""><span class="glyphicon glyphicon-pencil" aria-hidden="true"></span></a>
+                <a ng-click="delete(ref._id)" href=""><span class="glyphicon glyphicon-trash" aria-hidden="true"></span></a>
+            </div>
+
+        </li>
+    </ul>
+
+</div>

@@ -93,10 +93,23 @@ ul.nav li#first a {
 }
 
 .cmsList .searchBar {
-    margin-bottom: 20px;
     float: left;
     margin-right: 10px;
     width: 718px;
+}
+
+.cmsRef .searchBar {
+    float: left;
+    margin-right: 10px;
+    width: 681px;
+}
+
+.cmsRef img {
+    margin-right: 10px;
+}
+
+.searchBar {
+    margin-bottom: 20px;
 }
 
 .saveSurveyButton {

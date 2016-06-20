@@ -49,6 +49,10 @@ mainApp.config(['$routeProvider', function($routeProvider) {
             templateUrl: 'app/components/cmsNewReference/cmsnewreferenceView.html', controller: 'CmsNewReferenceController'
         }).
 
+        when('/cms/cmsReferences/cmsNewReference/:refId', {
+            templateUrl: 'app/components/cmsNewReference/cmsnewreferenceView.html', controller: 'CmsNewReferenceController'
+        }).
+
         otherwise({
             redirectTo: '/newsurvey'
         });

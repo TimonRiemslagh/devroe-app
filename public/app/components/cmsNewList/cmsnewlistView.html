@@ -137,8 +137,8 @@
 
                         <div class="noEditMode">
                             <div class="">{{item.title}}</div>
-                            <div class="">{{item.link}}</div>
-                            <div class="">{{item.filename}}</div>
+                            <a ng-click="routeList(item.linkUrl)" href="">{{item.link}}</a>
+                            <div>{{item.filename}}</div>
                         </div>
 
                         <div class="options">

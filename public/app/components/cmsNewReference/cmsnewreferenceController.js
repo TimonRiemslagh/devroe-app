@@ -1,7 +1,4 @@
-mainApp.controller('CmsNewReferenceController', ['$scope', 'ActiveList', function($scope, ActiveList) {
-
-    //$('ul.nav li').removeClass('active');
-    //$('.cms').addClass("active");
+mainApp.controller('CmsNewReferenceController', ['$scope', 'ActiveList', '$routeParams', '$location', function($scope, ActiveList, $routeParams, $location) {
 
     $scope.ref = {};
     $scope.isBusy = false;
@@ -11,17 +8,51 @@ mainApp.controller('CmsNewReferenceController', ['$scope', 'ActiveList', functio
         data: ""
     };
 
+    $scope.currentRef = {url: ""};
+
+    if($routeParams.refId) {
+
+        ActiveList.refs.forEach(function(ref) {
+            if(ref._id == $routeParams.refId) {
+                $scope.currentRef = ref;
+                console.log(ref);
+                $scope.keywords = ref.keywords;
+            }
+        });
+
+    }
+
     $scope.saveRef = function() {
 
         $scope.showAlert = false;
 
-        if($scope.keywords && $scope.refImage.file !== "") {
+        if($scope.currentRef.url) {
 
-            $scope.isBusy = true;
-            socket.emit('saveRef', {keywords: $scope.keywords, photo: $scope.refImage.file, filename: $scope.refImage.file.name});
+            if($scope.keywords) {
+
+                $scope.isBusy = true;
+                socket.emit('updateRef', {id: $scope.currentRef._id, keywords: $scope.keywords, photo: $scope.refImage.file, filename: $scope.refImage.file.name, url: $scope.currentRef.url});
+
+            } else {
+                $scope.showAlert = true;
+            }
 
         } else {
-            $scope.showAlert = true;
+
+            if ($scope.keywords && $scope.refImage.file) {
+
+                $scope.isBusy = true;
+                socket.emit('saveRef', {
+                    id: $scope.currentRef._id,
+                    keywords: $scope.keywords,
+                    photo: $scope.refImage.file,
+                    filename: $scope.refImage.file.name
+                });
+
+            } else {
+                $scope.showAlert = true;
+            }
+
         }
 
     };
@@ -48,6 +79,14 @@ mainApp.controller('CmsNewReferenceController', ['$scope', 'ActiveList', functio
             $scope.showAlert = false;
             $scope.isBusy = false;
 
+        });
+
+    });
+
+    socket.on('refUpdated', function(updatedRef) {
+
+        $scope.$apply(function() {
+            $location.path('/cms/cmsReferences');
         });
 
     });

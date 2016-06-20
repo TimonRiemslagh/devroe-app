@@ -1,4 +1,4 @@
-mainApp.controller('CmsNewListController', ['$scope', 'ActiveList', '$filter', '$http', '$routeParams', function($scope, ActiveList, $filter, $http, $routeParams) {
+mainApp.controller('CmsNewListController', ['$scope', 'ActiveList', '$filter', '$http', '$routeParams', '$location', function($scope, ActiveList, $filter, $http, $routeParams, $location) {
     //$('ul.nav li').removeClass('active');
     //$('.cms').addClass("active");
 
@@ -167,6 +167,14 @@ mainApp.controller('CmsNewListController', ['$scope', 'ActiveList', '$filter', '
             item.showAlert = true;
             item.checkingList = false;
         }
+    };
+
+    $scope.routeList = function(listId) {
+
+        console.log(listId);
+
+        $location.path('/cms/cmsLists/cmsNewList/' + listId);
+
     };
 
 
