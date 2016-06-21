@@ -1,8 +1,5 @@
 mainApp.controller('CmsNewListItemController', ['$scope', 'ActiveList', function($scope, ActiveList) {
 
-    //$('ul.nav li').removeClass('active');
-    //$('.cms').addClass("active");
-
     $scope.activeLists = ActiveList.activeList.lists.titles;
 
     $scope.listItem = {};

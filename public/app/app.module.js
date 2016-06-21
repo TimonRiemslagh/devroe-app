@@ -104,7 +104,7 @@ mainApp.service( 'ActiveList', [ '$rootScope', function( $rootScope ) {
     return service;
 }]);
 
-mainApp.controller('indexController', ['$scope', '$http', 'ActiveList', function($scope, $http, ActiveList) {
+mainApp.controller('indexController', ['$scope', '$http', 'ActiveList', '$location', function($scope, $http, ActiveList, $location) {
 
     var localStorageLists = localStorage.getItem('lists');
     var localStorageRefs = localStorage.getItem('refs');
@@ -143,53 +143,10 @@ mainApp.controller('indexController', ['$scope', '$http', 'ActiveList', function
         console.log(errorRes);
     });
 
-    /*var localStorageLists = localStorage.getItem('lists');
-    var localStorageListItems = localStorage.getItem('listItems');
-
-    var getLists = new XMLHttpRequest();
-    var getListItems = new XMLHttpRequest();
-
-    getLists.onreadystatechange = function() {
-
-        if (getLists.readyState == 4 && getLists.status == 200) {
-
-            var data = JSON.parse(getLists.responseText);
-            localStorage.setItem('lists', JSON.stringify(data));
-            ActiveList.setLists(data);
-            console.log("lists added to storage");
-        }
-    };
-
-    getListItems.onreadystatechange = function() {
-        if (getListItems.readyState == 4 && getListItems.status == 200) {
-
-            var data = JSON.parse(getListItems.responseText);
-            localStorage.setItem('listItems', JSON.stringify(data));
-            ActiveList.setListItems(data);
-            console.log("listItems added to storage");
-        }
-    };
-
-    if(localStorageLists) {
-        ActiveList.setLists(JSON.parse(localStorageLists));
-        getLists.open("GET", window.location.origin + "/getLists", true);
-        getLists.send();
-
-    } else {
-        getLists.open("GET", window.location.origin + "/getLists", true);
-        getLists.send();
-    }
-
-    if(localStorageListItems) {
-        ActiveList.setListItems(JSON.parse(localStorageListItems));
-        getListItems.open("GET", window.location.origin + "/getListItems", true);
-        getListItems.send();
-
-    } else {
-        getListItems.open("GET", window.location.origin + "/getListItems", true);
-        getListItems.send();
-    }*/
-
     $scope.users = ["timon"];
+
+    $scope.isActiveLink = function(viewLocation) {
+        return $location.path().indexOf(viewLocation) == 0;
+    }
 
 }]);

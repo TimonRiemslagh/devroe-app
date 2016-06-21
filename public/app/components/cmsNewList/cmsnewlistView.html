@@ -1,38 +1,4 @@
 <div class="newList">
-    <!--<h4>Links</h4>
-
-    <div class="alert alert-info" role="alert"><strong>Let op!</strong> Door een lijst item toe te voegen die linkt naar een andere lijst dan deze wordt de link overschreven.</div>
-
-    <div class="input-group">
-
-        <input type="text"
-               ng-model="selectedLinkItem"
-               ng-keypress="$event.keyCode == 13 && addLink()"
-               uib-typeahead="listItem for listItem in activeListItems | filter: $viewValue | limitTo: 5"
-               class="form-control"
-               placeholder="Links naar deze lijst">
-
-        <span class="input-group-btn">
-            <button class="btnAddItem btn btn-default" ng-click="addLink()" type="button">
-                <span ng-show="!checkingLinkItem">Voeg toe</span>
-                <span loader ng-show="checkingLinkItem"></span>
-            </button>
-        </span>
-    </div>
-
-    <ul class="list-group">
-
-        <li class="list-group-item link clearfix" ng-repeat="link in links">
-            <p class="">{{link.item}}</p>
-            <p class="">{{link.linkTitle}}</p>
-            <p class="">{{link.filename}}</p>
-            <div class="options">
-                <a href="" ng-click="remove(link, 'link')" class="glyphicon glyphicon-remove" aria-hidden="true"></a>
-            </div>
-
-        </li>
-
-    </ul>-->
 
     <h3 class="listTitle">Nieuwe lijst</h3>
 
@@ -63,23 +29,6 @@
                 <div ng-show="showAlert" class="alert alert-danger" role="alert"><strong>Woops!</strong> Vul een title en een correcte link in en probeer opnieuw.</div>
             </form>
 
-
-                <!--<input type="text"
-                       ng-model="selectedItem"
-                       ng-keypress="$event.keyCode == 13 && addItem()"
-                       uib-typeahead="listItem for listItem in activeListItems | filter: $viewValue | limitTo: 5"
-                       class="form-control"
-                       placeholder="Lijst item">
-
-                <span class="input-group-btn">
-                    <button class="btnAddItem btn btn-default" ng-click="addItem()" type="button">
-
-                        <span ng-show="!checkingItem">Voeg toe</span>
-                        <span loader ng-show="checkingItem"></span>
-
-                    </button>
-                </span>-->
-
             <ul class="list-group">
 
                 <li class="list-group-item clearfix" ng-repeat="item in listItems">
@@ -100,39 +49,6 @@
                         <div ng-show="item.showAlert" class="alert alert-danger" role="alert"><strong>Woops!</strong> Vul een title en een correcte link in en probeer opnieuw.</div>
                     </form>
 
-                    <!--<div ng-show="item.editMode" class="editMode">
-
-                        <input type="text" class="titleInput form-control" value="{{item.title}}" ng-model="item.title" placeholder="Titel van het lijst item">
-
-                        <div class="listItemAuto input-group">
-
-                            <input type="text"
-                                   ng-model="item.linkTitle"
-                                   ng-change="resetBackground(item)"
-                                   ng-keypress="$event.keyCode == 13 && checkLink(item)"
-                                   uib-typeahead="list for list in activeLists | filter: $viewValue | limitTo: 5"
-                                   class="form-control"
-                                   placeholder="Link naar lijst"
-                                   ng-style="item.linkTitleCustomStyle">
-
-
-                                <span class="input-group-btn">
-                                    <button class="btnAddItem btn btn-success" ng-click="checkLink(item)" type="button">
-                                        <span ng-show="!item.checking">Check</span>
-                                        <span loader ng-show="item.checking"></span>
-                                    </button>
-                                </span>
-
-                        </div>
-
-                        <input accept="image/*" type="file" file-input="item.imageElement" />
-
-                        <a href="" ng-click="toggleEdit(item)" class="glyphicon glyphicon-ok" aria-hidden="true"></a>
-
-                        <div ng-show="item.editNotValid" class="alert alert-danger" role="alert">Valideer de link!</div>
-
-                    </div>-->
-
                     <div ng-show="!item.editMode">
 
                         <div class="noEditMode">
@@ -150,62 +66,7 @@
 
                     </div>
 
-
-
                 </li>
-
-                <!--<li class="list-group-item clearfix" ng-repeat="item in listItems" ng-style="item.customStyle">
-
-                    <div ng-show="item.editMode" class="editMode">
-
-                        <input type="text" ng-show="item.editMode" class="titleInput form-control" value="{{item.title}}" ng-model="item.item" ng-change="changeBackground(item)" placeholder="Lijst item titel">
-
-                        <div class="listItemAuto input-group">
-
-                            <input type="text"
-                                   ng-model="item.linkTitle"
-                                   ng-change="resetBackground(item)"
-                                   ng-keypress="$event.keyCode == 13 && checkLink(item)"
-                                   uib-typeahead="list for list in activeLists | filter: $viewValue | limitTo: 5"
-                                   class="form-control"
-                                   placeholder="Link naar lijst"
-                                   ng-style="item.linkTitleCustomStyle">
-
-
-                                <span class="input-group-btn">
-                                    <button class="btnAddItem btn btn-default" ng-click="checkLink(item)" type="button">
-                                        <span ng-show="!item.checking">Check</span>
-                                        <span loader ng-show="item.checking"></span>
-                                    </button>
-                                </span>
-
-                        </div>
-
-                        <input accept="image/*" type="file" file-input="item.imageElement" />
-
-                        <a href="" ng-click="toggleEdit(item)" class="glyphicon glyphicon-ok" aria-hidden="true"></a>
-
-                        <div ng-show="item.editNotValid" class="alert alert-danger" role="alert">Valideer de link!</div>
-
-                    </div>
-
-                    <div class="noEditMode" ng-show="!item.editMode">
-
-                        <div class="">{{item.item}}</div>
-                        <div class="">{{item.linkTitle}}</div>
-                        <div class="">{{item.imageElement.file.name}}</div>
-
-                    </div>
-
-                    <div class="options">
-
-                        <a href="" ng-click="toggleEdit(item)" ng-show="!item.editMode" class="glyphicon glyphicon-pencil" aria-hidden="true"></a>
-                        <a href="" ng-click="delete(link)" ng-show="item.valid && $item.editMode" class="glyphicon glyphicon-trash" aria-hidden="true"></a>
-                        <a href="" ng-click="remove(item, 'item')" ng-show="!item.editMode" class="glyphicon glyphicon-remove" aria-hidden="true"></a>
-
-                    </div>
-
-                </li>-->
 
             </ul>
 
@@ -215,87 +76,3 @@
     <button type="button" ng-disabled="listSaveBusy" class="save btn btn-success" ng-click="saveList()">Opslaan<span ng-show="listSaveBusy" class="addListItemLoader" loader></button>
 
 </div>
-
-
-
-<!--<div class="newList panel panel-default">
-
-    <div class="panel-body">
-
-    <div class="clearfix">
-
-        <input type="text"
-               ng-style="listLink.style"
-               class="listLinkItem form-control"
-               ng-model="listLink.text"
-               ng-change="resetCheckLink()"
-               placeholder="Lijst item die naar deze lijst moet verwijzen">
-
-        <a ng-show="!listLink.isBusy && !listLink.isValid" ng-click="checkListLink()" value="{{listLink.text}}" href="">
-            <span class="glyphicon glyphicon-ok" aria-hidden="true"></span>
-        </a>
-
-        <div ng-show="listLink.isBusy" class="listLinkspinner spinner">
-            <div class="rect1"></div>
-            <div class="rect2"></div>
-            <div class="rect3"></div>
-            <div class="rect4"></div>
-            <div class="rect5"></div>
-        </div>
-
-    </div>
-
-    <div class="panel panel-default ">
-        <div class="panel-heading clearfix">
-            <input type="text" class="listTitleInput form-control" ng-model="listTitle" placeholder="Titel van de lijst">
-            <button type="button" class="btnSaveList btn btn-success" ng-click="saveList()">Opslaan</button>
-        </div>
-
-        <!-- List group
-        <ul class="listItems list-group">
-            <li ng-repeat="listItem in listItems track by $index" id="{{listItem.id}}" class="clearfix list-group-item">
-                <input type="text"
-                       class="form-control"
-                       ng-model="listItem.text"
-                       ng-style="listItem.style"
-                       ng-change="resetCheck($index)"
-                       placeholder="Lijst item"
-                       value="{{listItem.text}}">
-
-                <a ng-show="!listItem.isBusy && !listItem.isValid" ng-click="checkListItem($index)" href="">
-                    <span class="glyphicon glyphicon-ok" aria-hidden="true"></span>
-                </a>
-                <a ng-show="!listItem.isBusy" ng-click="removeListItem($index)" href="">
-                    <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
-                </a>
-
-                <div ng-show="listItem.isBusy" class="listItemspinner spinner">
-                    <div class="rect1"></div>
-                    <div class="rect2"></div>
-                    <div class="rect3"></div>
-                    <div class="rect4"></div>
-                    <div class="rect5"></div>
-                </div>
-            </li>
-        </ul>
-
-        <add-button class="addbutton" ng-click="addNewItem()" text="Nieuw item"></add-button>
-
-    </div>
-
-    <feedback
-            error="feedbackSave.error"
-            text-fail="feedbackSave.textFail"
-            text-success="feedbackSave.textSuccess"
-            is-success="feedbackSave.isSuccess"
-            done="feedbackSave.done"></feedback>
-
-    <feedback
-            error="feedbackLink.error"
-            text-fail="feedbackLink.textFail"
-            text-success="feedbackLink.textSuccess"
-            is-success="feedbackLink.isSuccess"
-            done="feedbackLink.done"></feedback>
-
-    </div>
-</div>-->

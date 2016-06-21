@@ -386,22 +386,24 @@ ul.nav li#first a {
 .linkTitle {
 }
 
-/*.newList li a {
-    float: left;
-    margin-left: 20px;
+footer {
+    padding-top: 50px;
+    padding-bottom: 50px;
+    margin-top: 100px;
+    color: #99979c;
+    text-align: center;
+    width: 100%;
+    background-color: #2A2731;
 }
 
-.newList a span {
-    font-size: 29px;
+footer a {
+    color: #fff;
+    text-decoration: none;
 }
 
-.newList a span.glyphicon-ok {
-    color: green;
+footer a:hover {
+    color: #fff;
 }
-
-.newList a span.glyphicon-remove {
-    color: red;
-}*/
 
 .addbutton {
     margin: 10px 10px 10px 15px;

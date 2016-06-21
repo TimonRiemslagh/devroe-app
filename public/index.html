@@ -15,13 +15,11 @@
             <h1><img src="assets/img/de_vroe_groep_logo.png" alt="logo" class="logo" />Woon- en aannemersprojecten</h1>
 
             <ul class="mainNav nav nav-pills">
-                <li id="first" role="presentation" class="newSurvey active"><a href="#/newsurvey">Nieuwe opmeting</a></li>
-                <li class="allSurveys" role="presentation"><a href="#/allsurveys">Voorbije opmetingen</a></li>
-                <li class="references" role="presentation"><a href="#/references">Referenties</a></li>
-                <li class="cms" role="presentation"><a href="#/cms">Inhoud</a></li>
+                <li id="first" role="presentation" ng-class="{ active: isActiveLink('/newsurvey')}" class="newSurvey"><a href="#/newsurvey">Nieuwe opmeting</a></li>
+                <li ng-class="{ active: isActiveLink('/allsurveys')}" class="allSurveys" role="presentation"><a href="#/allsurveys">Voorbije opmetingen</a></li>
+                <li ng-class="{ active: isActiveLink('/references')}" class="references" role="presentation"><a href="#/references">Referenties</a></li>
+                <li ng-class="{ active: isActiveLink('/cms')}" class="cms" role="presentation"><a href="#/cms">Inhoud</a></li>
             </ul>
-
-            <!--<user-drop-down users="users"></user-drop-down>-->
 
             <select class="form-control usersDropdown" id="users">
                 <option value="null">Selecteer een gebruiker...</option>
@@ -35,6 +33,12 @@
         </div>
     </div>
 
+    <footer class="footer">
+        <div class="container">
+            Created by <a href="https://be.linkedin.com/in/timon-riemslagh-426312a2">Timon Riemslagh</a>
+        </div>
+    </footer>
+
     <!-- Libraries -->
     <script src="/socket.io/socket.io.js"></script>
     <script src="assets/libs/angular-1.5.6/angular.min.js"></script>
@@ -46,14 +50,9 @@
     <!-- Setup -->
     <script src="app/app.module.js"></script>
     <script src="app/app.route.js"></script>
+    <script src="assets/js/script.js"></script>
 
     <!-- Directives -->
-    <script src="assets/js/script.js"></script>
-    <script src="app/shared/searchBoxDirective/directive.js"></script>
-    <script src="app/shared/searchResultSurveyDirective/directive.js"></script>
-    <script src="app/shared/userDropdownDirective/directive.js"></script>
-    <script src="app/shared/addButtonDirective/directive.js"></script>
-    <script src="app/shared/feedbackDirective/directive.js"></script>
     <script src="app/shared/loaderAnimation/loaderDirective.js"></script>
     <script src="app/shared/fileinput/fileInputDirective.js"></script>
 

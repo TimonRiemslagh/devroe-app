@@ -1,8 +1,5 @@
 mainApp.controller('CmsListsController', ['$scope', '$location', 'ActiveList', '$http',  function($scope, $location, ActiveList, $http) {
 
-    //$('ul.nav li').removeClass('active');
-    //$('.cms').addClass("active");
-
     $scope.goToNewList = function() {
         $location.path('/cms/cmsLists/cmsNewList');
     };

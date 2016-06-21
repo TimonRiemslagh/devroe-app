@@ -1,8 +1,5 @@
 mainApp.controller('NewSurveyController', function($scope, $routeParams, $location) {
 
-    //$('ul.nav li').removeClass('active');
-    //$('.newSurvey').addClass("active");
-
     $scope.survey = {offnumber: "", client: "", address: ""};
     $scope.showAlert = false;
 
