@@ -1,22 +1,27 @@
-<h3>Zoek referenties</h3>
+<div id="refs">
 
-<div class="input-group searchBar">
+    <h3>Zoek referenties</h3>
+
+    <div class="input-group searchBar">
     <span class="input-group-addon" id="basic-addon1">
         <span class="glyphicon glyphicon-search"></span>
     </span>
-    <input type="text" class="form-control" placeholder="Zoek op sleutelwoorden" ng-model="searchText" aria-describedby="basic-addon1">
+        <input type="text" class="form-control" placeholder="Zoek op sleutelwoorden" ng-model="searchText" aria-describedby="basic-addon1">
+    </div>
+
+    <ul class="list-group">
+        <li class="list-group-item" ng-repeat="ref in (filteredItems = (activeRefs | filter:searchText))">
+
+            <a ng-click="openLightboxModal($index, filteredItems)">
+
+                <img ng-src="{{ref.url}}" width="150">
+
+            </a>
+
+            <span>{{ref.keywords}}</span>
+
+        </li>
+    </ul>
+
 </div>
 
-<ul class="list-group">
-    <li class="list-group-item" ng-repeat="ref in activeRefs | filter:searchText">
-
-        <a ng-click="openLightboxModal($index)">
-
-            <img ng-src="{{ref.url}}" width="150">
-
-        </a>
-
-        <span>{{ref.keywords}}</span>
-
-    </li>
-</ul>
