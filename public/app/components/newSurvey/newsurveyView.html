@@ -1,6 +1,10 @@
-<h3>Start een nieuwe opmeting</h3>
+
 
 <div class="newSurvey">
+
+    <div ng-show="pending" class="alert alert-info" role="alert"><strong>Pas op!</strong> <a href="{{pending}}">Ga verder met de meting.</a></div>
+
+    <h3>Start een nieuwe opmeting</h3>
 
     <div class="form-group">
         <label>Offertenummer</label>

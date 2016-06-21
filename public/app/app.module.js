@@ -23,12 +23,6 @@ mainApp.service( 'ActiveList', [ '$rootScope', function( $rootScope ) {
             $rootScope.$broadcast( 'surveys.update' );
         },
 
-        /*setListItems: function(listItems) {
-            activeList.listItems = [];
-            service.activeList.listItems = listItems;
-            $rootScope.$broadcast( 'listItems.update' );
-        },*/
-
         addRef: function(ref) {
             service.refs.push(ref);
             $rootScope.$broadcast( 'refs.update' );
@@ -47,20 +41,6 @@ mainApp.service( 'ActiveList', [ '$rootScope', function( $rootScope ) {
             service.surveys.push( survey );
             $rootScope.$broadcast( 'survey.update' );
         },
-
-        /*addListItem: function(listItem, title) {
-            service.activeList.listItems.items.push( listItem );
-            service.activeList.listItems.titles.push( title );
-            $rootScope.$broadcast( 'listItems.update' );
-        },
-
-        updateListItem: function(listItem) {
-            for(var t = 0; t < this.activeList.listItems.items.length; t++) {
-                if(this.activeList.listItems.items[t].title == listItem.title) {
-                    this.activeList.listItems.items[t] = listItem;
-                }
-            }
-        },*/
 
         removeList: function(list) {
 
@@ -95,10 +75,6 @@ mainApp.service( 'ActiveList', [ '$rootScope', function( $rootScope ) {
         updateList: function(list) {
 
         }
-
-        /*removeListItem: function(listItem) {
-
-        }*/
     };
 
     return service;

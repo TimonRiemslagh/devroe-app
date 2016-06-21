@@ -2,8 +2,6 @@ mainApp.controller('ListsController', ['$scope', '$routeParams', 'ActiveList', '
 
     $scope.allLists = ActiveList.lists;
 
-    console.log($scope.allLists);
-
     var currentList = $routeParams.listId;
 
     if(currentList == 0) {
@@ -12,7 +10,6 @@ mainApp.controller('ListsController', ['$scope', '$routeParams', 'ActiveList', '
 
             if(item.id == 0) {
                 $scope.currentListItem = item;
-                console.log($scope.currentListItem);
             }
 
         });
@@ -21,26 +18,38 @@ mainApp.controller('ListsController', ['$scope', '$routeParams', 'ActiveList', '
 
         $scope.allLists.items.forEach(function (item) {
 
+            console.log(currentList);
+
             if (item._id == currentList) {
                 $scope.currentListItem = item;
-                console.log($scope.currentListItem);
             }
 
         });
 
     }
 
-    $scope.addList = function(listTitle) {
+    $scope.addList = function(listTitle, listId) {
+
         var selectedLists = sessionStorage.getItem("selectedLists");
         var selectedListsObj = [];
+
+        var selectedLinks = sessionStorage.getItem('selectedLinks');
+        var selectedLinksObj = [];
+
+        if(selectedLinks) {
+            selectedLinksObj = JSON.parse(selectedLinks);
+        }
 
         if(selectedLists) {
             selectedListsObj = JSON.parse(selectedLists);
         }
 
+        selectedLinksObj.push(listId);
         selectedListsObj.push(listTitle);
 
         sessionStorage.setItem("selectedLists", JSON.stringify(selectedListsObj));
+        sessionStorage.setItem("selectedLinks", JSON.stringify(selectedLinksObj));
+
         console.log(sessionStorage);
     };
 

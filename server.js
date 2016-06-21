@@ -344,11 +344,15 @@ io.on('connection', function(socket){
 
 app.delete('/lists/:id', function(req, res) {
 
+    console.log(req.params.id);
+
     MongoClient.connect(url, function(err, db) {
 
         db.collection('lists').remove(
-            {_id: req.params.id},
+            {_id: new ObjectId(req.params.id)},
             function(err, result) {
+
+                console.log(err,result);
 
                 if(!err && result.result.ok) {
 
@@ -372,7 +376,7 @@ app.delete('/refs/:id', function(req, res) {
     MongoClient.connect(url, function(err, db) {
 
         db.collection('references').remove(
-            {_id: req.params.id},
+            {_id: new ObjectId(req.params.id)},
             function(err, result) {
 
                 if(!err && result.result.ok) {
