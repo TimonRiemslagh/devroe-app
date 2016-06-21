@@ -11,8 +11,6 @@ var ObjectId = require('mongodb').ObjectId;
 
 app.use(express.static('public'));
 
-app.disable('quiet');
-
 var port = process.env.PORT || 3000;
 
 http.listen(port, function() {
