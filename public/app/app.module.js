@@ -1,4 +1,4 @@
-var mainApp = angular.module('mainApp', ['ngRoute', 'ui.bootstrap', 'ngAnimate']);
+var mainApp = angular.module('mainApp', ['ngRoute', 'ui.bootstrap', 'ngAnimate', 'bootstrapLightbox']);
 
 mainApp.service( 'ActiveList', [ '$rootScope', function( $rootScope ) {
 

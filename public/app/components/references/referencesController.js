@@ -1,4 +1,8 @@
-mainApp.controller('ReferencesController', ['$scope', 'ActiveList', function($scope, ActiveList) {
+mainApp.controller('ReferencesController', ['$scope', 'ActiveList', 'Lightbox', function($scope, ActiveList, Lightbox) {
     $scope.activeRefs = ActiveList.refs;
-    console.log($scope.activeRefs);
+
+    $scope.openLightboxModal = function (index) {
+        Lightbox.openModal($scope.activeRefs, index);
+        console.log('test');
+    };
 }]);

@@ -11,6 +11,8 @@ mainApp.controller('CmsReferencesController', ['$scope', 'ActiveList', '$locatio
     $scope.edit = function(id) {
         $location.path('/cms/cmsReferences/cmsNewReference/' + id);
     };
+
+
     
     $scope.delete = function(id) {
 

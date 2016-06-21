@@ -1,5 +1,10 @@
 <div class="cmsRef">
 
+    <ol class="breadcrumb">
+        <li><a href="#/cms">Inhoud</a></li>
+        <li class="active">Referenties</li>
+    </ol>
+
     <h3>Zoek referenties</h3>
 
     <div class="clearfix">
@@ -16,7 +21,11 @@
     <ul class="list-group">
         <li class="list-group-item" ng-repeat="ref in activeRefs | filter:searchText">
 
-            <img ng-src="{{ref.url}}" width="100">
+            <a ng-click="openLightboxModal($index)">
+
+                <img ng-src="{{ref.url}}" width="100">
+
+            </a>
 
             <span>{{ref.keywords}}</span>
 

@@ -10,7 +10,11 @@
 <ul class="list-group">
     <li class="list-group-item" ng-repeat="ref in activeRefs | filter:searchText">
 
-        <img ng-src="{{ref.url}}" width="150">
+        <a ng-click="openLightboxModal($index)">
+
+            <img ng-src="{{ref.url}}" width="150">
+
+        </a>
 
         <span>{{ref.keywords}}</span>
 
