@@ -11,6 +11,8 @@ var ObjectId = require('mongodb').ObjectId;
 
 app.use(express.static('public'));
 
+app.disable('quiet');
+
 var port = process.env.PORT || 3000;
 
 http.listen(port, function() {
@@ -347,6 +349,31 @@ app.delete('/lists/:id', function(req, res) {
     MongoClient.connect(url, function(err, db) {
 
         db.collection('lists').remove(
+            {_id: req.params.id},
+            function(err, result) {
+
+                if(!err && result.result.ok) {
+
+                    res.json({success: true});
+
+                } else {
+
+                    res.json({success: false, err: err});
+
+                }
+
+                db.close();
+
+            });
+    });
+
+});
+
+app.delete('/refs/:id', function(req, res) {
+
+    MongoClient.connect(url, function(err, db) {
+
+        db.collection('references').remove(
             {_id: req.params.id},
             function(err, result) {
 

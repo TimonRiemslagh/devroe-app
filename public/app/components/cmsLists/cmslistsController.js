@@ -55,8 +55,6 @@ mainApp.controller('CmsListsController', ['$scope', '$location', 'ActiveList', '
                 console.log(errorRes);
             });
 
-        } else {
-
         }
 
     };

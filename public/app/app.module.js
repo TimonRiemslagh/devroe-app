@@ -32,6 +32,8 @@ mainApp.service( 'ActiveList', [ '$rootScope', function( $rootScope ) {
         addRef: function(ref) {
             service.refs.push(ref);
             $rootScope.$broadcast( 'refs.update' );
+
+            console.log(service.refs);
         },
 
         addList: function(list) {
@@ -75,6 +77,18 @@ mainApp.service( 'ActiveList', [ '$rootScope', function( $rootScope ) {
             }
 
             $rootScope.$broadcast( 'list.delete' );
+
+        },
+
+        removeRef: function(refId) {
+
+            for(var t = service.refs.length-1; t >= 0; t--) {
+                if(service.refs[t]._id == refId) {
+                    service.refs.splice(t,1);
+                }
+            }
+
+            $rootScope.$broadcast( 'refs.delete' );
 
         },
 
