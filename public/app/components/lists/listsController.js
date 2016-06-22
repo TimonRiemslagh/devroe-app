@@ -4,6 +4,23 @@ mainApp.controller('ListsController', ['$scope', '$routeParams', 'ActiveList', '
 
     var currentList = $routeParams.listId;
 
+    var selectedLinks = sessionStorage.getItem("selectedLinks");
+
+    var lastSelectedList = "";
+
+    if(selectedLinks) {
+        var obj = JSON.parse(selectedLinks);
+
+        for(var t = 0; t < obj.length; t++) {
+            console.log(obj[t],currentList);
+            if(obj[t] == currentList) {
+                obj.splice(t+1, obj.length-1);
+            }
+        }
+
+        sessionStorage.setItem("selectedLinks", JSON.stringify(obj));
+    }
+
     if(currentList == 0) {
 
         $scope.allLists.items.forEach(function(item) {
