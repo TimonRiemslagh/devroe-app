@@ -24,7 +24,7 @@ mainApp.service( 'ActiveList', [ '$rootScope', function( $rootScope ) {
         },
 
         addRef: function(ref) {
-            service.refs.push(ref);
+            service.refs.unshift(ref);
             $rootScope.$broadcast( 'refs.update' );
 
             console.log(service.refs);
@@ -37,8 +37,7 @@ mainApp.service( 'ActiveList', [ '$rootScope', function( $rootScope ) {
         },
 
         addSurvey: function(survey) {
-            console.log(survey);
-            service.surveys.push( survey );
+            service.surveys.unshift( survey );
             $rootScope.$broadcast( 'survey.update' );
         },
 

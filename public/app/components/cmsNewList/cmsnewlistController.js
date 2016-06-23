@@ -94,6 +94,8 @@ mainApp.controller('CmsNewListController', ['$scope', 'ActiveList', '$filter', '
 
     $scope.updateListItem = function(item) {
 
+        console.log(item);
+
         item.editMode = true;
 
         if(item.title) {
@@ -110,9 +112,10 @@ mainApp.controller('CmsNewListController', ['$scope', 'ActiveList', '$filter', '
 
                             if(listItem.title == item.oldTitle) {
                                 listItem.title = item.title;
-                                listItem.image = item.image;
+                                listItem.imageObj = item.image;
                                 if(item.image) {
-                                    listItem.filename = item.image.name;
+                                    listItem.image = item.image.file;
+                                    listItem.filename = item.image.file.name;
                                 }
                                 listItem.link = item.link;
                                 listItem.linkUrl = res.data.doc._id;

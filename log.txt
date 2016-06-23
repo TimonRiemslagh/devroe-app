@@ -20,3 +20,11 @@
 {"level":"info","message":"server listening on port 3000","timestamp":"2016-06-23T09:38:15.316Z"}
 {"level":"info","message":"server listening on port 3000","timestamp":"2016-06-23T09:39:04.703Z"}
 {"level":"info","message":"server listening on port 3000","timestamp":"2016-06-23T09:39:23.783Z"}
+{"level":"error","message":"API LIST FILE - error: Error: EEXIST: file already exists, open './public/uploads/Aantal_lagen_E_nlaags_undefined'","timestamp":"2016-06-23T11:20:11.620Z"}
+{"level":"error","message":"API LIST FILE - error: Error: EEXIST: file already exists, open './public/uploads/Aantal_lagen_Tweelaags_undefined'","timestamp":"2016-06-23T11:20:11.620Z"}
+{"level":"error","message":"API LIST FILE - error: Error: EEXIST: file already exists, open './public/uploads/Aantal_lagen_Meerlaags_undefined'","timestamp":"2016-06-23T11:20:11.621Z"}
+{"level":"info","message":"server listening on port 3000","timestamp":"2016-06-23T11:37:54.581Z"}
+{"level":"info","message":"server listening on port 3000","timestamp":"2016-06-23T11:40:44.629Z"}
+{"level":"info","message":"server listening on port 3000","timestamp":"2016-06-23T11:42:46.082Z"}
+{"level":"info","message":"server listening on port 3000","timestamp":"2016-06-23T11:43:40.598Z"}
+{"level":"info","message":"server listening on port 3000","timestamp":"2016-06-23T11:45:23.545Z"}

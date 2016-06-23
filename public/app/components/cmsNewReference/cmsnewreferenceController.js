@@ -63,7 +63,7 @@ mainApp.controller('CmsNewReferenceController', ['$scope', 'ActiveList', '$route
 
             ActiveList.addRef(savedRef);
             var localStorageRefs = JSON.parse(localStorage.getItem('refs'));
-            localStorageRefs.push(savedRef);
+            localStorageRefs.unshift(savedRef);
             localStorage.setItem('refs', JSON.stringify(localStorageRefs));
 
             // Reset the form model.

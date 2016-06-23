@@ -12,7 +12,6 @@ mainApp.controller('ListsController', ['$scope', '$routeParams', 'ActiveList', '
         var obj = JSON.parse(selectedLinks);
 
         for(var t = 0; t < obj.length; t++) {
-            console.log(obj[t],currentList);
             if(obj[t] == currentList) {
                 obj.splice(t+1, obj.length-1);
             }
@@ -34,9 +33,6 @@ mainApp.controller('ListsController', ['$scope', '$routeParams', 'ActiveList', '
     } else {
 
         $scope.allLists.items.forEach(function (item) {
-
-            console.log(currentList);
-
             if (item._id == currentList) {
                 $scope.currentListItem = item;
             }
@@ -81,21 +77,22 @@ mainApp.controller('ListsController', ['$scope', '$routeParams', 'ActiveList', '
         var address = sessionStorage.getItem("address");
         var client = sessionStorage.getItem("client");
 
-        var user = $(".usersDropdown option:selected").val();
+        //var user = $(".usersDropdown option:selected").val();
 
         if(selectedLists) {
             $scope.noOptions = false;
 
             console.log(selectedLists);
 
-            if(user == "null") {
+            /*if(user == "null") {
                 $scope.noUser = true;
-            } else {
+            }
+            else {*/
                 $scope.noUser = false;
                 $scope.imageUrl = "";
                 $scope.saveBusy = true;
 
-                $http.post('/survey', {arr: selectedLists, offerteNumber: offerteNumber, client: client, address: address, user: user}).then(function(res) {
+                $http.post('/survey', {arr: selectedLists, offerteNumber: offerteNumber, client: client, address: address}).then(function(res) { //, user: user
 
                     $scope.saveBusy = false;
 
@@ -103,12 +100,13 @@ mainApp.controller('ListsController', ['$scope', '$routeParams', 'ActiveList', '
 
                         ActiveList.addSurvey(res.data.doc);
                         var localStorageSurveys = JSON.parse(localStorage.getItem('surveys'));
-                        localStorageSurveys.push(res.data.doc);
+                        localStorageSurveys.unshift(res.data.doc);
                         localStorage.setItem('surveys', JSON.stringify(localStorageSurveys));
 
                         $location.path('/#/newsurvey');
 
                         sessionStorage.setItem('selectedLists', "");
+                        sessionStorage.setItem('selectedLinks', "");
                         sessionStorage.setItem('offerteNumber', '');
                         sessionStorage.setItem('address', '');
                         sessionStorage.setItem('client', '');
@@ -122,7 +120,7 @@ mainApp.controller('ListsController', ['$scope', '$routeParams', 'ActiveList', '
                 }, function(errorRes) {
                     console.log(errorRes);
                 });
-            }
+            //}
         } else {
             $scope.noOptions = true;
         }

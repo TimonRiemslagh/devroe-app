@@ -89,6 +89,7 @@ app.get('/surveys', function(req, res) {
 
     MongoClient.connect(url, function(err, db) {
         db.collection('surveys').find()
+            .sort({date: -1})
             .toArray(function(err, arr) {
 
                 if(!err) {
@@ -128,7 +129,6 @@ app.get('/lists/:title', function(req, res) {
 });
 
 app.post('/survey', jsonParser, function(req, res) {
-
     if (!req.body) {
 
         winston.error("API NEW SURVEY - no data");
@@ -143,7 +143,7 @@ app.post('/survey', jsonParser, function(req, res) {
                     offerteNumber: req.body.offerteNumber,
                     client: req.body.client,
                     address: req.body.address,
-                    user: req.body.user,
+                    date: new Date(),
                     options: req.body.arr
                 },
                 function(err, doc) {
