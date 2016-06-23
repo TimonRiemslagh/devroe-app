@@ -140,7 +140,7 @@ app.post('/survey', jsonParser, function(req, res) {
                         //winston.info('API NEW SURVEY - created: ' + JSON.stringify(doc.ops[0]));
                         res.json({success: true, doc: doc.ops[0]});
                     } else {
-                        //winston.info('API NEW SURVEY - error: ' + err);
+                        winston.error('API NEW SURVEY - error: ' + err);
                         res.json({success: false, err: err});
                     }
 
@@ -168,7 +168,7 @@ io.on('connection', function(socket){
                     if(err) {
                         winston.error('API LIST FILE - error: ' + err);
                     } else {
-                        winston.info('API LIST FILE - file saved at: ' + newPath);
+                        //winston.info('API LIST FILE - file saved at: ' + newPath);
                     }
                 });
 
