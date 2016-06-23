@@ -39,9 +39,9 @@ mainApp.controller('CmsNewListController', ['$scope', 'ActiveList', '$filter', '
 
             $http.get('/lists/' + $scope.newListItemLink).then(function(res) {
 
-                if($scope.newListItemLink) {
+                //if($scope.newListItemLink) {
                     if(res.data.validList) {
-                        $scope.listItems.push({title: $scope.newListItemTitle, image: $scope.newListItemImageElement.file, filename: $scope.newListItemImageElement.file.name, link: $scope.newListItemLink, linkUrl: res.data.doc._id, editMode: false });
+                        $scope.listItems.push({title: $scope.newListItemTitle, imageObj: $scope.newListItemImageElement, image: $scope.newListItemImageElement.file, filename: $scope.newListItemImageElement.file.name, link: $scope.newListItemLink, linkUrl: res.data.doc._id, editMode: false });
 
                         // Reset the form model.
                         $scope.newListItemTitle = "";
@@ -61,7 +61,8 @@ mainApp.controller('CmsNewListController', ['$scope', 'ActiveList', '$filter', '
                         $scope.showAlert = true;
                         $scope.checkingList = false;
                     }
-                } else {
+                //}
+                    /*else {
 
                     $scope.listItems.push({title: $scope.newListItemTitle, image: $scope.newListItemImageElement.file, filename: $scope.newListItemImageElement.file.name, link: "", linkUrl: "", editMode: false });
 
@@ -79,7 +80,7 @@ mainApp.controller('CmsNewListController', ['$scope', 'ActiveList', '$filter', '
                     $scope.showAlert = false;
                     $scope.checkingList = false;
 
-                }
+                }*/
 
             }, function(errorRes) {
                 console.log(errorRes);
@@ -114,9 +115,7 @@ mainApp.controller('CmsNewListController', ['$scope', 'ActiveList', '$filter', '
                                     listItem.filename = item.image.name;
                                 }
                                 listItem.link = item.link;
-                                if(item.data) {
-                                    listItem.linkUrl = res.data.doc._id;
-                                }
+                                listItem.linkUrl = res.data.doc._id;
                             }
 
                         });
@@ -200,9 +199,6 @@ mainApp.controller('CmsNewListController', ['$scope', 'ActiveList', '$filter', '
     };
     
     socket.on('listSaved', function(data) {
-
-        var currentList =
-
         console.log(data);
 
         var localStorageLists = JSON.parse(localStorage.getItem('lists'));
@@ -238,18 +234,18 @@ mainApp.controller('CmsNewListController', ['$scope', 'ActiveList', '$filter', '
 
                     localStorage.setItem('lists', JSON.stringify(localStorageLists));
                     $scope.activeLists = ActiveList.lists.titles;
-                    
+
                 } else {
 
-                    for(var t = 0; t < ActiveList.lists.items.length; t++) {
-                        if(ActiveList.lists.items[t].title == data.doc.title) {
-                            ActiveList.lists.items[t] = data.doc;
+                    for(var l = 0; l < ActiveList.lists.items.length; l++) {
+                        if(ActiveList.lists.items[l].title == data.doc.title) {
+                            ActiveList.lists.items[l] = data.doc;
                         }
                     }
 
-                    for(var c = 0; t < localStorageLists.items.length; t++) {
-                        if(localStorageLists.items[c].title == data.doc.title) {
-                            localStorageLists.items[c] = data.doc;
+                    for(var x = 0; x < localStorageLists.items.length; x++) {
+                        if(localStorageLists.items[x].title == data.doc.title) {
+                            localStorageLists.items[x] = data.doc;
                         }
                     }
 

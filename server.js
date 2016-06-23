@@ -93,6 +93,8 @@ app.get('/lists/:title', function(req, res) {
 
     var reqTitle = req.params.title;
 
+    console.log(reqTitle);
+
     MongoClient.connect(url, function(err, db) {
         db.collection('lists').findOne({title: reqTitle}, function(err, doc) {
 
@@ -106,12 +108,6 @@ app.get('/lists/:title', function(req, res) {
         });
 
     });
-
-});
-
-app.get('/image/:url', function(req, res) {
-
-    console.log(req.params.url);
 
 });
 
@@ -175,6 +171,8 @@ io.on('connection', function(socket){
                 listItems.push({title: item.title, link: item.link, linkUrl: item.linkUrl, url: newPath});
 
             });
+
+            console.log(listItems);
 
             MongoClient.connect(url, function(err, db) {
 

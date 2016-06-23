@@ -1,3 +1,7 @@
 {"level":"info","message":"server listening on port 3000","timestamp":"2016-06-23T07:45:44.351Z"}
 {"level":"info","message":"server listening on port 3000","timestamp":"2016-06-23T07:48:27.781Z"}
 {"level":"error","message":"API LIST FILE - file saved at: ./public/uploads/Timon_test_test_item_IMG_0004.jpg","timestamp":"2016-06-23T07:49:23.765Z"}
+{"level":"info","message":"server listening on port 3000","timestamp":"2016-06-23T08:14:36.865Z"}
+{"level":"info","message":"server listening on port 3000","timestamp":"2016-06-23T08:51:04.510Z"}
+{"level":"info","message":"server listening on port 3000","timestamp":"2016-06-23T09:11:53.885Z"}
+{"level":"info","message":"server listening on port 3000","timestamp":"2016-06-23T09:17:08.911Z"}
