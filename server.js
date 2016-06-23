@@ -69,6 +69,22 @@ app.get('/refs', function(req, res) {
     });
 });
 
+app.get('/public/uploads/:image', function(req, res) {
+
+    fs.access('./public/uploads/' + req.params.image, fs.F_OK, function(err) {
+        if (!err) {
+            console.log('file found');
+        } else {
+            console.log('file not found');
+        }
+    });
+
+    var pathToFile = __dirname + '/public/uploads/' + req.params.image;
+
+    res.sendFile(pathToFile);
+
+});
+
 app.get('/surveys', function(req, res) {
 
     MongoClient.connect(url, function(err, db) {
@@ -164,7 +180,7 @@ io.on('connection', function(socket){
                     if(err) {
                         winston.error('API LIST FILE - error: ' + err);
                     } else {
-                        //winston.info('API LIST FILE - file saved at: ' + newPath);
+                        console.log('API LIST FILE - file saved at: ' + newPath);
                     }
                 });
 

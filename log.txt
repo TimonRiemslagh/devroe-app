@@ -5,3 +5,18 @@
 {"level":"info","message":"server listening on port 3000","timestamp":"2016-06-23T08:51:04.510Z"}
 {"level":"info","message":"server listening on port 3000","timestamp":"2016-06-23T09:11:53.885Z"}
 {"level":"info","message":"server listening on port 3000","timestamp":"2016-06-23T09:17:08.911Z"}
+{"level":"info","message":"server listening on port 3000","timestamp":"2016-06-23T09:24:29.025Z"}
+{"level":"info","message":"server listening on port 3000","timestamp":"2016-06-23T09:25:07.802Z"}
+{"level":"error","message":"API LIST FILE - error: Error: EEXIST: file already exists, open './public/uploads/Dakwerken_Hellend_dak_undefined'","timestamp":"2016-06-23T09:29:25.588Z"}
+{"level":"error","message":"API LIST FILE - error: Error: EEXIST: file already exists, open './public/uploads/Dakwerken_Plat_dak_undefined'","timestamp":"2016-06-23T09:29:25.589Z"}
+{"level":"info","message":"server listening on port 3000","timestamp":"2016-06-23T09:31:20.195Z"}
+{"level":"info","message":"server listening on port 3000","timestamp":"2016-06-23T09:34:28.724Z"}
+{"level":"info","message":"server listening on port 3000","timestamp":"2016-06-23T09:35:01.408Z"}
+{"level":"info","message":"server listening on port 3000","timestamp":"2016-06-23T09:35:17.927Z"}
+{"level":"info","message":"server listening on port 3000","timestamp":"2016-06-23T09:36:06.177Z"}
+{"level":"info","message":"server listening on port 3000","timestamp":"2016-06-23T09:36:42.872Z"}
+{"level":"info","message":"server listening on port 3000","timestamp":"2016-06-23T09:36:57.347Z"}
+{"level":"info","message":"server listening on port 3000","timestamp":"2016-06-23T09:37:45.901Z"}
+{"level":"info","message":"server listening on port 3000","timestamp":"2016-06-23T09:38:15.316Z"}
+{"level":"info","message":"server listening on port 3000","timestamp":"2016-06-23T09:39:04.703Z"}
+{"level":"info","message":"server listening on port 3000","timestamp":"2016-06-23T09:39:23.783Z"}
