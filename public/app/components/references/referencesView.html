@@ -1,5 +1,4 @@
 <div id="refs">
-
     <h3>Zoek referenties</h3>
 
     <div class="input-group searchBar">
@@ -9,19 +8,10 @@
         <input type="text" class="form-control" placeholder="Zoek op sleutelwoorden" ng-model="searchText" aria-describedby="basic-addon1">
     </div>
 
-    <ul class="list-group">
-        <li class="list-group-item" ng-repeat="ref in (filteredItems = (activeRefs | filter:searchText))">
+    <a href="" ng-repeat="ref in (filteredItems = (activeRefs | filter:searchText))" ng-click="openLightboxModal($index, filteredItems)">
 
-            <a ng-click="openLightboxModal($index, filteredItems)">
+        <img ng-src="{{ref.url}}" height="150">
 
-                <img ng-src="{{ref.url}}" width="150">
-
-            </a>
-
-            <span>{{ref.keywords}}</span>
-
-        </li>
-    </ul>
-
+    </a>
 </div>
 
