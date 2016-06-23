@@ -177,11 +177,12 @@ mainApp.controller('CmsNewListController', ['$scope', 'ActiveList', '$filter', '
 
     $scope.remove = function(item) {
 
-        console.log("removed");
-
-        for(var t = $scope.listItems.length-1; t >= 0; t--) {
-            if($scope.listItems[t].title == item.title) {
-                $scope.listItems.splice(t,1);
+        var r = confirm("\"" + item.title + "\" voorgoed verwijderen?");
+        if (r == true) {
+            for(var t = $scope.listItems.length-1; t >= 0; t--) {
+                if($scope.listItems[t].title == item.title) {
+                    $scope.listItems.splice(t,1);
+                }
             }
         }
 

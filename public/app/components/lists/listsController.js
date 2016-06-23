@@ -124,6 +124,5 @@ mainApp.controller('ListsController', ['$scope', '$routeParams', 'ActiveList', '
         } else {
             $scope.noOptions = true;
         }
-
     };
 }]);
