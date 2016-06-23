@@ -8,13 +8,16 @@ var express = require('express'),
     fs = require('fs');
 
 var ObjectId = require('mongodb').ObjectId;
+var winston = require('winston');
+winston.add(winston.transports.File, { filename: 'log.txt' });
+//winston.remove(winston.transports.Console);
 
 app.use(express.static('public'));
 
 var port = process.env.PORT || 3000;
 
 http.listen(port, function() {
-    console.log('server listening on port ' + port + "...");
+    winston.info('server listening on port ' + port);
 });
 
 var jsonParser = bodyParser.json();
@@ -33,9 +36,11 @@ app.get('/lists', function(req, res) {
                         listTitles.push(el.title);
                     });
                     if (!err) {
+                        //winston.info("API LISTS - send: " + JSON.stringify({items: arr, titles: listTitles}));
                         res.json({items: arr, titles: listTitles});
                         db.close();
                     } else {
+                        winston.error("API LISTS - error: " + err);
                         res.sendStatus(400);
                         db.close();
                     }
@@ -51,9 +56,11 @@ app.get('/refs', function(req, res) {
             .toArray(function(err, arr) {
 
                 if(!err) {
+                    //winston.info("API REFS - send: " + JSON.stringify(arr));
                     res.json(arr);
                     db.close();
                 } else {
+                    winston.error("API REFS - error: " + err);
                     res.sendStatus(400);
                     db.close();
                 }
@@ -69,9 +76,11 @@ app.get('/surveys', function(req, res) {
             .toArray(function(err, arr) {
 
                 if(!err) {
+                    //winston.info("API SURVEYS - send: " + JSON.stringify(arr));
                     res.json(arr);
                     db.close();
                 } else {
+                    winston.error("API SURVEYS - error: "+ err);
                     res.sendStatus(400);
                     db.close();
                 }
@@ -110,6 +119,8 @@ app.post('/survey', jsonParser, function(req, res) {
 
     if (!req.body) {
 
+        winston.error("API NEW SURVEY - no data");
+
         res.sendStatus(400);
 
     } else {
@@ -125,11 +136,11 @@ app.post('/survey', jsonParser, function(req, res) {
                 },
                 function(err, doc) {
 
-                    console.log(doc.ops[0]);
-
                     if(!err && doc.result.ok) {
+                        //winston.info('API NEW SURVEY - created: ' + JSON.stringify(doc.ops[0]));
                         res.json({success: true, doc: doc.ops[0]});
                     } else {
+                        //winston.info('API NEW SURVEY - error: ' + err);
                         res.json({success: false, err: err});
                     }
 
@@ -144,68 +155,45 @@ io.on('connection', function(socket){
 
     socket.on('saveList', function(data) {
 
-        var listTitle = data.title;
-        var listItems = [];
+        if(data) {
 
-        data.items.forEach(function(item) {
+            var listTitle = data.title;
+            var listItems = [];
 
-            var newPath = "./public/uploads/" + data.title.replace(/[^A-Z0-9]+/ig, "_") + "_" + item.title.replace(/[^A-Z0-9]+/ig, "_") + "_" + item.filename;
+            data.items.forEach(function(item) {
 
-            fs.writeFile(newPath, item.image, { flag: 'wx' }, function (err) {
-                if(err) {
-                    console.log(err);
-                } else {
-                    console.log("saved at " + newPath);
-                }
+                var newPath = "./public/uploads/" + data.title.replace(/[^A-Z0-9]+/ig, "_") + "_" + item.title.replace(/[^A-Z0-9]+/ig, "_") + "_" + item.filename;
+
+                fs.writeFile(newPath, item.image, { flag: 'wx' }, function (err) {
+                    if(err) {
+                        winston.error('API LIST FILE - error: ' + err);
+                    } else {
+                        winston.info('API LIST FILE - file saved at: ' + newPath);
+                    }
+                });
+
+                listItems.push({title: item.title, link: item.link, linkUrl: item.linkUrl, url: newPath});
+
             });
 
-            listItems.push({title: item.title, link: item.link, linkUrl: item.linkUrl, url: newPath});
+            MongoClient.connect(url, function(err, db) {
 
-        });
-
-        MongoClient.connect(url, function(err, db) {
-
-            if(data.root){
-
-                db.collection('lists').findAndModify(
-                    {id: 0},
-                    [],
-                    {id: 0, title: listTitle, items: listItems},
-                    {upsert: true, new: true},
-                    function(err, object) {
-
-                        if(!err && object.ok) {
-                            console.log("root success");
-                            socket.emit("listSaved", {doc: object.value, updatedExisting: object.lastErrorObject.updatedExisting});
-                            db.close();
-                        } else {
-
-                            console.log("root fail");
-                            socket.emit("listNotSaved", err);
-                            db.close();
-                        }
-
-                    });
-
-            } else {
-
-                if(data.id) {
-
-                    console.log(data.id);
+                if(data.root){
 
                     db.collection('lists').findAndModify(
-                        {_id: new ObjectId(data.id)},
+                        {id: 0},
                         [],
-                        {title: listTitle, items: listItems},
+                        {id: 0, title: listTitle, items: listItems},
                         {upsert: true, new: true},
                         function(err, object) {
 
                             if(!err && object.ok) {
-                                console.log("id success");
+                                //winston.info('API NEW LIST ROOT - created: ' + JSON.stringify({doc: object.value, updatedExisting: object.lastErrorObject.updatedExisting}));
                                 socket.emit("listSaved", {doc: object.value, updatedExisting: object.lastErrorObject.updatedExisting});
                                 db.close();
                             } else {
-                                console.log("id fail");
+
+                                winston.error('API NEW LIST ROOT - error: ' + err);
                                 socket.emit("listNotSaved", err);
                                 db.close();
                             }
@@ -214,137 +202,180 @@ io.on('connection', function(socket){
 
                 } else {
 
-                    db.collection('lists').findAndModify(
-                        {title: listTitle},
-                        [],
-                        {title: listTitle, items: listItems},
-                        {upsert: true, new: true},
-                        function(err, object) {
+                    if(data.id) {
 
-                            if(!err && object.ok) {
-                                console.log("new list success");
-                                socket.emit("listSaved", {doc: object.value, updatedExisting: object.lastErrorObject.updatedExisting});
-                                db.close();
-                            } else {
-                                console.log("new list fail");
-                                socket.emit("listNotSaved", err);
-                                db.close();
-                            }
+                        db.collection('lists').findAndModify(
+                            {_id: new ObjectId(data.id)},
+                            [],
+                            {title: listTitle, items: listItems},
+                            {upsert: true, new: true},
+                            function(err, object) {
 
-                        });
+                                if(!err && object.ok) {
+                                    //winston.info('API NEW LIST ID - created: ' + JSON.stringify({doc: object.value, updatedExisting: object.lastErrorObject.updatedExisting}));
+                                    socket.emit("listSaved", {doc: object.value, updatedExisting: object.lastErrorObject.updatedExisting});
+                                    db.close();
+                                } else {
+                                    winston.error('API NEW LIST ID - error: ' + err);
+                                    socket.emit("listNotSaved", err);
+                                    db.close();
+                                }
+
+                            });
+
+                    } else {
+
+                        db.collection('lists').findAndModify(
+                            {title: listTitle},
+                            [],
+                            {title: listTitle, items: listItems},
+                            {upsert: true, new: true},
+                            function(err, object) {
+
+                                if(!err && object.ok) {
+                                    //winston.info('API NEW LIST - created: ' + JSON.stringify({doc: object.value, updatedExisting: object.lastErrorObject.updatedExisting}));
+                                    socket.emit("listSaved", {doc: object.value, updatedExisting: object.lastErrorObject.updatedExisting});
+                                    db.close();
+                                } else {
+                                    winston.error('API NEW LIST - error: ' + err);
+                                    socket.emit("listNotSaved", err);
+                                    db.close();
+                                }
+
+                            });
+
+                    }
 
                 }
 
+            });
 
-            }
+        } else {
+
+            winston.error("API NEW LIST - no data");
+
+            socket.emit("listNotSaved", "no data");
+        }
 
 
-
-        });
 
     });
 
     socket.on('updateRef', function(data) {
 
-        var newFileName = "";
+        if(data) {
+            var newFileName = "";
 
-        if(data.keywords) {
-            newFileName = data.keywords.replace(/[^A-Z0-9]+/ig, "_") + "_" + data.filename;
-        }
-
-        if(data.photo) {
-            var newPath = "./public/uploads/" + newFileName;
-
-            fs.writeFile(newPath, data.photo, { flag: 'wx' }, function (err) {
-                if(err) {
-                    console.log(err);
-                } else {
-                    console.log("saved at " + newPath);
-                }
-            });
-
-        } else {
-
-
-            if(data.url) {
-
-                MongoClient.connect(url, function(err, db) {
-
-                    db.collection('references').findAndModify(
-                        {_id: new ObjectId(data.id)},
-                        [],
-                        {keywords: data.keywords, url: data.url},
-                        {new: true, upsert: true},
-                        function(err, object) {
-
-                            if(!err && object.ok) {
-                                socket.emit("refUpdated", object.value);
-                                db.close();
-                            } else {
-                                socket.emit("refNotSaved", err);
-                                db.close();
-                            }
-
-                        });
-                });
-
+            if(data.keywords) {
+                newFileName = data.keywords.replace(/[^A-Z0-9]+/ig, "_") + "_" + data.filename;
             }
 
+            if(data.photo) {
+                var newPath = "./public/uploads/" + newFileName;
+
+                fs.writeFile(newPath, data.photo, { flag: 'wx' }, function (err) {
+                    if(err) {
+                        winston.error('API UPDATE REF FILE - error: ' + err);
+                    } else {
+                        //winston.info('API UPDATE REF FILE - file saved at: ' + newPath);
+                    }
+                });
+
+            } else {
+
+
+                if(data.url) {
+
+                    MongoClient.connect(url, function(err, db) {
+
+                        db.collection('references').findAndModify(
+                            {_id: new ObjectId(data.id)},
+                            [],
+                            {keywords: data.keywords, url: data.url},
+                            {new: true, upsert: true},
+                            function(err, object) {
+
+                                if(!err && object.ok) {
+                                    //winston.info("API UPDATE REF - upated: " + JSON.stringify(object.value));
+                                    socket.emit("refUpdated", object.value);
+                                    db.close();
+                                } else {
+                                    winston.error("API UPDATE REF -  error: " + err);
+                                    socket.emit("refNotSaved", err);
+                                    db.close();
+                                }
+
+                            });
+                    });
+
+                }
+
+            }
+        } else {
+            winston.error("API UPDATE REF - no data");
         }
+
+
 
     });
 
     socket.on('saveRef', function(data) {
 
-        var newFileName = "";
+        if(data) {
+            var newFileName = "";
 
-        if(data.keywords) {
-            newFileName = data.keywords.replace(/[^A-Z0-9]+/ig, "_") + "_" + data.filename;
-        }
+            if(data.keywords) {
+                newFileName = data.keywords.replace(/[^A-Z0-9]+/ig, "_") + "_" + data.filename;
+            }
 
-        if(data.photo) {
-            var newPath = "./public/uploads/" + newFileName;
+            if(data.photo) {
+                var newPath = "./public/uploads/" + newFileName;
 
-            fs.writeFile(newPath, data.photo, { flag: 'wx' }, function (err) {
-                if(err) {
-                    console.log(err);
-                } else {
-                    console.log("saved at " + newPath);
-                }
-            });
-
-        } else {
-            console.log("no photo data found.");
-        }
-
-        MongoClient.connect(url, function(err, db) {
-
-            db.collection('references').findAndModify(
-                {_id: new ObjectId(data.id)},
-                [],
-                {keywords: data.keywords, url: '/uploads/' + newFileName},
-                {new: true, upsert: true},
-                function(err, object) {
-
-                    console.log(object);
-
-                    if(!err && object.ok) {
-                        socket.emit("refSaved", object.value);
-                        db.close();
+                fs.writeFile(newPath, data.photo, { flag: 'wx' }, function (err) {
+                    if(err) {
+                        winston.error('API NEW REF FILE - error: ' + err);
                     } else {
-                        socket.emit("refNotSaved", err);
-                        db.close();
+                        //winston.info('API NEW REF FILE - file saved at: ' + newPath);
                     }
-
                 });
-        });
+
+            } else {
+                winston.error("API REF FILE - no photo data found.");
+            }
+
+            MongoClient.connect(url, function(err, db) {
+
+                db.collection('references').findAndModify(
+                    {_id: new ObjectId(data.id)},
+                    [],
+                    {keywords: data.keywords, url: '/uploads/' + newFileName},
+                    {new: true, upsert: true},
+                    function(err, object) {
+
+                        console.log(object);
+
+                        if(!err && object.ok) {
+                            //winston.info("API NEW REF - saved: " + JSON.stringify(object.value));
+                            socket.emit("refSaved", object.value);
+                            db.close();
+                        } else {
+                            winston.error("API NEW REF - error: " + err);
+                            socket.emit("refNotSaved", err);
+                            db.close();
+                        }
+
+                    });
+            });
+        } else {
+            winston.error("API NEW REF - no data");
+        }
+
+
     });
 
 });
 
 app.delete('/lists/:id', function(req, res) {
-
-    console.log(req.params.id);
 
     MongoClient.connect(url, function(err, db) {
 
@@ -352,16 +383,12 @@ app.delete('/lists/:id', function(req, res) {
             {_id: new ObjectId(req.params.id)},
             function(err, result) {
 
-                console.log(err,result);
-
                 if(!err && result.result.ok) {
-
+                    //winston.info('API REMOVE LIST - deleted: ' + JSON.stringify(result));
                     res.json({success: true});
-
                 } else {
-
+                    winston.error('API REMOVE LIST - error: ' + err);
                     res.json({success: false, err: err});
-
                 }
 
                 db.close();
@@ -380,13 +407,12 @@ app.delete('/refs/:id', function(req, res) {
             function(err, result) {
 
                 if(!err && result.result.ok) {
-
+                    //winston.info('API REMOVE REF - deleted: ' + JSON.stringify(result));
                     res.json({success: true});
 
                 } else {
-
+                    winston.error('API REMOVE REF - error: ' + err);
                     res.json({success: false, err: err});
-
                 }
 
                 db.close();
@@ -395,17 +421,3 @@ app.delete('/refs/:id', function(req, res) {
     });
 
 });
-
-app.put('/lists/:name', function(req, res) {
-
-    console.log("put");
-    console.log(req.body);
-    console.log(req.files);
-
-    res.sendStatus(200);
-
-});
-
-/*app.listen(process.env.PORT || 3000, function() {
- console.log('server listening on port 3000...');
- });*/
