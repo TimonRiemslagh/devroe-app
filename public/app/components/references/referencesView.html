@@ -8,6 +8,14 @@
         <input type="text" class="form-control" placeholder="Zoek op sleutelwoorden" ng-model="searchText" aria-describedby="basic-addon1">
     </div>
 
+    <div class="row">
+        <div class="col-xs-6 col-md-3" ng-repeat="ref in (filteredItems = (activeRefs | filter:searchText))">
+            <a href="" ng-click="openLightboxModal($index, filteredItems)">
+                <img ng-src="{{ref.url}}" height="150">
+            </a>
+        </div>
+    </div>
+
     <a href="" ng-repeat="ref in (filteredItems = (activeRefs | filter:searchText))" ng-click="openLightboxModal($index, filteredItems)">
 
         <img ng-src="{{ref.url}}" height="150">
