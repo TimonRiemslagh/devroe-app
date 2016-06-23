@@ -20,6 +20,11 @@ http.listen(port, function() {
     winston.info('server listening on port ' + port);
 });
 
+var dir = __dirname + '/public/uploads/';
+if (!fs.existsSync(dir)){
+    fs.mkdirSync(dir);
+}
+
 var jsonParser = bodyParser.json();
 
 var url = 'mongodb://timonriemslagh:devroe@ds011870.mlab.com:11870/devroedb';
