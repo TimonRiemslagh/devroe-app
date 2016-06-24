@@ -14,13 +14,13 @@
     <form name="newRef" ng-submit="saveRef()">
         <input type="text" ng-model="keywords" class="form-control" placeholder="Sleutelwoorden">
 
-        <input accept="image/*" class="refImage" type="file" file-input="refImage" />
+        <input accept="image/*" onchange="previewFile()" class="refImage" type="file" />
 
         <button type="submit" ng-disabled="isBusy" class="btn btn-success">Opslaan<span ng-show="isBusy" class="addListItemLoader" loader></span></button>
 
         <div ng-show="showAlert" class="alert alert-danger" role="alert"><strong>Woops!</strong> Vul de sleutelwoorden en een foto in en probeer opnieuw.</div>
     </form>
 
-    <img class="preview" src="{{refImage.data}}" height="500" />
+    <img class="preview" src="" />
 
 </div>

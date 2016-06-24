@@ -15,7 +15,6 @@ winston.add(winston.transports.File, { filename: 'log.txt' });
 app.use(express.static('public'));
 
 var port = process.env.PORT || 3000;
-
 http.listen(port, function() {
     winston.info('server listening on port ' + port);
 });
@@ -25,8 +24,14 @@ if (!fs.existsSync(dir)){
     fs.mkdirSync(dir);
 }
 
-var jsonParser = bodyParser.json();
+//const S3_BUCKET = process.env.S3_BUCKET;
+const aws = require('aws-sdk');
 
+aws.config.update({accessKeyId: "AKIAJFRWG5Y2BTCC32LQ", secretAccessKey: "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"});
+
+app.engine('html', require('ejs').renderFile);
+
+var jsonParser = bodyParser.json();
 var url = 'mongodb://timonriemslagh:devroe@ds011870.mlab.com:11870/devroedb';
 
 app.get('/lists', function(req, res) {
@@ -58,6 +63,7 @@ app.get('/refs', function(req, res) {
 
     MongoClient.connect(url, function(err, db) {
         db.collection('references').find()
+            .sort({date: -1})
             .toArray(function(err, arr) {
 
                 if(!err) {
@@ -72,22 +78,6 @@ app.get('/refs', function(req, res) {
 
             });
     });
-});
-
-app.get('/public/uploads/:image', function(req, res) {
-
-    fs.access('./public/uploads/' + req.params.image, fs.F_OK, function(err) {
-        if (!err) {
-            console.log('file found');
-        } else {
-            console.log('file not found');
-        }
-    });
-
-    var pathToFile = __dirname + '/public/uploads/' + req.params.image;
-
-    res.sendFile(pathToFile);
-
 });
 
 app.get('/surveys', function(req, res) {
@@ -166,6 +156,37 @@ app.post('/survey', jsonParser, function(req, res) {
 
         });
     }
+});
+
+app.post('/ref', jsonParser, function(req, res) {
+
+    if (!req.body) {
+        console.log('ref error');
+        res.sendStatus(400);
+    }
+
+    MongoClient.connect(url, function(err, db) {
+
+        db.collection('references').findAndModify(
+            {
+                _id: new ObjectId(req.body.id)
+            },
+            [],
+            {keywords: req.body.keywords, url: req.body.url, date: new Date()},
+            {upsert: true, new: true},
+            function(err, doc) {
+
+                if(!err && doc.ok) {
+                    res.json({success: true, doc: doc.value});
+                } else {
+                    res.json({success: false, err: err});
+                }
+
+                db.close();
+            });
+
+    });
+
 });
 
 io.on('connection', function(socket){
@@ -276,120 +297,6 @@ io.on('connection', function(socket){
             socket.emit("listNotSaved", "no data");
         }
 
-
-
-    });
-
-    socket.on('updateRef', function(data) {
-
-        if(data) {
-            var newFileName = "";
-
-            if(data.keywords) {
-                newFileName = data.keywords.replace(/[^A-Z0-9]+/ig, "_") + "_" + data.filename;
-            }
-
-            if(data.photo) {
-                var newPath = "./public/uploads/" + newFileName;
-
-                fs.writeFile(newPath, data.photo, { flag: 'wx' }, function (err) {
-                    if(err) {
-                        winston.error('API UPDATE REF FILE - error: ' + err);
-                    } else {
-                        //winston.info('API UPDATE REF FILE - file saved at: ' + newPath);
-                    }
-                });
-
-            } else {
-
-
-                if(data.url) {
-
-                    MongoClient.connect(url, function(err, db) {
-
-                        db.collection('references').findAndModify(
-                            {_id: new ObjectId(data.id)},
-                            [],
-                            {keywords: data.keywords, url: data.url},
-                            {new: true, upsert: true},
-                            function(err, object) {
-
-                                if(!err && object.ok) {
-                                    //winston.info("API UPDATE REF - upated: " + JSON.stringify(object.value));
-                                    socket.emit("refUpdated", object.value);
-                                    db.close();
-                                } else {
-                                    winston.error("API UPDATE REF -  error: " + err);
-                                    socket.emit("refNotSaved", err);
-                                    db.close();
-                                }
-
-                            });
-                    });
-
-                }
-
-            }
-        } else {
-            winston.error("API UPDATE REF - no data");
-        }
-
-
-
-    });
-
-    socket.on('saveRef', function(data) {
-
-        if(data) {
-            var newFileName = "";
-
-            if(data.keywords) {
-                newFileName = data.keywords.replace(/[^A-Z0-9]+/ig, "_") + "_" + data.filename;
-            }
-
-            if(data.photo) {
-                var newPath = "./public/uploads/" + newFileName;
-
-                fs.writeFile(newPath, data.photo, { flag: 'wx' }, function (err) {
-                    if(err) {
-                        winston.error('API NEW REF FILE - error: ' + err);
-                    } else {
-                        //winston.info('API NEW REF FILE - file saved at: ' + newPath);
-                    }
-                });
-
-            } else {
-                winston.error("API REF FILE - no photo data found.");
-            }
-
-            MongoClient.connect(url, function(err, db) {
-
-                db.collection('references').findAndModify(
-                    {_id: new ObjectId(data.id)},
-                    [],
-                    {keywords: data.keywords, url: '/uploads/' + newFileName},
-                    {new: true, upsert: true},
-                    function(err, object) {
-
-                        console.log(object);
-
-                        if(!err && object.ok) {
-                            //winston.info("API NEW REF - saved: " + JSON.stringify(object.value));
-                            socket.emit("refSaved", object.value);
-                            db.close();
-                        } else {
-                            winston.error("API NEW REF - error: " + err);
-                            socket.emit("refNotSaved", err);
-                            db.close();
-                        }
-
-                    });
-            });
-        } else {
-            winston.error("API NEW REF - no data");
-        }
-
-
     });
 
 });
@@ -439,4 +346,34 @@ app.delete('/refs/:id', function(req, res) {
             });
     });
 
+});
+
+app.get('/sign-s3', (req, res) => {
+    const s3 = new aws.S3();
+    const fileName = req.query['file-name'];
+    const fileType = req.query['file-type'];
+
+    const bucket = 'devroe';
+
+    const s3Params = {
+        Bucket: bucket,
+        Key: fileName,
+        Expires: 60,
+        ContentType: fileType,
+        ACL: 'public-read'
+    };
+
+    s3.getSignedUrl('putObject', s3Params, (err, data) => {
+        if(err){
+            console.log(err);
+            return res.end();
+        }
+        const returnData = {
+            signedRequest: data,
+            url: `https://${bucket}.s3.amazonaws.com/${fileName}`
+        };
+
+        res.write(JSON.stringify(returnData));
+        res.end();
+    });
 });
