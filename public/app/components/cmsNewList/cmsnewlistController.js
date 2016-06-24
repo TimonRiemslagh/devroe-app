@@ -2,6 +2,8 @@ mainApp.controller('CmsNewListController', ['$scope', 'ActiveList', '$filter', '
     $scope.activeLists = ActiveList.lists.titles;
     $scope.listItems = [];
 
+    var listItemId = 0;
+
     if($routeParams.listId) {
 
         ActiveList.lists.items.forEach(function(list) {
@@ -41,7 +43,11 @@ mainApp.controller('CmsNewListController', ['$scope', 'ActiveList', '$filter', '
 
                 //if($scope.newListItemLink) {
                     if(res.data.validList) {
-                        $scope.listItems.push({title: $scope.newListItemTitle, imageObj: $scope.newListItemImageElement, image: $scope.newListItemImageElement.file, filename: $scope.newListItemImageElement.file.name, link: $scope.newListItemLink, linkUrl: res.data.doc._id, editMode: false });
+                        //$scope.listItems.push({title: $scope.newListItemTitle, imageObj: $scope.newListItemImageElement, image: $scope.newListItemImageElement.file, filename: $scope.newListItemImageElement.file.name, link: $scope.newListItemLink, linkUrl: res.data.doc._id, editMode: false });
+
+                        var image = $('.newImage')[0].files[0];
+                        $scope.listItems.push({listItemId: listItemId, title: $scope.newListItemTitle, image: image, link: $scope.newListItemLink, linkUrl: res.data.doc._id, editMode: false });
+                        listItemId++;
 
                         // Reset the form model.
                         $scope.newListItemTitle = "";
@@ -94,8 +100,6 @@ mainApp.controller('CmsNewListController', ['$scope', 'ActiveList', '$filter', '
 
     $scope.updateListItem = function(item) {
 
-        console.log(item);
-
         item.editMode = true;
 
         if(item.title) {
@@ -103,7 +107,35 @@ mainApp.controller('CmsNewListController', ['$scope', 'ActiveList', '$filter', '
             item.checkingList = true;
             item.showAlert = false;
 
-            if(item.link) {
+            $http.get('/lists/' + item.link).then(function(res) {
+
+                if(res.data.validList) {
+
+                    $scope.listItems.forEach(function(listItem) {
+
+                        if(listItem.listItemId == item.listItemId) {
+                            listItem.title = item.title;
+                            listItem.image = $("#" + item.listItemId)[0].files[0];
+                            listItem.link = item.link;
+                            listItem.linkUrl = res.data.doc._id;
+                        }
+
+                    });
+
+                    item.showAlert = false;
+                    item.checkingList = false;
+                    item.editMode = false;
+
+                } else {
+                    item.showAlert = true;
+                    item.checkingList = false;
+                }
+
+            }, function(errorRes) {
+                console.log(errorRes);
+            });
+
+            /*if(item.link) {
                 $http.get('/lists/' + item.link).then(function(res) {
 
                     if(res.data.validList) {
@@ -152,7 +184,7 @@ mainApp.controller('CmsNewListController', ['$scope', 'ActiveList', '$filter', '
                 item.showAlert = false;
                 item.checkingList = false;
                 item.editMode = false;
-            }
+            }*/
 
         } else {
             item.showAlert = true;
@@ -188,8 +220,82 @@ mainApp.controller('CmsNewListController', ['$scope', 'ActiveList', '$filter', '
 
     };
 
+    function uploadFile(item, signedRequest, url, number, total){
+        const xhr = new XMLHttpRequest();
+        xhr.open('PUT', signedRequest);
+        xhr.onreadystatechange = () => {
+            if(xhr.readyState === 4){
+                if(xhr.status === 200){
+
+                    console.log(number, total);
+
+                    item.image = url;
+
+                    if(number == total) {
+                        $scope.listSaveBusy = false;
+
+                        console.log($scope.listItems);
+
+                    }
+
+                }
+                else{
+                    alert('Could not upload file.');
+                }
+            }
+        };
+        xhr.send(item.file);
+    }
+
+    function getSignedRequest(item, number, total){
+        const xhr = new XMLHttpRequest();
+        xhr.open('GET', `/sign-s3?file-name=${item.file.name}&file-type=${item.file.type}`);
+        xhr.onreadystatechange = () => {
+            if(xhr.readyState === 4){
+                if(xhr.status === 200){
+                    const response = JSON.parse(xhr.responseText);
+                    uploadFile(item, response.signedRequest, response.url, number, total);
+                }
+                else{
+                    alert('Could not get signed URL.');
+                }
+            }
+        };
+        xhr.send();
+    }
+
     $scope.saveList = function() {
 
+        $scope.listSaveBusy = true;
+
+        var totalImages = 0;
+
+        $scope.listItems.forEach(function(item) {
+
+            if(item.image) {
+                totalImages++;
+            }
+
+        });
+
+        if(totalImages.length > 0) {
+            var currentImage = 1;
+
+            $scope.listItems.forEach(function(item) {
+                if(item.image) {
+                    getSignedRequest(item, currentImage, totalImages);
+                    currentImage++;
+                }
+            });
+        } else {
+
+
+
+        }
+
+
+
+        /*
         $scope.listSaveBusy = true;
 
         if($routeParams.listId) {
@@ -199,7 +305,7 @@ mainApp.controller('CmsNewListController', ['$scope', 'ActiveList', '$filter', '
         } else {
             socket.emit('saveList', {title: $scope.listTitle, items: $scope.listItems, root: $scope.root});
         }
-
+        */
     };
     
     socket.on('listSaved', function(data) {

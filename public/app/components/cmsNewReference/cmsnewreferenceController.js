@@ -9,7 +9,6 @@ mainApp.controller('CmsNewReferenceController', ['$scope', 'ActiveList', '$route
         ActiveList.refs.forEach(function(ref) {
             if(ref._id == $routeParams.refId) {
                 $scope.currentRef = ref;
-                console.log(ref);
                 $scope.keywords = ref.keywords;
                 $scope.imageUrl = ref.url;
                 preview.attr("src", ref.url);
@@ -83,14 +82,17 @@ mainApp.controller('CmsNewReferenceController', ['$scope', 'ActiveList', '$route
 
         $http.post('/ref', data).then(function(res) {
 
+            console.log(res.data);
+
             $scope.saveBusy = false;
 
             if(res.data.success) {
 
-                ActiveList.addRef(res.data.doc);
-                var localStorageRefs = JSON.parse(localStorage.getItem('refs'));
-                localStorageRefs.unshift(res.data.doc);
-                localStorage.setItem('refs', JSON.stringify(localStorageRefs));
+                if(res.data.updated) {
+                    ActiveList.updateRef(res.data.doc);
+                } else {
+                    ActiveList.addRef(res.data.doc);
+                }
     
                 // Reset the form model.
                 $scope.keywords = "";

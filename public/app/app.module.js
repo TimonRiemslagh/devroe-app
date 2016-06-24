@@ -25,9 +25,12 @@ mainApp.service( 'ActiveList', [ '$rootScope', function( $rootScope ) {
 
         addRef: function(ref) {
             service.refs.unshift(ref);
-            $rootScope.$broadcast( 'refs.update' );
 
-            console.log(service.refs);
+            var localStorageRefs = JSON.parse(localStorage.getItem('refs'));
+            localStorageRefs.unshift(res.data.doc);
+            localStorage.setItem('refs', JSON.stringify(localStorageRefs));
+            
+            $rootScope.$broadcast( 'refs.update' );
         },
 
         addList: function(list) {
@@ -71,7 +74,23 @@ mainApp.service( 'ActiveList', [ '$rootScope', function( $rootScope ) {
 
         },
 
-        updateList: function(list) {
+        updateRef: function(ref) {
+
+            for(var t = 0; t < service.refs.length; t++) {
+                if(service.refs[t]._id == ref._id) {
+                    service.refs[t] = ref;
+                }
+            }
+
+            var localStorageRefs = JSON.parse(localStorage.getItem('refs'));
+
+            for(var l = 0; l < localStorageRefs.length; l++) {
+                if(localStorageRefs[l]._id == ref._id) {
+                    localStorageRefs[l] = ref;
+                }
+            }
+
+            localStorage.setItem('refs', JSON.stringify(localStorageRefs));
 
         }
     };

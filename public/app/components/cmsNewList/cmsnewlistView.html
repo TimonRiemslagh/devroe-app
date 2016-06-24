@@ -28,7 +28,7 @@
                        class="form-control"
                        placeholder="Link naar lijst">
 
-                <input class="newImage" accept="image/*" type="file" file-input="newListItemImageElement" />
+                <input class="newImage" accept="image/*" type="file"/>
 
                 <button type="submit" ng-disabled="checkingList" class="btn btn-primary">Voeg toe<span ng-show="checkingList" class="addListItemLoader" loader></span></button>
 
@@ -48,7 +48,7 @@
                                class="form-control"
                                placeholder="Link naar lijst">
 
-                        <input accept="image/*" type="file" file-input="item.imageObj" />
+                        <input id="{{item.listItemId}}" accept="image/*" type="file" />
 
                         <button type="submit" ng-disabled="item.checkingList" class="btn btn-primary">Update<span ng-show="item.checkingList" class="addListItemLoader" loader></span></button>
 
@@ -59,8 +59,8 @@
 
                         <div class="noEditMode">
                             <div class="">{{item.title}}</div>
+                            <div>{{item.image.name}}</div>
                             <a ng-click="routeList(item.linkUrl)" href="">{{item.link}}</a>
-                            <div>{{item.filename}}</div>
                         </div>
 
                         <div class="options">

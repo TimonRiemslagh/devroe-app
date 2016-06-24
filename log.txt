@@ -53,3 +53,4 @@
 {"level":"info","message":"server listening on port 3000","timestamp":"2016-06-24T09:24:22.759Z"}
 {"level":"info","message":"server listening on port 3000","timestamp":"2016-06-24T09:29:59.016Z"}
 {"level":"info","message":"server listening on port 3000","timestamp":"2016-06-24T09:32:02.266Z"}
+{"level":"info","message":"server listening on port 3000","timestamp":"2016-06-24T12:04:03.165Z"}

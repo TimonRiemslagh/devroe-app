@@ -9,7 +9,8 @@ var express = require('express'),
 
 var ObjectId = require('mongodb').ObjectId;
 var winston = require('winston');
-winston.add(winston.transports.File, { filename: 'log.txt' });
+
+//winston.add(winston.transports.File, { filename: 'log.txt' });
 //winston.remove(winston.transports.Console);
 
 app.use(express.static('public'));
@@ -18,11 +19,6 @@ var port = process.env.PORT || 3000;
 http.listen(port, function() {
     winston.info('server listening on port ' + port);
 });
-
-var dir = __dirname + '/public/uploads/';
-if (!fs.existsSync(dir)){
-    fs.mkdirSync(dir);
-}
 
 //const S3_BUCKET = process.env.S3_BUCKET;
 const aws = require('aws-sdk');
@@ -105,8 +101,6 @@ app.get('/lists/:title', function(req, res) {
 
     var reqTitle = req.params.title;
 
-    console.log(reqTitle);
-
     MongoClient.connect(url, function(err, db) {
         db.collection('lists').findOne({title: reqTitle}, function(err, doc) {
 
@@ -177,7 +171,7 @@ app.post('/ref', jsonParser, function(req, res) {
             function(err, doc) {
 
                 if(!err && doc.ok) {
-                    res.json({success: true, doc: doc.value});
+                    res.json({success: true, doc: doc.value, updated: doc.lastErrorObject.updatedExisting});
                 } else {
                     res.json({success: false, err: err});
                 }
@@ -213,8 +207,6 @@ io.on('connection', function(socket){
                 listItems.push({title: item.title, link: item.link, linkUrl: item.linkUrl, url: newPath});
 
             });
-
-            console.log(listItems);
 
             MongoClient.connect(url, function(err, db) {
 
