@@ -62,18 +62,16 @@ mainApp.controller('CmsNewReferenceController', ['$scope', 'ActiveList', '$route
 
         if($scope.imageUrl && $scope.keywords) {
 
+            $scope.isBusy = true;
             postRef({id: $scope.currentRef._id, keywords: $scope.keywords, url: $scope.imageUrl});
 
-        }
-
-        if(image[0] && $scope.keywords) {
-
-
-
-            $scope.isBusy = true;
-            getSignedRequest(image[0]);
         } else {
-            $scope.showAlert = true;
+            if(image[0] && $scope.keywords) {
+                $scope.isBusy = true;
+                getSignedRequest(image[0]);
+            } else {
+                $scope.showAlert = true;
+            }
         }
 
     };
@@ -82,9 +80,7 @@ mainApp.controller('CmsNewReferenceController', ['$scope', 'ActiveList', '$route
 
         $http.post('/ref', data).then(function(res) {
 
-            console.log(res.data);
-
-            $scope.saveBusy = false;
+            $scope.isBusy = false;
 
             if(res.data.success) {
 
