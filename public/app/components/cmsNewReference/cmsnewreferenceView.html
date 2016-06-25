@@ -23,4 +23,10 @@
 
     <img class="preview" src="" />
 
+    <div class="feedbackAlerts">
+
+        <uib-alert ng-repeat="alert in alertsSuccess" type="success" close="closeAlert($index, 'success')">{{alert}}</uib-alert>
+        <uib-alert ng-repeat="alert in alertsFail" type="danger" close="closeAlert($index, 'fail')">{{alert}}</uib-alert>
+
+    </div>
 </div>

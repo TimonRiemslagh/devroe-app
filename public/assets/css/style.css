@@ -1,6 +1,7 @@
 div#main {
     width: 840px;
     margin: 0 auto;
+    min-height: 550px;
 }
 
 div.login {
@@ -385,7 +386,8 @@ ul.nav li#first a {
     margin-bottom: 10px;
 }
 
-.linkTitle {
+.feedbackAlerts {
+    margin-top: 30px;
 }
 
 footer {

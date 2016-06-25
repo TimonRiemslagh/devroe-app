@@ -4,6 +4,33 @@ mainApp.controller('CmsNewReferenceController', ['$scope', 'ActiveList', '$route
     $scope.isBusy = false;
     var preview = $('.preview');
 
+    $scope.alertsSuccess = [];
+    $scope.alertsFail = [];
+
+    $scope.addAlert = function(alert, type) {
+        if(type == "success") {
+            $scope.alertsSuccess.push(alert);
+        } else if(type == "fail") {
+            $scope.alertsFail.push(alert);
+        }
+    };
+
+    $scope.closeAlert = function(index, type) {
+        console.log(type);
+
+        if(type == "success") {
+            $scope.alertsSuccess.splice(index, 1);
+        } else if(type == "fail") {
+            $scope.alertsFail.splice(index, 1);
+        }
+    };
+
+    window.setInterval(function(){
+        $scope.$apply(function() {
+            $scope.alertsSuccess.shift();
+        });
+    }, 5000);
+
     if($routeParams.refId) {
 
         ActiveList.refs.forEach(function(ref) {
@@ -22,16 +49,14 @@ mainApp.controller('CmsNewReferenceController', ['$scope', 'ActiveList', '$route
         xhr.open('PUT', signedRequest);
         xhr.onreadystatechange = () => {
             if(xhr.readyState === 4){
-                if(xhr.status === 200){
-                    if($scope.currentRef) {
-                        postRef({id: $scope.currentRef._id, keywords: $scope.keywords, url: url});
-                    } else {
-                        postRef({keywords: $scope.keywords, url: url});
+                $scope.$apply(function() {
+                    if(xhr.status === 200){
+                        $scope.addAlert(file.name + " opgeslaan.", "success");
                     }
-                }
-                else{
-                    alert('Could not upload file.');
-                }
+                    else {
+                        $scope.addAlert(file.name + " niet opgeslaan.", "fail");
+                    }
+                });
             }
         };
         xhr.send(file);
@@ -69,6 +94,13 @@ mainApp.controller('CmsNewReferenceController', ['$scope', 'ActiveList', '$route
             if(image[0] && $scope.keywords) {
                 $scope.isBusy = true;
                 getSignedRequest(image[0]);
+
+                if($scope.currentRef) {
+                    postRef({id: $scope.currentRef._id, keywords: $scope.keywords, url: imageDomain + image[0].name});
+                } else {
+                    postRef({keywords: $scope.keywords, url: imageDomain + image[0].name});
+                }
+
             } else {
                 $scope.showAlert = true;
             }

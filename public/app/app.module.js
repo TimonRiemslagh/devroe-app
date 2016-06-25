@@ -27,9 +27,9 @@ mainApp.service( 'ActiveList', [ '$rootScope', function( $rootScope ) {
             service.refs.unshift(ref);
 
             var localStorageRefs = JSON.parse(localStorage.getItem('refs'));
-            localStorageRefs.unshift(res.data.doc);
+            localStorageRefs.unshift(ref);
             localStorage.setItem('refs', JSON.stringify(localStorageRefs));
-            
+
             $rootScope.$broadcast( 'refs.update' );
         },
 
