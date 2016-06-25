@@ -2,30 +2,19 @@ var express = require('express'),
     bodyParser = require('body-parser'),
     app = express(),
     http = require('http').Server(app),
-    io = require('socket.io')(http),
     MongoClient = require('mongodb').MongoClient,
     path = require('path'),
-    fs = require('fs');
-
-var ObjectId = require('mongodb').ObjectId;
-var winston = require('winston');
-
-//winston.add(winston.transports.File, { filename: 'log.txt' });
-//winston.remove(winston.transports.Console);
+    fs = require('fs'),
+    ObjectId = require('mongodb').ObjectId,
+    aws = require('aws-sdk');
 
 app.use(express.static('public'));
+aws.config.update({accessKeyId: "AKIAJFRWG5Y2BTCC32LQ", secretAccessKey: "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"});
 
 var port = process.env.PORT || 3000;
 http.listen(port, function() {
-    winston.info('server listening on port ' + port);
+    console.log('server listening on port ' + port);
 });
-
-//const S3_BUCKET = process.env.S3_BUCKET;
-const aws = require('aws-sdk');
-
-aws.config.update({accessKeyId: "AKIAJFRWG5Y2BTCC32LQ", secretAccessKey: "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"});
-
-app.engine('html', require('ejs').renderFile);
 
 var jsonParser = bodyParser.json();
 var url = 'mongodb://timonriemslagh:devroe@ds011870.mlab.com:11870/devroedb';
@@ -72,11 +61,10 @@ app.get('/surveys', function(req, res) {
             .toArray(function(err, arr) {
 
                 if(!err) {
-                    //winston.info("API SURVEYS - send: " + JSON.stringify(arr));
                     res.json(arr);
                     db.close();
                 } else {
-                    winston.error("API SURVEYS - error: "+ err);
+                    console.log("API SURVEYS - error: "+ err);
                     res.sendStatus(400);
                     db.close();
                 }
@@ -108,7 +96,7 @@ app.get('/lists/:title', function(req, res) {
 app.post('/survey', jsonParser, function(req, res) {
     if (!req.body) {
 
-        winston.error("API NEW SURVEY - no data");
+        console.log("API NEW SURVEY - no data");
 
         res.sendStatus(400);
 
@@ -126,10 +114,9 @@ app.post('/survey', jsonParser, function(req, res) {
                 function(err, doc) {
 
                     if(!err && doc.result.ok) {
-                        //winston.info('API NEW SURVEY - created: ' + JSON.stringify(doc.ops[0]));
                         res.json({success: true, doc: doc.ops[0]});
                     } else {
-                        winston.error('API NEW SURVEY - error: ' + err);
+                        console.log('API NEW SURVEY - error: ' + err);
                         res.json({success: false, err: err});
                     }
 
@@ -172,17 +159,12 @@ app.post('/ref', jsonParser, function(req, res) {
 });
 
 app.post('/list', jsonParser, function(req, res) {
-
-    console.log('list posted');
-
     if (!req.body) {
         console.log('list error');
         res.sendStatus(400);
     }
 
     MongoClient.connect(url, function(err, db) {
-
-        console.log(req.body.items);
 
         db.collection('lists').findAndModify(
             {
@@ -205,116 +187,6 @@ app.post('/list', jsonParser, function(req, res) {
 
 });
 
-/*io.on('connection', function(socket){
-
-    socket.on('saveList', function(data) {
-
-        if(data) {
-
-            var listTitle = data.title;
-            var listItems = [];
-
-            data.items.forEach(function(item) {
-
-                var newPath = "./public/uploads/" + data.title.replace(/[^A-Z0-9]+/ig, "_") + "_" + item.title.replace(/[^A-Z0-9]+/ig, "_") + "_" + item.filename;
-
-                fs.writeFile(newPath, item.image, { flag: 'wx' }, function (err) {
-                    if(err) {
-                        winston.error('API LIST FILE - error: ' + err);
-                    } else {
-                        console.log('API LIST FILE - file saved at: ' + newPath);
-                    }
-                });
-
-                listItems.push({title: item.title, link: item.link, linkUrl: item.linkUrl, url: newPath});
-
-            });
-
-            MongoClient.connect(url, function(err, db) {
-
-                if(data.root){
-
-                    db.collection('lists').findAndModify(
-                        {id: 0},
-                        [],
-                        {id: 0, title: listTitle, items: listItems},
-                        {upsert: true, new: true},
-                        function(err, object) {
-
-                            if(!err && object.ok) {
-                                //winston.info('API NEW LIST ROOT - created: ' + JSON.stringify({doc: object.value, updatedExisting: object.lastErrorObject.updatedExisting}));
-                                socket.emit("listSaved", {doc: object.value, updatedExisting: object.lastErrorObject.updatedExisting});
-                                db.close();
-                            } else {
-
-                                winston.error('API NEW LIST ROOT - error: ' + err);
-                                socket.emit("listNotSaved", err);
-                                db.close();
-                            }
-
-                        });
-
-                } else {
-
-                    if(data.id) {
-
-                        db.collection('lists').findAndModify(
-                            {_id: new ObjectId(data.id)},
-                            [],
-                            {title: listTitle, items: listItems},
-                            {upsert: true, new: true},
-                            function(err, object) {
-
-                                if(!err && object.ok) {
-                                    //winston.info('API NEW LIST ID - created: ' + JSON.stringify({doc: object.value, updatedExisting: object.lastErrorObject.updatedExisting}));
-                                    socket.emit("listSaved", {doc: object.value, updatedExisting: object.lastErrorObject.updatedExisting});
-                                    db.close();
-                                } else {
-                                    winston.error('API NEW LIST ID - error: ' + err);
-                                    socket.emit("listNotSaved", err);
-                                    db.close();
-                                }
-
-                            });
-
-                    } else {
-
-                        db.collection('lists').findAndModify(
-                            {title: listTitle},
-                            [],
-                            {title: listTitle, items: listItems},
-                            {upsert: true, new: true},
-                            function(err, object) {
-
-                                if(!err && object.ok) {
-                                    //winston.info('API NEW LIST - created: ' + JSON.stringify({doc: object.value, updatedExisting: object.lastErrorObject.updatedExisting}));
-                                    socket.emit("listSaved", {doc: object.value, updatedExisting: object.lastErrorObject.updatedExisting});
-                                    db.close();
-                                } else {
-                                    winston.error('API NEW LIST - error: ' + err);
-                                    socket.emit("listNotSaved", err);
-                                    db.close();
-                                }
-
-                            });
-
-                    }
-
-                }
-
-            });
-
-        } else {
-
-            winston.error("API NEW LIST - no data");
-
-            socket.emit("listNotSaved", "no data");
-        }
-
-    });
-
-});*/
-
 app.delete('/lists/:id', function(req, res) {
 
     MongoClient.connect(url, function(err, db) {
@@ -324,10 +196,9 @@ app.delete('/lists/:id', function(req, res) {
             function(err, result) {
 
                 if(!err && result.result.ok) {
-                    //winston.info('API REMOVE LIST - deleted: ' + JSON.stringify(result));
                     res.json({success: true});
                 } else {
-                    winston.error('API REMOVE LIST - error: ' + err);
+                    console.log('API REMOVE LIST - error: ' + err);
                     res.json({success: false, err: err});
                 }
 
@@ -347,11 +218,10 @@ app.delete('/refs/:id', function(req, res) {
             function(err, result) {
 
                 if(!err && result.result.ok) {
-                    //winston.info('API REMOVE REF - deleted: ' + JSON.stringify(result));
                     res.json({success: true});
 
                 } else {
-                    winston.error('API REMOVE REF - error: ' + err);
+                    console.log('API REMOVE REF - error: ' + err);
                     res.json({success: false, err: err});
                 }
 

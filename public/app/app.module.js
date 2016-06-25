@@ -45,6 +45,11 @@ mainApp.service( 'ActiveList', [ '$rootScope', function( $rootScope ) {
 
         addSurvey: function(survey) {
             service.surveys.unshift( survey );
+
+            var localStorageSurveys = JSON.parse(localStorage.getItem('surveys'));
+            localStorageSurveys.unshift(survey);
+            localStorage.setItem('surveys', JSON.stringify(localStorageSurveys));
+
             $rootScope.$broadcast( 'survey.update' );
         },
 

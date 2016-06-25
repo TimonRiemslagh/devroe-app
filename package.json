@@ -7,10 +7,7 @@
     "body-parser": "^1.15.1",
     "express": "4.14.0",
     "mongodb": "2.1.14",
-    "socket.io": "^1.4.5",
-    "winston": "^2.2.0",
-    "aws-sdk": "2.x",
-    "ejs": "2.x"
+    "aws-sdk": "2.x"
   },
   "engines": {
     "node": "4.4.1"

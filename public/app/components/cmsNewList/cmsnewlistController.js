@@ -8,24 +8,14 @@ mainApp.controller('CmsNewListController', ['$scope', 'ActiveList', '$filter', '
     var listItemId = 0;
 
     if($routeParams.listId) {
-
         ActiveList.lists.forEach(function(list) {
             if(list._id == $routeParams.listId) {
-
                 $scope.currentList = list;
-
-                console.log(list);
-
                 $scope.root = list.root;
-
                 $scope.listTitle = list.title;
                 $scope.listItems = list.items;
-
-                //if image is set of item, leave image field "" and show url, otherwise dont show url
-
             }
         });
-        
     }
 
     $scope.addAlert = function(alert, type) {
@@ -37,8 +27,6 @@ mainApp.controller('CmsNewListController', ['$scope', 'ActiveList', '$filter', '
     };
 
     $scope.closeAlert = function(index, type) {
-        console.log(type);
-
         if(type == "success") {
             $scope.alertsSuccess.splice(index, 1);
         } else if(type == "fail") {
@@ -170,12 +158,14 @@ mainApp.controller('CmsNewListController', ['$scope', 'ActiveList', '$filter', '
         xhr.open('PUT', signedRequest);
         xhr.onreadystatechange = () => {
             if(xhr.readyState === 4){
-                if(xhr.status === 200){
-                    $scope.addAlert(file.name + " opgeslaan.", "success");
-                }
-                else{
-                    $scope.addAlert(file.name + " niet opgeslaan.", "fail");
-                }
+                $scope.$apply(function() {
+                    if(xhr.status === 200){
+                        $scope.addAlert(file.name + " opgeslaan.", "success");
+                    }
+                    else{
+                        $scope.addAlert(file.name + " niet opgeslaan.", "fail");
+                    }
+                });
             }
         };
         xhr.send(file);
@@ -236,7 +226,7 @@ mainApp.controller('CmsNewListController', ['$scope', 'ActiveList', '$filter', '
                     ActiveList.addList(res.data.doc);
                 }
 
-                $scope.activeLists = ActiveList.lists.titles;
+                $scope.activeLists = ActiveList.lists;
 
                 $location.path('/cms/cmsLists/cmsNewList/' + res.data.doc._id);
 

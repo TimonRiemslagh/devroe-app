@@ -331,10 +331,6 @@ ul.nav li#first a {
     float: left;
 }
 
-.newList .alert {
-    margin-bottom: 0;
-}
-
 .checkingListSpinner {
     height: 20px !important;
     padding: 0 !important;

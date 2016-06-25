@@ -78,17 +78,11 @@ mainApp.controller('ListsController', ['$scope', '$routeParams', 'ActiveList', '
         var address = sessionStorage.getItem("address");
         var client = sessionStorage.getItem("client");
 
-        //var user = $(".usersDropdown option:selected").val();
-
         if(selectedLists) {
             $scope.noOptions = false;
 
             console.log(selectedLists);
 
-            /*if(user == "null") {
-                $scope.noUser = true;
-            }
-            else {*/
                 $scope.noUser = false;
                 $scope.imageUrl = "";
                 $scope.saveBusy = true;
@@ -100,9 +94,6 @@ mainApp.controller('ListsController', ['$scope', '$routeParams', 'ActiveList', '
                     if(res.data.success) {
 
                         ActiveList.addSurvey(res.data.doc);
-                        var localStorageSurveys = JSON.parse(localStorage.getItem('surveys'));
-                        localStorageSurveys.unshift(res.data.doc);
-                        localStorage.setItem('surveys', JSON.stringify(localStorageSurveys));
 
                         $location.path('/#/newsurvey');
 
@@ -121,7 +112,6 @@ mainApp.controller('ListsController', ['$scope', '$routeParams', 'ActiveList', '
                 }, function(errorRes) {
                     console.log(errorRes);
                 });
-            //}
         } else {
             $scope.noOptions = true;
         }
