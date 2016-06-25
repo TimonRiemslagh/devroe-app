@@ -24,7 +24,7 @@ mainApp.controller('ListsController', ['$scope', '$routeParams', 'ActiveList', '
 
         $scope.allLists.forEach(function(item) {
 
-            if(item.id == 0) {
+            if(item.root == true) {
                 $scope.currentListItem = item;
             }
 
@@ -67,6 +67,7 @@ mainApp.controller('ListsController', ['$scope', '$routeParams', 'ActiveList', '
     };
 
     $scope.showPicture = function(image) {
+        console.log(image);
         $scope.imageUrl = image;
     };
 

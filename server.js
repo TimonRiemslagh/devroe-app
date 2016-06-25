@@ -182,6 +182,8 @@ app.post('/list', jsonParser, function(req, res) {
 
     MongoClient.connect(url, function(err, db) {
 
+        console.log(req.body.items);
+
         db.collection('lists').findAndModify(
             {
                 _id: new ObjectId(req.body.id)

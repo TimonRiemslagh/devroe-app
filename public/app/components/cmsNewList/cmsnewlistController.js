@@ -16,11 +16,7 @@ mainApp.controller('CmsNewListController', ['$scope', 'ActiveList', '$filter', '
 
                 console.log(list);
 
-                if(list.id == 0) { //this is the root list
-                    $scope.root = true;
-                } else {
-                    $scope.root = false;
-                }
+                $scope.root = list.root;
 
                 $scope.listTitle = list.title;
                 $scope.listItems = list.items;
@@ -48,11 +44,6 @@ mainApp.controller('CmsNewListController', ['$scope', 'ActiveList', '$filter', '
         } else if(type == "fail") {
             $scope.alertsFail.splice(index, 1);
         }
-    };
-
-    $scope.newListItemImageElement = {
-        file: {},
-        data: ""
     };
 
     $scope.addListItem = function() {
@@ -122,6 +113,8 @@ mainApp.controller('CmsNewListController', ['$scope', 'ActiveList', '$filter', '
                             listItem.title = item.title;
                             if(image) {
                                 listItem.image = image;
+                                listItem.imageName = image.name;
+                                listItem.imageUrl = imageDomain + image.name;
                             }
                             listItem.link = item.link;
                             listItem.linkUrl = res.data.doc._id;
@@ -141,57 +134,6 @@ mainApp.controller('CmsNewListController', ['$scope', 'ActiveList', '$filter', '
             }, function(errorRes) {
                 console.log(errorRes);
             });
-
-            /*if(item.link) {
-                $http.get('/lists/' + item.link).then(function(res) {
-
-                    if(res.data.validList) {
-
-                        $scope.listItems.forEach(function(listItem) {
-
-                            if(listItem.title == item.oldTitle) {
-                                listItem.title = item.title;
-                                listItem.imageObj = item.image;
-                                if(item.image) {
-                                    listItem.image = item.image.file;
-                                    listItem.filename = item.image.file.name;
-                                }
-                                listItem.link = item.link;
-                                listItem.linkUrl = res.data.doc._id;
-                            }
-
-                        });
-
-                        item.showAlert = false;
-                        item.checkingList = false;
-                        item.editMode = false;
-
-                    } else {
-                        item.showAlert = true;
-                        item.checkingList = false;
-                    }
-
-                }, function(errorRes) {
-                    console.log(errorRes);
-                });
-            } else {
-                $scope.listItems.forEach(function(listItem) {
-
-                    if(listItem.title == item.oldTitle) {
-                        listItem.title = item.title;
-                        listItem.image = item.image;
-                        if(item.image) {
-                            listItem.filename = item.image.name;
-                        }
-                        listItem.link = item.link;
-                        listItem.linkUrl = "";
-                    }
-                });
-
-                item.showAlert = false;
-                item.checkingList = false;
-                item.editMode = false;
-            }*/
 
         } else {
             item.showAlert = true;
@@ -258,6 +200,8 @@ mainApp.controller('CmsNewListController', ['$scope', 'ActiveList', '$filter', '
 
     $scope.saveList = function() {
 
+        console.log($scope.listItems);
+
         $scope.listSaveBusy = true;
 
         $scope.listItems.forEach(function(item) {
@@ -265,8 +209,6 @@ mainApp.controller('CmsNewListController', ['$scope', 'ActiveList', '$filter', '
             if(item.image) {
                 getSignedRequest(item.image);
                 item.imageUrl = imageDomain + item.image.name;
-            } else {
-                item.imageUrl = "";
             }
 
             item.image = "";

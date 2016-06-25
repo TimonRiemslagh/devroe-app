@@ -115,8 +115,8 @@ mainApp.service( 'ActiveList', [ '$rootScope', function( $rootScope ) {
         updateList: function(list) {
 
             for(var t = 0; t < service.lists.length; t++) {
-                if(service.lists.items[t]._id == list._id) {
-                    service.lists.items[t] = list;
+                if(service.lists[t]._id == list._id) {
+                    service.lists[t] = list;
                 }
             }
 
