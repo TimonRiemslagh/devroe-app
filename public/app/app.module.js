@@ -4,7 +4,7 @@ mainApp.service( 'ActiveList', [ '$rootScope', function( $rootScope ) {
 
     var service = {
 
-        lists: {}, //items [] titles []
+        lists: [], //items [] titles []
         refs: [],
         surveys: [],
 
@@ -34,8 +34,12 @@ mainApp.service( 'ActiveList', [ '$rootScope', function( $rootScope ) {
         },
 
         addList: function(list) {
-            service.lists.items.push( list );
-            service.lists.titles.push(list.title);
+            service.lists.push( list );
+
+            var localStorageLists = JSON.parse(localStorage.getItem('lists'));
+            localStorageLists.push(list);
+            localStorage.setItem('lists', JSON.stringify(localStorageLists));
+
             $rootScope.$broadcast( 'lists.update' );
         },
 
@@ -44,19 +48,23 @@ mainApp.service( 'ActiveList', [ '$rootScope', function( $rootScope ) {
             $rootScope.$broadcast( 'survey.update' );
         },
 
-        removeList: function(list) {
+        removeList: function(listId) {
 
-            for(var t = service.lists.items.length-1; t >= 0; t--) {
-                if(service.lists.items[t].title == list) {
-                    service.lists.items.splice(t,1);
+            for(var t = service.lists.length-1; t >= 0; t--) {
+                if (service.lists[t]._id == listId) {
+                    service.lists.splice(t, 1);
                 }
             }
 
-            for(var i = service.lists.titles.length-1; i >= 0; i--) {
-                if(service.lists.titles[i] == list) {
-                    service.lists.titles.splice(i,1);
+            var localStorageLists = JSON.parse(localStorage.getItem('lists'));
+
+            for(var l = localStorageLists.length-1; l >= 0; l--) {
+                if(localStorageLists[l]._id == listId) {
+                    localStorageLists.splice(l,1);
                 }
             }
+
+            localStorage.setItem('lists', JSON.stringify(localStorageLists));
 
             $rootScope.$broadcast( 'list.delete' );
 
@@ -69,6 +77,16 @@ mainApp.service( 'ActiveList', [ '$rootScope', function( $rootScope ) {
                     service.refs.splice(t,1);
                 }
             }
+
+            var localStorageRefs = JSON.parse(localStorage.getItem('refs'));
+
+            for(var l = localStorageRefs.length-1; l >= 0; l--) {
+                if (localStorageRefs[l]._id == id) {
+                    localStorageRefs.splice(l, 1);
+                }
+            }
+
+            localStorage.setItem('refs', JSON.stringify(localStorageRefs));
 
             $rootScope.$broadcast( 'refs.delete' );
 
@@ -91,6 +109,26 @@ mainApp.service( 'ActiveList', [ '$rootScope', function( $rootScope ) {
             }
 
             localStorage.setItem('refs', JSON.stringify(localStorageRefs));
+
+        },
+
+        updateList: function(list) {
+
+            for(var t = 0; t < service.lists.length; t++) {
+                if(service.lists.items[t]._id == list._id) {
+                    service.lists.items[t] = list;
+                }
+            }
+
+            var localStorageLists = JSON.parse(localStorage.getItem('lists'));
+
+            for(var l = 0; l < localStorageLists.length; l++) {
+                if(localStorageLists[l]._id == list._id) {
+                    localStorageLists[l] = list;
+                }
+            }
+
+            localStorage.setItem('lists', JSON.stringify(localStorageLists));
 
         }
     };

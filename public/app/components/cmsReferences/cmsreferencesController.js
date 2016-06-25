@@ -26,18 +26,7 @@ mainApp.controller('CmsReferencesController', ['$scope', 'ActiveList', '$locatio
                 console.log(res);
 
                 if(res.data.success) {
-
                     ActiveList.removeRef(id);
-
-                    var localStorageRefs = JSON.parse(localStorage.getItem('refs'));
-
-                    for(var t = localStorageRefs.length-1; t >= 0; t--) {
-                        if (localStorageRefs[t]._id == id) {
-                            localStorageRefs.splice(t, 1);
-                        }
-                    }
-
-                    localStorage.setItem('refs', JSON.stringify(localStorageRefs));
                 } else {
                     console.log(res.data.err);
                 }

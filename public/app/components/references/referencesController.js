@@ -4,4 +4,5 @@ mainApp.controller('ReferencesController', ['$scope', 'ActiveList', 'Lightbox', 
     $scope.openLightboxModal = function (index, subset) {
         Lightbox.openModal(subset, index);
     };
+    
 }]);

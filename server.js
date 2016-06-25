@@ -31,22 +31,14 @@ var jsonParser = bodyParser.json();
 var url = 'mongodb://timonriemslagh:devroe@ds011870.mlab.com:11870/devroedb';
 
 app.get('/lists', function(req, res) {
-
     MongoClient.connect(url, function(err, db) {
-
         db.collection('lists', function (err, collection) {
-            var listTitles = [];
             collection.find()
                 .toArray(function (err, arr) {
-                    arr.forEach(function (el) {
-                        listTitles.push(el.title);
-                    });
                     if (!err) {
-                        //winston.info("API LISTS - send: " + JSON.stringify({items: arr, titles: listTitles}));
-                        res.json({items: arr, titles: listTitles});
+                        res.json(arr);
                         db.close();
                     } else {
-                        winston.error("API LISTS - error: " + err);
                         res.sendStatus(400);
                         db.close();
                     }
@@ -56,18 +48,14 @@ app.get('/lists', function(req, res) {
 });
 
 app.get('/refs', function(req, res) {
-
     MongoClient.connect(url, function(err, db) {
         db.collection('references').find()
             .sort({date: -1})
             .toArray(function(err, arr) {
-
                 if(!err) {
-                    //winston.info("API REFS - send: " + JSON.stringify(arr));
                     res.json(arr);
                     db.close();
                 } else {
-                    winston.error("API REFS - error: " + err);
                     res.sendStatus(400);
                     db.close();
                 }
@@ -183,7 +171,39 @@ app.post('/ref', jsonParser, function(req, res) {
 
 });
 
-io.on('connection', function(socket){
+app.post('/list', jsonParser, function(req, res) {
+
+    console.log('list posted');
+
+    if (!req.body) {
+        console.log('list error');
+        res.sendStatus(400);
+    }
+
+    MongoClient.connect(url, function(err, db) {
+
+        db.collection('lists').findAndModify(
+            {
+                _id: new ObjectId(req.body.id)
+            },
+            [],
+            {title: req.body.title, items: req.body.items, root: req.body.root, date: new Date()},
+            {upsert: true, new: true},
+            function(err, doc) {
+                if(!err && doc.ok) {
+                    res.json({success: true, doc: doc.value, updated: doc.lastErrorObject.updatedExisting});
+                } else {
+                    res.json({success: false, err: err});
+                }
+
+                db.close();
+            });
+
+    });
+
+});
+
+/*io.on('connection', function(socket){
 
     socket.on('saveList', function(data) {
 
@@ -291,7 +311,7 @@ io.on('connection', function(socket){
 
     });
 
-});
+});*/
 
 app.delete('/lists/:id', function(req, res) {
 

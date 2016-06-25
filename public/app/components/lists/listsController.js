@@ -22,7 +22,7 @@ mainApp.controller('ListsController', ['$scope', '$routeParams', 'ActiveList', '
 
     if(currentList == 0) {
 
-        $scope.allLists.items.forEach(function(item) {
+        $scope.allLists.forEach(function(item) {
 
             if(item.id == 0) {
                 $scope.currentListItem = item;
@@ -32,7 +32,7 @@ mainApp.controller('ListsController', ['$scope', '$routeParams', 'ActiveList', '
 
     } else {
 
-        $scope.allLists.items.forEach(function (item) {
+        $scope.allLists.forEach(function (item) {
             if (item._id == currentList) {
                 $scope.currentListItem = item;
             }

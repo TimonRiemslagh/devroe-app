@@ -4,7 +4,7 @@ mainApp.controller('CmsListsController', ['$scope', '$location', 'ActiveList', '
         $location.path('/cms/cmsLists/cmsNewList');
     };
 
-    $scope.activeLists = ActiveList.lists.items;
+    $scope.activeLists = ActiveList.lists;
 
     $scope.edit = function(listId) {
 
@@ -12,8 +12,7 @@ mainApp.controller('CmsListsController', ['$scope', '$location', 'ActiveList', '
     };
     
     $scope.$on('lists.update', function() {
-        console.log('listsupdated');
-        $scope.activeLists = ActiveList.lists.items;
+        $scope.activeLists = ActiveList.lists;
     });
 
     $scope.delete = function(id, listTitle) {
@@ -26,24 +25,7 @@ mainApp.controller('CmsListsController', ['$scope', '$location', 'ActiveList', '
             $http.delete('/lists/' + id).then(function(res) {
 
                 if(res.data.success) {
-
-                    ActiveList.removeList(listTitle);
-
-                    var localStorageLists = JSON.parse(localStorage.getItem('lists'));
-
-                    for(var t = localStorageLists.items.length-1; t >= 0; t--) {
-                        if(localStorageLists.items[t].title == listTitle) {
-                            localStorageLists.items.splice(t,1);
-                        }
-                    }
-
-                    for(var i = localStorageLists.titles.length-1; i >= 0; i--) {
-                        if(localStorageLists.titles[i].title == listTitle) {
-                            localStorageLists.titles.splice(i,1);
-                        }
-                    }
-
-                    localStorage.setItem('lists', JSON.stringify(localStorageLists));
+                    ActiveList.removeList(id);
                 } else {
                     console.log(res.data.err);
                 }

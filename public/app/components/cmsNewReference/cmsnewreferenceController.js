@@ -88,6 +88,7 @@ mainApp.controller('CmsNewReferenceController', ['$scope', 'ActiveList', '$route
         if($scope.imageUrl && $scope.keywords) {
 
             $scope.isBusy = true;
+            console.log('save Ref 1');
             postRef({id: $scope.currentRef._id, keywords: $scope.keywords, url: $scope.imageUrl});
 
         } else {
@@ -96,8 +97,10 @@ mainApp.controller('CmsNewReferenceController', ['$scope', 'ActiveList', '$route
                 getSignedRequest(image[0]);
 
                 if($scope.currentRef) {
+                    console.log('save Ref 2');
                     postRef({id: $scope.currentRef._id, keywords: $scope.keywords, url: imageDomain + image[0].name});
                 } else {
+                    console.log('save Ref 3');
                     postRef({keywords: $scope.keywords, url: imageDomain + image[0].name});
                 }
 
