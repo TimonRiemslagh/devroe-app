@@ -58,9 +58,9 @@
                     <div ng-show="!item.editMode">
 
                         <div class="noEditMode">
-                            <div class="">{{item.title}}</div>
-                            <div>{{item.imageName}}</div>
-                            <a ng-click="routeList(item.linkUrl)" href="">{{item.link}}</a>
+                            <div class="">{{item.title | characters:25}}</div>
+                            <div>{{item.imageName | characters:25}}</div>
+                            <a ng-click="routeList(item.linkUrl)" href="">{{item.link | characters:25}}</a>
                         </div>
 
                         <div class="options">
