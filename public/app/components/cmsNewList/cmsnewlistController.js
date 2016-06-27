@@ -195,6 +195,8 @@ mainApp.controller('CmsNewListController', ['$scope', 'ActiveList', '$filter', '
         xhr.send(file);
     }
 
+    alert('test 7');/*
+
     function getSignedRequest(file){
         const xhr = new XMLHttpRequest();
         xhr.open('GET', `/sign-s3?file-name=${file.name}&file-type=${file.type}`);
@@ -212,9 +214,7 @@ mainApp.controller('CmsNewListController', ['$scope', 'ActiveList', '$filter', '
         xhr.send();
     }
 
-    alert('test 6');
 
-    /*
 
     $scope.saveList = function() {
 
