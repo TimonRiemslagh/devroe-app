@@ -102,10 +102,6 @@ mainApp.controller('CmsNewListController', ['$scope', 'ActiveList', '$filter', '
         }
     };
 
-
-    alert('test 3');
-    /*
-
     $scope.updateListItem = function(item) {
 
         var image = $("#" + item.listItemId)[0].files[0];
@@ -155,6 +151,8 @@ mainApp.controller('CmsNewListController', ['$scope', 'ActiveList', '$filter', '
         }
     };
 
+    alert('test 4');
+/*
     $scope.routeList = function(listId) {
         $location.path('/cms/cmsLists/cmsNewList/' + listId);
     };
