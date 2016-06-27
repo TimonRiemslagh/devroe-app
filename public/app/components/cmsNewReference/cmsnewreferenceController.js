@@ -47,7 +47,7 @@ mainApp.controller('CmsNewReferenceController', ['$scope', 'ActiveList', '$route
     function uploadFile(file, signedRequest, url){
         const xhr = new XMLHttpRequest();
         xhr.open('PUT', signedRequest);
-        xhr.onreadystatechange = () => {
+        xhr.onreadystatechange = function() {
             if(xhr.readyState === 4){
                 $scope.$apply(function() {
                     if(xhr.status === 200){
@@ -65,7 +65,7 @@ mainApp.controller('CmsNewReferenceController', ['$scope', 'ActiveList', '$route
     function getSignedRequest(file){
         const xhr = new XMLHttpRequest();
         xhr.open('GET', `/sign-s3?file-name=${file.name}&file-type=${file.type}`);
-        xhr.onreadystatechange = () => {
+        xhr.onreadystatechange = function () {
             if(xhr.readyState === 4){
                 if(xhr.status === 200){
                     const response = JSON.parse(xhr.responseText);
