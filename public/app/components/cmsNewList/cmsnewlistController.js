@@ -7,7 +7,7 @@ mainApp.controller('CmsNewListController', ['$scope', 'ActiveList', '$filter', '
 
     alert('test');
 
-    var listItemId = 0;
+    /*var listItemId = 0;
 
     if($routeParams.listId) {
         ActiveList.lists.forEach(function(list) {
@@ -263,6 +263,6 @@ mainApp.controller('CmsNewListController', ['$scope', 'ActiveList', '$filter', '
             console.log(errorRes);
         });
 
-    };
+    };*/
 
 }]);
