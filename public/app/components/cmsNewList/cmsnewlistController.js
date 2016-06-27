@@ -151,8 +151,8 @@ mainApp.controller('CmsNewListController', ['$scope', 'ActiveList', '$filter', '
         }
     };
 
-    alert('test 4');
-/*
+
+
     $scope.routeList = function(listId) {
         $location.path('/cms/cmsLists/cmsNewList/' + listId);
     };
@@ -176,6 +176,10 @@ mainApp.controller('CmsNewListController', ['$scope', 'ActiveList', '$filter', '
         }
 
     };
+
+    alert('test 5');
+
+    /*
 
     function uploadFile(file, signedRequest, url){
         const xhr = new XMLHttpRequest();
