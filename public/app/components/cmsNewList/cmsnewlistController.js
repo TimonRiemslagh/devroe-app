@@ -55,9 +55,6 @@ mainApp.controller('CmsNewListController', ['$scope', 'ActiveList', '$filter', '
         }
     };
 
-    alert('test 2');
-
-    /*
 
     $scope.addListItem = function() {
 
@@ -104,6 +101,10 @@ mainApp.controller('CmsNewListController', ['$scope', 'ActiveList', '$filter', '
             $scope.checkingList = false;
         }
     };
+
+
+    alert('test 3');
+    /*
 
     $scope.updateListItem = function(item) {
 
