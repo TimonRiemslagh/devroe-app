@@ -197,7 +197,7 @@ mainApp.controller('CmsNewListController', ['$scope', 'ActiveList', '$filter', '
         xhr.send(file);
     }
 
-    alert('test 10');/*
+    alert('test 11');/*
 
     function getSignedRequest(file){
         const xhr = new XMLHttpRequest();
