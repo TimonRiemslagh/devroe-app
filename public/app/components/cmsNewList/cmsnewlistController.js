@@ -181,9 +181,9 @@ mainApp.controller('CmsNewListController', ['$scope', 'ActiveList', '$filter', '
         const xhr = new XMLHttpRequest();
 
         xhr.open('PUT', signedRequest);
-        /*
+
         xhr.onreadystatechange = () => {
-            if(xhr.readyState === 4){
+            /*if(xhr.readyState === 4){
                 $scope.$apply(function() {
                     if(xhr.status === 200){
                         $scope.addAlert(file.name + " opgeslaan.", "success");
@@ -192,9 +192,9 @@ mainApp.controller('CmsNewListController', ['$scope', 'ActiveList', '$filter', '
                         $scope.addAlert(file.name + " niet opgeslaan.", "fail");
                     }
                 });
-            }
+            }*/
         };
-        xhr.send(file);*/
+        xhr.send(file);
     }
 
     alert('test 10');/*
