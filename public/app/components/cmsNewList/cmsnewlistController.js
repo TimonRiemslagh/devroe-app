@@ -5,8 +5,6 @@ mainApp.controller('CmsNewListController', ['$scope', 'ActiveList', '$filter', '
     $scope.alertsFail = [];
     $scope.root = false;
 
-    alert('test');
-
     var listItemId = 0;
 
     if($routeParams.listId) {
@@ -20,7 +18,7 @@ mainApp.controller('CmsNewListController', ['$scope', 'ActiveList', '$filter', '
         });
     }
 
-    /*$scope.up = function(item) {
+    $scope.up = function(item) {
         for(var t = 0; t < $scope.listItems.length; t++) {
             if($scope.listItems[t].listItemId == item.listItemId-1) {
                 $scope.listItems[t].listItemId++;
@@ -56,6 +54,10 @@ mainApp.controller('CmsNewListController', ['$scope', 'ActiveList', '$filter', '
             $scope.alertsFail.splice(index, 1);
         }
     };
+
+    alert('test 2');
+
+    /*
 
     $scope.addListItem = function() {
 
