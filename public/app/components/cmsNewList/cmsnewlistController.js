@@ -179,8 +179,9 @@ mainApp.controller('CmsNewListController', ['$scope', 'ActiveList', '$filter', '
 
     function uploadFile(file, signedRequest, url){
         const xhr = new XMLHttpRequest();
-        /*
+
         xhr.open('PUT', signedRequest);
+        /*
         xhr.onreadystatechange = () => {
             if(xhr.readyState === 4){
                 $scope.$apply(function() {
@@ -196,7 +197,7 @@ mainApp.controller('CmsNewListController', ['$scope', 'ActiveList', '$filter', '
         xhr.send(file);*/
     }
 
-    alert('test 9');/*
+    alert('test 10');/*
 
     function getSignedRequest(file){
         const xhr = new XMLHttpRequest();
