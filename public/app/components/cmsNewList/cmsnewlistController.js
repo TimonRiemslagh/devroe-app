@@ -18,6 +18,29 @@ mainApp.controller('CmsNewListController', ['$scope', 'ActiveList', '$filter', '
         });
     }
 
+    $scope.up = function(item) {
+        for(var t = 0; t < $scope.listItems.length; t++) {
+            if($scope.listItems[t].listItemId == item.listItemId-1) {
+                $scope.listItems[t].listItemId++;
+                item.listItemId--;
+                break;
+            }
+        }
+    };
+
+
+
+    $scope.down = function(item) {
+        for(var t = 0; t < $scope.listItems.length; t++) {
+            if($scope.listItems[t].listItemId == item.listItemId+1) {
+                console.log('test');
+                $scope.listItems[t].listItemId--;
+                item.listItemId++;
+                break;
+            }
+        }
+    };
+
     $scope.addAlert = function(alert, type) {
         if(type == "success") {
             $scope.alertsSuccess.push(alert);

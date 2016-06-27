@@ -9,7 +9,7 @@
 
     <ul class="list-group">
 
-        <li ng-repeat="list in currentListItem.items"
+        <li ng-repeat="list in currentListItem.items | orderBy: 'listItemId'"
             ng-click="showPicture(list.imageUrl)"
             class="listItem list-group-item">
             {{list.title}}
