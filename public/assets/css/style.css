@@ -321,6 +321,11 @@ ul.nav li#first a {
     margin-bottom: 10px;
 }
 
+.surveyTable {
+    width: 1200px;
+    margin-left: -170px;
+}
+
 .newList .alert-danger {
     float: left;
     height: 34px;
