@@ -315,6 +315,12 @@ ul.nav li#first a {
     width: 230px;
 }
 
+.refImage {
+    height: 150px;
+    overflow: hidden;
+    margin-bottom: 10px;
+}
+
 .newList .alert-danger {
     float: left;
     height: 34px;

@@ -11,7 +11,7 @@
     <div class="row">
         <!--<div class="col-xs-6 col-md-3 refImage" ng-repeat="ref in (searchResult = (activeRefs | filter:searchText))">-->
         <div class="col-xs-6 col-md-3 refImage" ng-repeat="ref in filteredRefs">
-            <a href="" class="thumbnail" ng-click="openLightboxModal($index, filteredRefs)">
+            <a href="" class="thumbnail refImage" ng-click="openLightboxModal($index, filteredRefs)">
                 <img ng-src="{{ref.url}}">
             </a>
         </div>
