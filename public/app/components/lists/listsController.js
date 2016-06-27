@@ -1,4 +1,4 @@
-mainApp.controller('ListsController', ['$scope', '$routeParams', 'ActiveList', '$http', "$location", function($scope, $routeParams, ActiveList, $http, $location) {
+mainApp.controller('ListsController', ['$scope', '$routeParams', 'ActiveList', '$http', "$location", '$uibModal', function($scope, $routeParams, ActiveList, $http, $location, $uibModal) {
 
     $scope.allLists = ActiveList.lists;
 
@@ -71,9 +71,31 @@ mainApp.controller('ListsController', ['$scope', '$routeParams', 'ActiveList', '
         $scope.imageUrl = image;
     };
 
-    $scope.saveSurvey = function() {
-        var selectedLists = sessionStorage.getItem("selectedLists");
+    $scope.openModal = function() {
 
+        console.log('test');
+
+        var modalInstance = $uibModal.open({
+            animation: true,
+            templateUrl: 'app/components/lists/modalTemplate.html',
+            size: 'lg',
+            controller: 'ModalInstanceCtrl',
+            resolve: {
+                remarks: function () {
+                    return $scope.remarks;
+                }
+            }
+        });
+
+        modalInstance.result.then(function (remarks) {
+            $scope.remarks = remarks;
+        });
+    };
+
+    $scope.saveSurvey = function() {
+        //console.log($scope.remarks);
+
+        var selectedLists = sessionStorage.getItem("selectedLists");
         var offerteNumber = sessionStorage.getItem("offerteNumber");
         var address = sessionStorage.getItem("address");
         var client = sessionStorage.getItem("client");
