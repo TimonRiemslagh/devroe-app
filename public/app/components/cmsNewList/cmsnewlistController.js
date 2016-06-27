@@ -182,7 +182,7 @@ mainApp.controller('CmsNewListController', ['$scope', 'ActiveList', '$filter', '
 
         xhr.open('PUT', signedRequest);
 
-        xhr.onreadystatechange = () => {
+        xhr.onreadystatechange = function() {
             /*if(xhr.readyState === 4){
                 $scope.$apply(function() {
                     if(xhr.status === 200){
@@ -197,12 +197,12 @@ mainApp.controller('CmsNewListController', ['$scope', 'ActiveList', '$filter', '
         xhr.send(file);
     }
 
-    alert('test 11');/*
+    alert('test 12');/*
 
     function getSignedRequest(file){
         const xhr = new XMLHttpRequest();
         xhr.open('GET', `/sign-s3?file-name=${file.name}&file-type=${file.type}`);
-        xhr.onreadystatechange = () => {
+        xhr.onreadystatechange =  function() {
             if(xhr.readyState === 4){
                 if(xhr.status === 200){
                     const response = JSON.parse(xhr.responseText);
