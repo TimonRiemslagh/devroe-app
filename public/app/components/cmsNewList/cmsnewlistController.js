@@ -5,6 +5,8 @@ mainApp.controller('CmsNewListController', ['$scope', 'ActiveList', '$filter', '
     $scope.alertsFail = [];
     $scope.root = false;
 
+    alert('test');
+
     var listItemId = 0;
 
     if($routeParams.listId) {
