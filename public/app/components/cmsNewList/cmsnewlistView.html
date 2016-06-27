@@ -37,7 +37,7 @@
 
             <ul class="list-group">
 
-                <li class="list-group-item clearfix" ng-repeat="item in listItems">
+                <li class="list-group-item clearfix" ng-repeat="item in listItems | orderBy:id">
 
                     <form ng-show="item.editMode" name="addItemForm" ng-submit="updateListItem(item)">
                         <input type="text" ng-model="item.title" class="form-control" placeholder="Titel van het lijst item">
