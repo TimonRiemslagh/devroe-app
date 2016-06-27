@@ -20,7 +20,7 @@
 
     <tbody>
 
-    <tr ng-repeat="survey in activeSurveys | filter:searchText">
+    <tr ng-repeat="survey in filtered">
         <td>{{survey.offerteNumber}}</td>
         <td>{{survey.client}}</td>
         <td>{{survey.address}}</td>

@@ -19,7 +19,7 @@
     </div>
 
     <ul class="list-group">
-        <li class="list-group-item" ng-repeat="ref in activeRefs | filter:searchText">
+        <li class="list-group-item" ng-repeat="ref in filteredRefs">
 
             <a ng-click="openLightboxModal($index)">
 

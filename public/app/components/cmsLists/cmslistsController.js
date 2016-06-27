@@ -1,4 +1,4 @@
-mainApp.controller('CmsListsController', ['$scope', '$location', 'ActiveList', '$http',  function($scope, $location, ActiveList, $http) {
+mainApp.controller('CmsListsController', ['$scope', '$location', 'ActiveList', '$http', 'filterFilter',  function($scope, $location, ActiveList, $http, filterFilter) {
 
     $scope.goToNewList = function() {
         $location.path('/cms/cmsLists/cmsNewList');
