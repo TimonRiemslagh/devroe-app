@@ -7,28 +7,36 @@
     <input type="text" class="form-control" placeholder="Zoek een opmeting" ng-model="searchText" aria-describedby="basic-addon1">
 </div>
 
-<table class="table surveyTable">
+<div class="container tableContainer">
 
-    <thead>
-    <tr>
-        <th>Offerte nummer</th>
-        <th>Klant</th>
-        <th>Adres</th>
-        <th>Opties</th>
-    </tr>
-    </thead>
+    <table class="table table-striped">
 
-    <tbody>
+        <thead>
+        <tr>
+            <th>Offerte nummer</th>
+            <th>Klant</th>
+            <th>Adres</th>
+            <th>Opmerkingen</th>
+            <th>Opties</th>
+        </tr>
+        </thead>
 
-    <tr ng-repeat="survey in filtered">
-        <td>{{survey.offerteNumber}}</td>
-        <td>{{survey.client}}</td>
-        <td>{{survey.address}}</td>
-        <td>{{survey.options}}</td>
-    </tr>
+        <tbody>
 
-    </tbody>
+        <tr ng-repeat="survey in filtered">
+            <td>{{survey.offerteNumber}}</td>
+            <td>{{survey.client}}</td>
+            <td>{{survey.address}}</td>
+            <td>{{survey.remarks}}</td>
+            <td>{{survey.options}}</td>
+        </tr>
 
-</table>
+        </tbody>
+
+    </table>
+
+</div>
+
+
 
 

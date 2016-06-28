@@ -34,9 +34,9 @@ mainApp.controller('NewSurveyController', function($scope, $routeParams, $locati
             // reset
             sessionStorage.setItem('selectedLists', '');
             sessionStorage.setItem('selectedLinks', '');
+            sessionStorage.setItem('remarks', '');
 
             $location.path( "/newsurvey/list/0" );
-            console.log(sessionStorage);
         }
     };
 });

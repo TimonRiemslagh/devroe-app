@@ -3,6 +3,9 @@ mainApp.controller('ModalInstanceCtrl', function ($scope, $uibModalInstance, rem
     $scope.remarks = remarks;
 
     $scope.ok = function () {
+
+        sessionStorage.setItem('remarks', $scope.remarks);
+
         $uibModalInstance.close($scope.remarks);
     };
 

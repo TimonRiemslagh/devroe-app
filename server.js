@@ -108,6 +108,7 @@ app.post('/survey', jsonParser, function(req, res) {
                     offerteNumber: req.body.offerteNumber,
                     client: req.body.client,
                     address: req.body.address,
+                    remarks: req.body.remarks,
                     date: new Date(),
                     options: req.body.arr
                 },

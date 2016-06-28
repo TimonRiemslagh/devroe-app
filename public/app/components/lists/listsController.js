@@ -6,6 +6,8 @@ mainApp.controller('ListsController', ['$scope', '$routeParams', 'ActiveList', '
 
     var selectedLinks = sessionStorage.getItem("selectedLinks");
 
+    $scope.remarks = sessionStorage.getItem('remarks');
+
     var lastSelectedList = "";
 
     if(selectedLinks) {
@@ -73,8 +75,6 @@ mainApp.controller('ListsController', ['$scope', '$routeParams', 'ActiveList', '
 
     $scope.openModal = function() {
 
-        console.log('test');
-
         var modalInstance = $uibModal.open({
             animation: true,
             templateUrl: 'app/components/lists/modalTemplate.html',
@@ -93,7 +93,6 @@ mainApp.controller('ListsController', ['$scope', '$routeParams', 'ActiveList', '
     };
 
     $scope.saveSurvey = function() {
-        //console.log($scope.remarks);
 
         var selectedLists = sessionStorage.getItem("selectedLists");
         var offerteNumber = sessionStorage.getItem("offerteNumber");
@@ -109,7 +108,7 @@ mainApp.controller('ListsController', ['$scope', '$routeParams', 'ActiveList', '
                 $scope.imageUrl = "";
                 $scope.saveBusy = true;
 
-                $http.post('/survey', {arr: selectedLists, offerteNumber: offerteNumber, client: client, address: address}).then(function(res) { //, user: user
+                $http.post('/survey', {arr: selectedLists, offerteNumber: offerteNumber, client: client, address: address, remarks: $scope.remarks}).then(function(res) { //, user: user
 
                     $scope.saveBusy = false;
 

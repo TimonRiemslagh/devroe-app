@@ -321,9 +321,17 @@ ul.nav li#first a {
     margin-bottom: 10px;
 }
 
-.surveyTable {
-    width: 1200px;
-    margin-left: -170px;
+.surveyTable tbody tr th {
+    width: 25%;
+}
+
+.tableContainer {
+    padding: 0;
+    width: 840px;
+}
+
+.tableContainer table {
+    width: 840px;
 }
 
 .newList .alert-danger {
