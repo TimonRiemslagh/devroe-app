@@ -7,7 +7,7 @@
     <input type="text" class="form-control" placeholder="Zoek een opmeting" ng-model="searchText" aria-describedby="basic-addon1">
 </div>
 
-<table class="table table-striped">
+<!--<table class="table table-striped">
 
     <thead>
     <tr>
@@ -29,7 +29,19 @@
     </tr>
     </tbody>
 
-</table>
+</table>-->
+
+<div class="panel panel-default" ng-repeat="survey in filtered">
+    <div class="panel-heading">
+        <h4 class="panel-title">{{survey.offerteNumber}}</h4>
+    </div>
+    <div class="panel-body">
+        <p><strong>Klant:</strong> {{survey.client}}</p>
+        <p><strong>Adres:</strong> {{survey.address}}</p>
+        <p><strong>Opmerkingen:</strong> {{survey.remarks}}</p>
+        <p><strong>Opties:</strong> {{survey.options}}</p>
+    </div>
+</div>
 
 
 
