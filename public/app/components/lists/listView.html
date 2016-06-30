@@ -1,14 +1,12 @@
-<a href="" ng-click="openModal()">Opmerkingen</a>
+<div class="openModalLink">
+    <a href="" ng-click="openModal()">Opmerkingen</a>
+</div>
 
 <div class="lists panel panel-default">
-
     <div class="panel-heading tableHeader">
         <h3 class="panel-title">{{currentListItem.title}}</h3>
         <div class="saveAlert alert alert-danger" role="alert">{{errorMessage}}</div>
         <div class="saveAlert alert alert-success" role="alert">{{successMessage}}</div>
-
-
-
         <button ng-disabled="saveBusy" ng-click="saveSurvey()" class="saveSurveyButton btn btn-success">Opslaan<span ng-show="saveBusy" class="addListItemLoader" loader></span></button>
     </div>
 

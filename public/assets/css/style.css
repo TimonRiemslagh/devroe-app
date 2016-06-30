@@ -130,6 +130,10 @@ ul.nav li#first a {
     display: none;
 }
 
+.openModalLink {
+    margin-bottom: 20px;
+}
+
 .tableHeader {
     height: 44px;
     position: relative;
@@ -321,17 +325,8 @@ ul.nav li#first a {
     margin-bottom: 10px;
 }
 
-.surveyTable tbody tr th {
-    width: 25%;
-}
-
-.tableContainer {
-    padding: 0;
-    width: 840px;
-}
-
-.tableContainer table {
-    width: 840px;
+.optionscol {
+    width: 100px !important;
 }
 
 .newList .alert-danger {

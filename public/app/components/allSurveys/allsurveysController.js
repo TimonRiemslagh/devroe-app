@@ -3,6 +3,10 @@ mainApp.controller('AllSurveysController', ['$scope', 'ActiveList', 'filterFilte
 
     $scope.searchText = "";
 
+    $scope.activeSurveys.forEach(function(survey) {
+        survey.options = survey.options.replace(/,/g, ", ");
+    });
+
     $scope.$watch('searchText', function() {
 
         $scope.filtered = $scope.activeSurveys;
