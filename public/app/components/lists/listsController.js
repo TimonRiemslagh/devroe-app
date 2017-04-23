@@ -1,5 +1,9 @@
 mainApp.controller('ListsController', ['$scope', '$routeParams', 'ActiveList', '$http', "$location", '$uibModal', function($scope, $routeParams, ActiveList, $http, $location, $uibModal) {
 
+  if(!sessionStorage.getItem('login')) {
+    $location.path('/login');
+  }
+  
     $scope.allLists = ActiveList.lists;
 
     var currentList = $routeParams.listId;
@@ -125,7 +129,7 @@ mainApp.controller('ListsController', ['$scope', '$routeParams', 'ActiveList', '
                         sessionStorage.setItem('client', '');
 
                     } else {
-                        
+
                         $scope.failure = true;
                         $scope.error = res.data.err;
                     }

@@ -1,11 +1,15 @@
 mainApp.controller('CmsReferencesController', ['$scope', 'ActiveList', '$location', '$http', 'filterFilter', function($scope, ActiveList, $location, $http, filterFilter) {
 
+  if(!sessionStorage.getItem('login')) {
+    $location.path('/login');
+  }
+  
     $scope.activeRefs = ActiveList.refs;
 
     $scope.goToNewRef = function() {
         $location.path('/cms/cmsReferences/cmsNewReference');
     };
-    
+
     $scope.edit = function(id) {
         $location.path('/cms/cmsReferences/cmsNewReference/' + id);
     };
@@ -25,7 +29,7 @@ mainApp.controller('CmsReferencesController', ['$scope', 'ActiveList', '$locatio
         }
 
     }, true);
-    
+
     $scope.delete = function(id) {
 
         console.log(id);
@@ -52,4 +56,3 @@ mainApp.controller('CmsReferencesController', ['$scope', 'ActiveList', '$locatio
     };
 
 }]);
-

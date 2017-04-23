@@ -1,5 +1,9 @@
 mainApp.controller('CmsNewReferenceController', ['$scope', 'ActiveList', '$routeParams', '$location', '$http', function($scope, ActiveList, $routeParams, $location, $http) {
 
+  if(!sessionStorage.getItem('login')) {
+    $location.path('/login');
+  }
+  
     $scope.ref = {};
     $scope.isBusy = false;
     var preview = $('.preview');
@@ -124,7 +128,7 @@ mainApp.controller('CmsNewReferenceController', ['$scope', 'ActiveList', '$route
                 } else {
                     ActiveList.addRef(res.data.doc);
                 }
-    
+
                 // Reset the form model.
                 $scope.keywords = "";
                 $scope.newRef.$setPristine();

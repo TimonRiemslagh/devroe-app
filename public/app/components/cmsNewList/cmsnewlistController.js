@@ -1,4 +1,9 @@
 mainApp.controller('CmsNewListController', ['$scope', 'ActiveList', '$filter', '$http', '$routeParams', '$location', function($scope, ActiveList, $filter, $http, $routeParams, $location) {
+
+  if(!sessionStorage.getItem('login')) {
+    $location.path('/login');
+  }
+  
     $scope.activeLists = ActiveList.lists;
     $scope.listItems = [];
     $scope.alertsSuccess = [];

@@ -1,5 +1,9 @@
 mainApp.controller('CmsListsController', ['$scope', '$location', 'ActiveList', '$http', 'filterFilter',  function($scope, $location, ActiveList, $http, filterFilter) {
 
+  if(!sessionStorage.getItem('login')) {
+    $location.path('/login');
+  }
+  
     $scope.goToNewList = function() {
         $location.path('/cms/cmsLists/cmsNewList');
     };
@@ -10,7 +14,7 @@ mainApp.controller('CmsListsController', ['$scope', '$location', 'ActiveList', '
 
         $location.path('/cms/cmsLists/cmsNewList/' + listId);
     };
-    
+
     $scope.$on('lists.update', function() {
         $scope.activeLists = ActiveList.lists;
     });

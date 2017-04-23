@@ -1,5 +1,9 @@
 mainApp.controller('NewSurveyController', function($scope, $routeParams, $location) {
 
+  if(!sessionStorage.getItem('login')) {
+    $location.path('/login');
+  }
+  
     $scope.survey = {offnumber: "", client: "", address: ""};
     $scope.showAlert = false;
 

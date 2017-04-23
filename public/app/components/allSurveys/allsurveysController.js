@@ -1,4 +1,8 @@
 mainApp.controller('AllSurveysController', ['$scope', 'ActiveList', 'filterFilter', function($scope, ActiveList, filterFilter) {
+  if(!sessionStorage.getItem('login')) {
+    $location.path('/login');
+  }
+  
     $scope.activeSurveys = ActiveList.surveys;
 
     $scope.searchText = "";

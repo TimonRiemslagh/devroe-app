@@ -1,4 +1,9 @@
 mainApp.controller('ReferencesController', ['$scope', 'ActiveList', 'Lightbox', 'filterFilter', function($scope, ActiveList, Lightbox, filterFilter) {
+
+  if(!sessionStorage.getItem('login')) {
+    $location.path('/login');
+  }
+
     $scope.activeRefs = ActiveList.refs;
 
     $scope.filteredRefs = $scope.activeRefs;
@@ -22,5 +27,5 @@ mainApp.controller('ReferencesController', ['$scope', 'ActiveList', 'Lightbox', 
         }
 
     }, true);
-    
+
 }]);

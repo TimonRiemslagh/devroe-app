@@ -19,12 +19,6 @@ http.listen(port, function() {
 var jsonParser = bodyParser.json();
 var url = 'mongodb://timonriemslagh:devroe@ds011870.mlab.com:11870/devroedb';
 
-var basicAuth = require('express-basic-auth')
-
-app.use(basicAuth({
-    users: { 'admin': 'supersecret' }
-}))
-
 app.get('/lists', function(req, res) {
     MongoClient.connect(url, function(err, db) {
         db.collection('lists', function (err, collection) {
@@ -237,6 +231,15 @@ app.delete('/refs/:id', function(req, res) {
             });
     });
 
+});
+
+app.post('/authenticate', jsonParser, function(req, res) {
+    if (!req.body) {
+        console.log('list error');
+        res.sendStatus(400);
+    }
+
+    res.json({success: (req.body.name == 'devroegroep' && req.body.pass == 'devroe9820')});
 });
 
 app.get('/sign-s3', (req, res) => {

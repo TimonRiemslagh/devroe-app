@@ -1,3 +1,15 @@
+<div class="page-header clearfix">
+    <h1><img src="assets/img/de_vroe_groep_logo.png" alt="logo" class="logo" />Woon- en aannemersprojecten</h1>
+
+    <ul class="mainNav nav nav-pills">
+        <li id="first" role="presentation" ng-class="{ active: isActiveLink('/newsurvey')}" class="newSurvey"><a href="#/newsurvey">Nieuwe opmeting</a></li>
+        <li ng-class="{ active: isActiveLink('/allsurveys')}" class="allSurveys" role="presentation"><a href="#/allsurveys">Voorbije opmetingen</a></li>
+        <li ng-class="{ active: isActiveLink('/references')}" class="references" role="presentation"><a href="#/references">Referenties</a></li>
+        <li ng-class="{ active: isActiveLink('/cms')}" class="cms" role="presentation"><a href="#/cms">Inhoud</a></li>
+    </ul>
+
+</div>
+
 <h3>Zoek opmetingen</h3>
 
 <div class="input-group searchBar">
@@ -42,7 +54,3 @@
         <p><strong>Opties:</strong> {{survey.options}}</p>
     </div>
 </div>
-
-
-
-

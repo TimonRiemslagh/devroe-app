@@ -557,3 +557,12 @@ div.options a {
 .fade.ng-leave {
     animation: 1s disappear;
 }
+
+.loginWrapper {
+  padding: 40px 20px;
+}
+
+.alertLoginFail {
+  margin-top: 20px;
+  display: none;
+}
