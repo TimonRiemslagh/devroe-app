@@ -19,6 +19,12 @@ http.listen(port, function() {
 var jsonParser = bodyParser.json();
 var url = 'mongodb://timonriemslagh:devroe@ds011870.mlab.com:11870/devroedb';
 
+var basicAuth = require('express-basic-auth')
+
+app.use(basicAuth({
+    users: { 'admin': 'supersecret' }
+}))
+
 app.get('/lists', function(req, res) {
     MongoClient.connect(url, function(err, db) {
         db.collection('lists', function (err, collection) {

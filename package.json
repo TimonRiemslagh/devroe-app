@@ -11,5 +11,8 @@
   },
   "engines": {
     "node": "4.4.1"
+  },
+  "devDependencies": {
+    "express-basic-auth": "^1.0.1"
   }
 }
