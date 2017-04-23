@@ -239,7 +239,7 @@ app.post('/authenticate', jsonParser, function(req, res) {
         res.sendStatus(400);
     }
 
-    res.json({success: (req.body.name == 'devroegroep' && req.body.pass == 'devroe9820')});
+    res.json({success: (req.body.name.toLowerCase() == 'devroegroep' && req.body.pass == 'devroe9820')});
 });
 
 app.get('/sign-s3', (req, res) => {
